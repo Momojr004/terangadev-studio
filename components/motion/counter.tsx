@@ -2,11 +2,14 @@
 
 import {
   animate,
+  motion,
   useInView,
   useMotionValue,
   useTransform,
 } from "framer-motion";
 import { useEffect, useRef } from "react";
+
+const expoOut: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 export function Counter({
   value,
@@ -30,7 +33,7 @@ export function Counter({
     if (!inView) return;
     const controls = animate(motionValue, value, {
       duration,
-      ease: [0.16, 1, 0.3, 1],
+      ease: expoOut,
     });
     return controls.stop;
   }, [inView, motionValue, value, duration]);
@@ -38,7 +41,6 @@ export function Counter({
   return (
     <span ref={ref}>
       {prefix}
-      {/* @ts-expect-error motion value renders as text */}
       <motion.span>{rounded}</motion.span>
       {suffix}
     </span>
