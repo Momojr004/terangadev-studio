@@ -31,7 +31,7 @@ export function WorkTeaser() {
       title: t("case3Title"),
       sector: t("case3Sector"),
       metric: t("case3Metric"),
-      href: "/realisations/creneau",
+      href: "/produits/creneau",
     },
   ];
 
