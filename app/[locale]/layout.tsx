@@ -1,0 +1,84 @@
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { getMessages, setRequestLocale, getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { ThemeProvider } from "@/components/theme-provider";
+import { LenisProvider } from "@/components/providers/lenis-provider";
+import { Header } from "@/components/site/header";
+import { Footer } from "@/components/site/footer";
+import { routing, type Locale } from "@/i18n/routing";
+import { siteConfig } from "@/lib/site-config";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale: locale as Locale, namespace: "Site" });
+
+  return {
+    metadataBase: new URL(siteConfig.url),
+    title: {
+      default: `${t("name")} — ${t("tagline")}`,
+      template: `%s · ${t("name")}`,
+    },
+    description: t("description"),
+    applicationName: t("name"),
+    authors: [{ name: t("name"), url: siteConfig.url }],
+    creator: t("name"),
+    publisher: t("name"),
+    openGraph: {
+      type: "website",
+      locale: locale === "fr" ? "fr_SN" : "en_US",
+      url: siteConfig.url,
+      siteName: t("name"),
+      title: `${t("name")} — ${t("tagline")}`,
+      description: t("description"),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${t("name")} — ${t("tagline")}`,
+      description: t("description"),
+    },
+  };
+}
+
+export default async function LocaleLayout({
+  children,
+  params,
+}: {
+  children: ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+  setRequestLocale(locale);
+  const messages = await getMessages();
+
+  return (
+    <NextIntlClientProvider messages={messages}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <LenisProvider>
+          <Header />
+          <div className="flex min-h-dvh flex-col">
+            <main className="flex-1 pt-16 md:pt-20">{children}</main>
+            <Footer />
+          </div>
+        </LenisProvider>
+      </ThemeProvider>
+    </NextIntlClientProvider>
+  );
+}

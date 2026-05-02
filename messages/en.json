@@ -1,0 +1,47 @@
+{
+  "Site": {
+    "name": "TerangaDev",
+    "tagline": "Product studio from Dakar.",
+    "description": "The only studio in Dakar shipping its own SaaS since 2022 — and walking with you from idea to maintenance."
+  },
+  "Nav": {
+    "produits": "Products",
+    "realisations": "Work",
+    "services": "Services",
+    "notes": "Notes",
+    "studio": "Studio",
+    "rejoindre": "Careers",
+    "contact": "Contact",
+    "cta": "Let's talk",
+    "ariaToggleMenu": "Open menu",
+    "ariaCloseMenu": "Close menu",
+    "ariaToggleTheme": "Toggle theme"
+  },
+  "Footer": {
+    "tagline": "Product studio from Dakar.",
+    "address": "Point E, Dakar",
+    "email": "contact@terangadev.com",
+    "whatsappLabel": "WhatsApp",
+    "whatsapp": "+221 77 942 33 17",
+    "hosted": "Hosted on OVH France",
+    "stackTitle": "Stack we own",
+    "navTitle": "Navigation",
+    "contactTitle": "Contact",
+    "legalTitle": "Legal",
+    "mentionsLegales": "Legal notices",
+    "confidentialite": "Privacy policy",
+    "rights": "All rights reserved."
+  },
+  "Home": {
+    "tag": "Product studio from Dakar",
+    "headlineFirst": "The only studio in Dakar shipping its own SaaS since 2022 —",
+    "headlineSecond": "and walking with you from idea to maintenance.",
+    "subhead": "We code, sell and maintain our own SaaS since 2022. We build yours with the same rigor — from idea to maintenance, training included.",
+    "ctaPrimary": "Let's talk about your project",
+    "ctaSecondary": "Book a 30-min call",
+    "stat1": "4 SaaS in production",
+    "stat2": "~30 projects delivered",
+    "stat3": "6 clients on maintenance",
+    "stat4": "Hydrautech delivered in <2 months"
+  }
+}

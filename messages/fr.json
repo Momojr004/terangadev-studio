@@ -1,0 +1,47 @@
+{
+  "Site": {
+    "name": "TerangaDev",
+    "tagline": "Studio produit dakarois.",
+    "description": "Le seul studio à Dakar qui shippe ses propres SaaS depuis 2022 — et qui t'accompagne de l'idée à la maintenance."
+  },
+  "Nav": {
+    "produits": "Produits",
+    "realisations": "Réalisations",
+    "services": "Services",
+    "notes": "Notes",
+    "studio": "Studio",
+    "rejoindre": "Rejoindre",
+    "contact": "Contact",
+    "cta": "Discutons",
+    "ariaToggleMenu": "Ouvrir le menu",
+    "ariaCloseMenu": "Fermer le menu",
+    "ariaToggleTheme": "Changer de thème"
+  },
+  "Footer": {
+    "tagline": "Studio produit dakarois.",
+    "address": "Point E, Dakar",
+    "email": "contact@terangadev.com",
+    "whatsappLabel": "WhatsApp",
+    "whatsapp": "+221 77 942 33 17",
+    "hosted": "Hébergé sur OVH France",
+    "stackTitle": "Stack que l'on maîtrise",
+    "navTitle": "Navigation",
+    "contactTitle": "Contact",
+    "legalTitle": "Mentions",
+    "mentionsLegales": "Mentions légales",
+    "confidentialite": "Politique de confidentialité",
+    "rights": "Tous droits réservés."
+  },
+  "Home": {
+    "tag": "Studio produit dakarois",
+    "headlineFirst": "Le seul studio à Dakar qui shippe ses propres SaaS depuis 2022 —",
+    "headlineSecond": "et qui t'accompagne de l'idée à la maintenance.",
+    "subhead": "On code, on vend et on maintient nos propres SaaS depuis 2022. On bâtit le tien avec la même rigueur — de l'idée à la maintenance, formation comprise.",
+    "ctaPrimary": "Discutons de ton projet",
+    "ctaSecondary": "Réserver un appel de 30 min",
+    "stat1": "4 SaaS en prod",
+    "stat2": "~30 projets livrés",
+    "stat3": "6 clients en maintenance",
+    "stat4": "Hydrautech livré en <2 mois"
+  }
+}
