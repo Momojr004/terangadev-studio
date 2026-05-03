@@ -585,5 +585,12 @@
     "ctaHeadline": "Let's talk about your project",
     "ctaBody": "If what's written here resonates with a problem you have, let's talk.",
     "ctaButton": "Email us"
+  },
+  "NotFound": {
+    "tag": "404 · Page not found",
+    "headline": "This page doesn't exist. Or not anymore.",
+    "subhead": "Either the URL has a typo, or the page moved. No drama — we'll get you where you want to go.",
+    "homeCta": "Back to home",
+    "contactCta": "Email us"
   }
 }

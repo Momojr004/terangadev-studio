@@ -585,5 +585,12 @@
     "ctaHeadline": "Discutons de ton projet",
     "ctaBody": "Si ce qui est écrit ici résonne avec un problème que tu as, on en parle.",
     "ctaButton": "Nous écrire"
+  },
+  "NotFound": {
+    "tag": "404 · Page introuvable",
+    "headline": "Cette page n'existe pas. Ou plus.",
+    "subhead": "Soit l'URL a une typo, soit la page a été déplacée. Pas dramatique — on te ramène où tu veux.",
+    "homeCta": "Retour à l'accueil",
+    "contactCta": "Nous écrire"
   }
 }
