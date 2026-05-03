@@ -569,6 +569,21 @@
     "previewLabel": "Draft in progress",
     "ctaHeadline": "Want to be notified for the first article?",
     "ctaBody": "Email us at hello@terangadev.com with \"notes\" as subject. We'll add you to the list — no spam, no automated newsletter.",
+    "ctaButton": "Email us",
+    "categoryTechnical": "Technical",
+    "categoryProduct": "Product",
+    "categorySovereignty": "Sovereignty",
+    "categoryPedagogy": "Pedagogy",
+    "readingMinutes": "{minutes} min read",
+    "readArticle": "Read article"
+  },
+  "NoteDetail": {
+    "back": "Back to Notes",
+    "publishedOn": "Published on {date}",
+    "readingMinutes": "{minutes} min read",
+    "readMore": "Keep reading",
+    "ctaHeadline": "Let's talk about your project",
+    "ctaBody": "If what's written here resonates with a problem you have, let's talk.",
     "ctaButton": "Email us"
   }
 }
