@@ -18,15 +18,20 @@ export function LocaleSwitcher() {
     });
   }
 
+  const visibleText = locale === "fr" ? "FR / EN" : "FR / EN";
   return (
     <button
       type="button"
       onClick={toggle}
       disabled={isPending}
-      aria-label={`Switch to ${locale === "fr" ? "English" : "Français"}`}
+      title={`${visibleText} — switch language`}
       className="text-fg/70 hover:text-teranga-primary font-mono text-xs uppercase tracking-[0.18em] transition-colors duration-200 disabled:opacity-50"
     >
-      {locale === "fr" ? "FR / en" : "fr / EN"}
+      <span aria-hidden={false}>
+        <span className={locale === "fr" ? "text-fg" : "text-fg/60"}>FR</span>
+        <span className="text-fg/60"> / </span>
+        <span className={locale === "en" ? "text-fg" : "text-fg/60"}>EN</span>
+      </span>
     </button>
   );
 }

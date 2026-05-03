@@ -35,7 +35,7 @@ export default async function ManifestePage({
   setRequestLocale(locale);
 
   return (
-    <div className="bg-black text-white">
+    <main className="bg-black text-white" id="manifeste-content">
       <SkipButton />
       <Chapter1Paper />
       <Chapter2Cost />
@@ -44,6 +44,6 @@ export default async function ManifestePage({
       <Chapter5Paths />
       <Chapter6Condition />
       <Chapter7Reveal />
-    </div>
+    </main>
   );
 }
