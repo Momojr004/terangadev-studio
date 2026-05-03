@@ -1,34 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TerangaDev — Studio produit dakarois
 
-## Getting Started
+Le repo du site refondu **terangadev.com** — studio produit basé à Dakar
+qui shippe ses propres SaaS depuis 2022 et accompagne ses clients de
+l'idée à la maintenance.
 
-First, run the development server:
+> Brief de cadrage complet : voir [`BRIEF.md`](./BRIEF.md).
+> Brief photographe (J+50) : voir [`BRIEF_PHOTO.md`](./BRIEF_PHOTO.md).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Stack
+
+- **Next.js 16** (App Router, Turbopack)
+- **React 19** + TypeScript strict
+- **Tailwind CSS v4** avec `@theme` brand tokens (gradient #0A68F7 → #4EA8F9)
+- **next-intl v4** pour i18n FR/EN avec `localePrefix: 'as-needed'`
+- **Framer Motion + GSAP + Lenis** pour les motions T1/T2
+- **React Three Fiber + drei** pour le Hero T1 WebGL
+- **Payload CMS v3** auto-hébergé (SQLite dev, PostgreSQL prod)
+- **Resend** pour les emails du formulaire de contact
+- **Schema.org JSON-LD** sur toutes les pages indexables
+- **OpenGraph image** dynamique générée via `next/og`
+
+## Structure
+
+```
+app/
+├── (payload)/                 ← admin Payload + REST/GraphQL routes
+├── [locale]/                  ← pages localisées FR/EN
+│   ├── produits/{,[slug]}     ← 4 SaaS (Créneau, Nurapic, Sama, Ticket)
+│   ├── realisations/{,[slug]} ← cas Hydrautech, Ndougalma
+│   ├── services/{,[slug]}     ← 7 services (plateformes, A-Z, audit, etc.)
+│   ├── notes/{,[slug]}        ← blog wired Payload Local API
+│   ├── studio                 ← équipe + manifeste souveraineté
+│   ├── rejoindre              ← careers
+│   ├── contact                ← formulaire 7 champs + Calendly + WhatsApp
+│   ├── mentions-legales       ← légal sénégalais
+│   ├── confidentialite        ← RGPD + loi 2008-12
+│   ├── opengraph-image.tsx    ← OG image 1200×630 dynamique
+│   └── not-found.tsx          ← 404 customisé
+├── api/contact/               ← Resend wiring + log fallback
+├── sitemap.ts + robots.ts     ← SEO crawlable
+collections/                    ← Payload Posts/Media/Users
+components/
+├── home/                      ← 7 sections home
+├── hero/                      ← R3F WebGL Canvas + fallback
+├── products|cases|services/   ← templates détail
+├── motion/                    ← reveal + counter
+└── seo/                       ← JsonLd component
+i18n/                          ← next-intl routing config
+lib/                           ← cases, products, services, team, schema...
+messages/{fr,en}.json          ← copy bilingue
+payload.config.ts              ← config Payload + collections
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Démarrage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+pnpm payload generate:importmap   # première fois seulement
+pnpm dev
+```
 
-## Learn More
+Ouvre [http://localhost:3000](http://localhost:3000) (FR) ou
+[http://localhost:3000/en](http://localhost:3000/en).
 
-To learn more about Next.js, take a look at the following resources:
+Admin Payload : [http://localhost:3000/admin](http://localhost:3000/admin)
+(au premier accès, wizard de création du compte admin).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Variables d'environnement
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Crée un `.env.local` à la racine (gitignoré) :
 
-## Deploy on Vercel
+```bash
+# Payload CMS
+PAYLOAD_SECRET=change-me-please-rotate-in-prod
+DATABASE_URI=file:./terangadev.db   # SQLite dev
+# DATABASE_URI=postgres://user:pass@host:5432/terangadev   # Postgres prod
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Resend (optional — sans clé, /api/contact log seulement)
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxx
+CONTACT_EMAIL=contact@terangadev.com
+CONTACT_FROM=TerangaDev <contact@terangadev.com>
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Commandes utiles
+
+```bash
+pnpm dev                            # dev server
+pnpm build && pnpm start            # build + prod local
+pnpm lint                           # ESLint
+pnpm payload generate:importmap     # regen admin import map
+pnpm payload generate:types         # regen payload-types.ts
+pnpm payload migrate                # run DB migrations (Postgres prod)
+```
+
+## Architecture du build
+
+53 pages statiques + 5 routes dynamiques (admin, REST, GraphQL,
+GraphQL playground, /api/contact). Tout buildé en ~60s avec
+Turbopack.
+
+Routes notables :
+- `/sitemap.xml` — 51 URLs avec `hreflang` FR/EN
+- `/robots.txt` — `Allow: /` + `Disallow: /api/`
+- `/opengraph-image` — OG image générée par locale
+- `/admin/*` — Payload admin UI
+- `/api/[...slug]` — Payload REST API
+- `/api/graphql` — Payload GraphQL endpoint
+
+## Hosting cible
+
+OVH France (Roubaix / Gravelines) — alignement souveraineté technique
+avec le manifeste de la page `/studio`. SQLite en dev, PostgreSQL en
+prod (à provisionner sur le VPS au moment du DNS migration J+60).
+
+## Contributions
+
+Repo privé sous `Momojr004/terangadev-studio`. Issues et PR via GitHub.
+
+Direction artistique et front : Mouhamed.
+Direction produit et architecture : Arona Momo.
