@@ -652,6 +652,27 @@
       "path2Body": "une idée, mais tu n'as pas le code.",
       "path3Title": "Tu cherches",
       "path3Body": "un outil pour ton métier — il existe peut-être déjà."
+    },
+    "chapter06": {
+      "label": "Chapitre 06 / 07",
+      "title": "La condition non négociable",
+      "intro": "Une condition. Quatre fois.",
+      "condition1": "Le code doit rester à toi.",
+      "condition2": "L'équipe doit comprendre ta réalité.",
+      "condition3": "Les délais doivent être respectés.",
+      "condition4": "L'infrastructure doit être à Dakar — ou ailleurs si tu veux. Mais à toi."
+    },
+    "chapter07": {
+      "label": "Chapitre 07 / 07",
+      "title": "Voici TerangaDev",
+      "wordmark": "TerangaDev",
+      "tagline": "Studio produit dakarois.",
+      "promise": "On code, on shippe, on accompagne — depuis 2022.",
+      "transition1": "Voici nos 4 SaaS en prod.",
+      "transition2": "Voici les projets qu'on a livrés.",
+      "transition3": "Voici comment on bosse avec toi.",
+      "cta": "Découvrir le site",
+      "ctaSub": "On a fini de te raconter. Maintenant, regarde."
     }
   }
 }

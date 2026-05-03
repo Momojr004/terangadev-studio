@@ -652,6 +652,27 @@
       "path2Body": "an idea, but you don't have the code.",
       "path3Title": "You're looking for",
       "path3Body": "a tool for your trade — it may already exist."
+    },
+    "chapter06": {
+      "label": "Chapter 06 / 07",
+      "title": "The non-negotiable condition",
+      "intro": "One condition. Said four times.",
+      "condition1": "The code must stay yours.",
+      "condition2": "The team must understand your reality.",
+      "condition3": "Deadlines must be respected.",
+      "condition4": "The infrastructure must be in Dakar — or elsewhere if you want. But yours."
+    },
+    "chapter07": {
+      "label": "Chapter 07 / 07",
+      "title": "Meet TerangaDev",
+      "wordmark": "TerangaDev",
+      "tagline": "Product studio from Dakar.",
+      "promise": "We code, we ship, we walk with you — since 2022.",
+      "transition1": "Here are our 4 SaaS in production.",
+      "transition2": "Here are the projects we shipped.",
+      "transition3": "Here's how we work with you.",
+      "cta": "Discover the site",
+      "ctaSub": "We're done talking. Now, watch."
     }
   }
 }

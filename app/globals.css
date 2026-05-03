@@ -165,3 +165,27 @@
 .manifeste-citation.is-visible {
   animation: manifeste-fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+@keyframes manifeste-dot-converge {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+        calc((50% - var(--dot-x, 50%)) * 0.8),
+        calc((50% - var(--dot-y, 50%)) * 0.8)
+      )
+      scale(0.4);
+  }
+}
+
+.manifeste-dot-converge {
+  opacity: 0;
+  animation: manifeste-dot-converge 4.5s cubic-bezier(0.16, 1, 0.3, 1)
+    forwards;
+}
