@@ -641,6 +641,17 @@
       "line3": "Tes clients : qui te trouvent en ligne par eux-mêmes.",
       "punch1": "Tu n'es pas en retard.",
       "punch2": "Tu es à la frontière."
+    },
+    "chapter05": {
+      "label": "Chapitre 05 / 07",
+      "title": "Trois chemins",
+      "intro": "Trois portes. Une équipe.",
+      "path1Title": "Tu gères",
+      "path1Body": "mais ton entreprise vit sur papier.",
+      "path2Title": "Tu portes",
+      "path2Body": "une idée, mais tu n'as pas le code.",
+      "path3Title": "Tu cherches",
+      "path3Body": "un outil pour ton métier — il existe peut-être déjà."
     }
   }
 }

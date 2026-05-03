@@ -4,6 +4,7 @@ import { Chapter1Paper } from "./_components/chapter-1-paper";
 import { Chapter2Cost } from "./_components/chapter-2-cost";
 import { Chapter3Excuses } from "./_components/chapter-3-excuses";
 import { Chapter4OtherWorld } from "./_components/chapter-4-otherworld";
+import { Chapter5Paths } from "./_components/chapter-5-paths";
 import { SkipButton } from "./_components/skip-button";
 
 export async function generateMetadata({
@@ -38,7 +39,8 @@ export default async function ManifestePage({
       <Chapter2Cost />
       <Chapter3Excuses />
       <Chapter4OtherWorld />
-      {/* Chapters 5 → 7 to come */}
+      <Chapter5Paths />
+      {/* Chapters 6 → 7 to come */}
     </div>
   );
 }

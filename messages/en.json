@@ -641,6 +641,17 @@
       "line3": "Your clients: finding you online by themselves.",
       "punch1": "You're not behind.",
       "punch2": "You're at the frontier."
+    },
+    "chapter05": {
+      "label": "Chapter 05 / 07",
+      "title": "Three paths",
+      "intro": "Three doors. One team.",
+      "path1Title": "You run",
+      "path1Body": "but your business lives on paper.",
+      "path2Title": "You're launching",
+      "path2Body": "an idea, but you don't have the code.",
+      "path3Title": "You're looking for",
+      "path3Body": "a tool for your trade — it may already exist."
     }
   }
 }
