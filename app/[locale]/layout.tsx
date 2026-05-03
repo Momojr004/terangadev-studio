@@ -7,8 +7,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { LenisProvider } from "@/components/providers/lenis-provider";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
+import { JsonLd } from "@/components/seo/json-ld";
 import { routing, type Locale } from "@/i18n/routing";
 import { siteConfig } from "@/lib/site-config";
+import { organizationSchema } from "@/lib/schema";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -79,6 +81,7 @@ export default async function LocaleLayout({
           </div>
         </LenisProvider>
       </ThemeProvider>
+      <JsonLd data={organizationSchema()} />
     </NextIntlClientProvider>
   );
 }

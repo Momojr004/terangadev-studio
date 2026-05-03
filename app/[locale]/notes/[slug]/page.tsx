@@ -4,6 +4,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { Link } from "@/i18n/navigation";
+import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/lib/site-config";
 import {
   fetchAllPublishedSlugs,
@@ -11,6 +12,7 @@ import {
   type Note,
   type NoteCategory,
 } from "@/lib/notes";
+import { blogPostingSchema, breadcrumbSchema } from "@/lib/schema";
 
 export const dynamicParams = true;
 
@@ -72,8 +74,27 @@ export default async function NoteDetailPage({
 
   const categoryLabel = tIndex(categoryLabelKeys[note.category]);
 
+  const url = `${siteConfig.url}/notes/${slug}`;
+  const notesUrl = `${siteConfig.url}/notes`;
+
   return (
     <article>
+      <JsonLd
+        data={[
+          blogPostingSchema({
+            title: note.title,
+            description: note.excerpt,
+            url,
+            datePublished: note.publishedAt ?? undefined,
+            category: categoryLabel,
+          }),
+          breadcrumbSchema([
+            { name: "Accueil", url: siteConfig.url },
+            { name: "Notes", url: notesUrl },
+            { name: note.title, url },
+          ]),
+        ]}
+      />
       {/* Hero */}
       <section className="mx-auto max-w-3xl px-6 pt-12 pb-12 md:pt-16 md:pb-16">
         <Link
