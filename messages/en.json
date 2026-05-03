@@ -607,6 +607,21 @@
       "line2": "Your staff on WhatsApp.",
       "line3": "Your clients on the phone.",
       "line4": "That's the reality of 80% of African SMEs today."
+    },
+    "chapter02": {
+      "label": "Chapter 02 / 07",
+      "title": "The silent cost",
+      "intro": "Here's the monthly bill no one hands you.",
+      "stat1Value": "3",
+      "stat1Suffix": "h",
+      "stat1Label": "wasted on every stock mistake.",
+      "stat2Value": "1",
+      "stat2Suffix": "",
+      "stat2Label": "client lost on every double-booking.",
+      "stat3Value": "1",
+      "stat3Suffix": "",
+      "stat3Label": "tax audit risk on every paper invoice.",
+      "question": "How much are you paying every month without knowing it?"
     }
   }
 }

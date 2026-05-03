@@ -607,6 +607,21 @@
       "line2": "Tes employés sur WhatsApp.",
       "line3": "Tes clients sur le téléphone.",
       "line4": "C'est l'aujourd'hui de 80% des PME africaines."
+    },
+    "chapter02": {
+      "label": "Chapitre 02 / 07",
+      "title": "Le coût silencieux",
+      "intro": "Voici la facture mensuelle que personne ne te présente.",
+      "stat1Value": "3",
+      "stat1Suffix": "h",
+      "stat1Label": "perdues à chaque erreur de stock.",
+      "stat2Value": "1",
+      "stat2Suffix": "",
+      "stat2Label": "client perdu à chaque double-booking.",
+      "stat3Value": "1",
+      "stat3Suffix": "",
+      "stat3Label": "audit à risque à chaque facture papier.",
+      "question": "Combien tu paies par mois sans le savoir ?"
     }
   }
 }
