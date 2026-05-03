@@ -10,32 +10,23 @@ const typewriter = Special_Elite({
   display: "swap",
 });
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.55, delayChildren: 0.4 },
-  },
-};
+const CHAR_DELAY = 0.038;
+const LINE_PAUSE = 0.6;
+const INITIAL_DELAY = 0.5;
 
-const lineVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.04 } },
-};
-
-const charVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.001 } },
-};
-
-function Line({ text }: { text: string }) {
+function Line({ text, baseDelay }: { text: string; baseDelay: number }) {
   return (
-    <motion.span variants={lineVariants} className="block">
+    <span className="block">
       {text.split("").map((char, i) => (
-        <motion.span key={i} variants={charVariants} className="inline-block">
+        <span
+          key={i}
+          className="typewriter-char"
+          style={{ animationDelay: `${baseDelay + i * CHAR_DELAY}s` }}
+        >
           {char === " " ? " " : char}
-        </motion.span>
+        </span>
       ))}
-    </motion.span>
+    </span>
   );
 }
 
@@ -44,6 +35,11 @@ export function Chapter1Paper() {
   const tParent = useTranslations("Manifeste");
 
   const lines = [t("line1"), t("line2"), t("line3"), t("line4")];
+
+  // Total typewriter duration to time the continue indicator
+  const totalChars = lines.reduce((sum, line) => sum + line.length, 0);
+  const totalDuration =
+    INITIAL_DELAY + lines.length * LINE_PAUSE + totalChars * CHAR_DELAY;
 
   return (
     <section
@@ -58,7 +54,7 @@ export function Chapter1Paper() {
         }}
       />
 
-      {/* Warm light from top-left like an old desk lamp */}
+      {/* Warm desk lamp light from top-left */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-15"
@@ -68,7 +64,7 @@ export function Chapter1Paper() {
         }}
       />
 
-      {/* Vignette to focus the eye */}
+      {/* Vignette */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -78,30 +74,36 @@ export function Chapter1Paper() {
         }}
       />
 
-      {/* Chapter label — aged amber, mono caps tight */}
+      {/* Chapter label */}
       <div className="relative z-10 mb-16 md:mb-24">
         <p className="text-[10px] uppercase tracking-[0.4em] text-amber-700/70 md:text-xs">
           {t("label")}
         </p>
       </div>
 
-      {/* Main copy — typewriter staggered reveal */}
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-        className="relative z-10 max-w-5xl space-y-7 text-2xl leading-[1.15] tracking-tight md:space-y-9 md:text-4xl lg:text-5xl xl:text-6xl"
-      >
-        {lines.map((text, i) => (
-          <Line key={i} text={text} />
-        ))}
-      </motion.div>
+      {/* Main copy — pure CSS typewriter (deterministic per-char delay) */}
+      <div className="relative z-10 max-w-5xl space-y-7 text-2xl leading-[1.18] tracking-tight md:space-y-9 md:text-4xl lg:text-5xl xl:text-6xl">
+        {lines.map((text, lineIdx) => {
+          const previousChars = lines
+            .slice(0, lineIdx)
+            .reduce((sum, line) => sum + line.length, 0);
+          const baseDelay =
+            INITIAL_DELAY +
+            lineIdx * LINE_PAUSE +
+            previousChars * CHAR_DELAY;
+          return <Line key={lineIdx} text={text} baseDelay={baseDelay} />;
+        })}
+      </div>
 
-      {/* Continue indicator — fades in after typewriter completes */}
+      {/* Continue indicator — Framer Motion fine for single wrapper */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 5.2, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        transition={{
+          delay: totalDuration + 0.3,
+          duration: 1.2,
+          ease: [0.16, 1, 0.3, 1],
+        }}
         className="absolute bottom-10 left-1/2 z-10 -translate-x-1/2 text-center md:bottom-14"
       >
         <p className="text-[9px] uppercase tracking-[0.4em] text-amber-700/50">
@@ -110,7 +112,7 @@ export function Chapter1Paper() {
         <motion.p
           animate={{ y: [0, 4, 0] }}
           transition={{
-            delay: 5.2,
+            delay: totalDuration + 0.5,
             duration: 1.8,
             repeat: Infinity,
             ease: "easeInOut",
