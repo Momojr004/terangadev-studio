@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { LenisProvider } from "@/components/providers/lenis-provider";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
+import { ConditionalShell } from "@/components/site/conditional-shell";
 import { JsonLd } from "@/components/seo/json-ld";
 import { routing, type Locale } from "@/i18n/routing";
 import { siteConfig } from "@/lib/site-config";
@@ -74,11 +75,9 @@ export default async function LocaleLayout({
         disableTransitionOnChange
       >
         <LenisProvider>
-          <Header />
-          <div className="flex min-h-dvh flex-col">
-            <main className="flex-1 pt-16 md:pt-20">{children}</main>
-            <Footer />
-          </div>
+          <ConditionalShell header={<Header />} footer={<Footer />}>
+            {children}
+          </ConditionalShell>
         </LenisProvider>
       </ThemeProvider>
       <JsonLd data={organizationSchema()} />

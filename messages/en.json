@@ -592,5 +592,21 @@
     "subhead": "Either the URL has a typo, or the page moved. No drama — we'll get you where you want to go.",
     "homeCta": "Back to home",
     "contactCta": "Email us"
+  },
+  "Manifeste": {
+    "metaTitle": "The world you're missing — TerangaDev Manifesto",
+    "metaDescription": "Seven chapters to understand what you're missing if your business isn't digital yet. And how to step in.",
+    "skipButton": "Skip to site",
+    "skipAriaLabel": "Skip the manifesto and go directly to the site",
+    "chapterCounter": "Chapter {n} / 07",
+    "scrollHint": "Continue",
+    "chapter01": {
+      "label": "Chapter 01 / 07",
+      "title": "The paper world",
+      "line1": "Your stock in a notebook.",
+      "line2": "Your staff on WhatsApp.",
+      "line3": "Your clients on the phone.",
+      "line4": "That's the reality of 80% of African SMEs today."
+    }
   }
 }

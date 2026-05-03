@@ -592,5 +592,21 @@
     "subhead": "Soit l'URL a une typo, soit la page a été déplacée. Pas dramatique — on te ramène où tu veux.",
     "homeCta": "Retour à l'accueil",
     "contactCta": "Nous écrire"
+  },
+  "Manifeste": {
+    "metaTitle": "Le monde que tu rates — Manifeste TerangaDev",
+    "metaDescription": "Sept chapitres pour comprendre ce que tu rates si ton entreprise n'est pas encore numérique. Et comment on entre.",
+    "skipButton": "Aller au site",
+    "skipAriaLabel": "Passer le manifeste et aller directement au site",
+    "chapterCounter": "Chapitre {n} / 07",
+    "scrollHint": "Continue",
+    "chapter01": {
+      "label": "Chapitre 01 / 07",
+      "title": "Le monde de papier",
+      "line1": "Ton stock dans un cahier.",
+      "line2": "Tes employés sur WhatsApp.",
+      "line3": "Tes clients sur le téléphone.",
+      "line4": "C'est l'aujourd'hui de 80% des PME africaines."
+    }
   }
 }
