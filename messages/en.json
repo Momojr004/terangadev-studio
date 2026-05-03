@@ -632,6 +632,15 @@
       "citation4": "\"My business is too specific for software.\"",
       "punchline": "All true.",
       "punchline2": "All outdated."
+    },
+    "chapter04": {
+      "label": "Chapter 04 / 07",
+      "title": "The other world",
+      "line1": "Your stock: tracked in real time.",
+      "line2": "Your teams: autonomous on their tool.",
+      "line3": "Your clients: finding you online by themselves.",
+      "punch1": "You're not behind.",
+      "punch2": "You're at the frontier."
     }
   }
 }

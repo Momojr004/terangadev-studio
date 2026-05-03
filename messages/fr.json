@@ -632,6 +632,15 @@
       "citation4": "« Mon métier est trop spécifique pour un logiciel. »",
       "punchline": "Toutes vraies.",
       "punchline2": "Toutes datées."
+    },
+    "chapter04": {
+      "label": "Chapitre 04 / 07",
+      "title": "L'autre monde",
+      "line1": "Ton stock : tracé en temps réel.",
+      "line2": "Tes équipes : autonomes sur leur outil.",
+      "line3": "Tes clients : qui te trouvent en ligne par eux-mêmes.",
+      "punch1": "Tu n'es pas en retard.",
+      "punch2": "Tu es à la frontière."
     }
   }
 }
