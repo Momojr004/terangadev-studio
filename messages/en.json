@@ -622,6 +622,16 @@
       "stat3Suffix": "",
       "stat3Label": "tax audit risk on every paper invoice.",
       "question": "How much are you paying every month without knowing it?"
+    },
+    "chapter03": {
+      "label": "Chapter 03 / 07",
+      "title": "The false reasons",
+      "citation1": "\"It costs too much.\"",
+      "citation2": "\"That's for American startups.\"",
+      "citation3": "\"My team won't know how to use it.\"",
+      "citation4": "\"My business is too specific for software.\"",
+      "punchline": "All true.",
+      "punchline2": "All outdated."
     }
   }
 }

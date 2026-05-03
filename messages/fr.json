@@ -622,6 +622,16 @@
       "stat3Suffix": "",
       "stat3Label": "audit à risque à chaque facture papier.",
       "question": "Combien tu paies par mois sans le savoir ?"
+    },
+    "chapter03": {
+      "label": "Chapitre 03 / 07",
+      "title": "Les fausses raisons",
+      "citation1": "« Ça coûte trop cher. »",
+      "citation2": "« C'est pour les startups américaines. »",
+      "citation3": "« Mes employés ne sauront pas s'en servir. »",
+      "citation4": "« Mon métier est trop spécifique pour un logiciel. »",
+      "punchline": "Toutes vraies.",
+      "punchline2": "Toutes datées."
     }
   }
 }
