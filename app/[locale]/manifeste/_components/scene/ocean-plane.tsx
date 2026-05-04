@@ -74,10 +74,12 @@ uniform float uTime;
 uniform float uScrollProgress;
 varying float vDisplacement;
 varying vec3 vViewPosition;
+varying vec2 vUv;
 
 ${SIMPLEX_3D_GLSL}
 
 void main() {
+  vUv = uv;
   vec3 pos = position;
 
   // Base houle : two sine waves overlaid for organic motion.
@@ -108,23 +110,76 @@ void main() {
 `;
 
 const FRAGMENT_SHADER = /* glsl */ `
+uniform float uTime;
 uniform vec3 uColorDeep;
 uniform vec3 uColorMid;
 uniform vec3 uColorFoam;
+uniform vec3 uColorUnderside;
+uniform vec3 uColorCaustic;
 uniform vec3 uFogColor;
 
 varying float vDisplacement;
 varying vec3 vViewPosition;
+varying vec2 vUv;
+
+// Cheap 2D hash noise — sufficient for caustic shimmer on the
+// underside. Avoids re-running the simplex used in the vertex
+// shader (we only need ~8-12 instructions of organic jitter here).
+float hash(vec2 p) {
+  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+float noise2(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  float a = hash(i);
+  float b = hash(i + vec2(1.0, 0.0));
+  float c = hash(i + vec2(0.0, 1.0));
+  float d = hash(i + vec2(1.0, 1.0));
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+}
 
 void main() {
-  // Gradient from deep (#1A4D6B) at troughs to mid (#2D5F7C) at crests.
-  // vDisplacement spans roughly [-0.2, +0.3]; remap to [0,1].
-  float h = clamp((vDisplacement + 0.2) / 0.5, 0.0, 1.0);
-  vec3 baseCol = mix(uColorDeep, uColorMid, h);
+  vec3 baseCol;
 
-  // Foam suggestion : subtle rim where displacement exceeds threshold.
-  float foam = smoothstep(0.12, 0.22, vDisplacement);
-  baseCol = mix(baseCol, uColorFoam, foam * 0.55);
+  if (gl_FrontFacing) {
+    // ===== TOP SIDE (Ch1-Ch3 visuals, unchanged) =====
+    // Gradient from deep (#1A4D6B) at troughs to mid (#2D5F7C) at crests.
+    // vDisplacement spans roughly [-0.2, +0.3]; remap to [0,1].
+    float h = clamp((vDisplacement + 0.2) / 0.5, 0.0, 1.0);
+    baseCol = mix(uColorDeep, uColorMid, h);
+
+    // Foam suggestion : subtle rim where displacement exceeds threshold.
+    float foam = smoothstep(0.12, 0.22, vDisplacement);
+    baseCol = mix(baseCol, uColorFoam, foam * 0.55);
+  } else {
+    // ===== UNDERSIDE (Ch4 dive — looking up at the ocean) =====
+    // Deeper blue baseline + animated caustic ripples : two superposed
+    // sine cones offset in time, modulated by hash noise so the pattern
+    // doesn't read as a regular grid. Scale UVs to give caustics a
+    // 1-2m visual cell size.
+    vec2 uv = vUv * 35.0;
+    float t = uTime * 0.6;
+
+    // Two concentric ripple sources offset, simulating refracted sun.
+    // Frequencies bumped 1.3→2.5 / 1.1→2.2 for tighter, more readable
+    // caustic cell sizes (~30-50px on screen at typical dive distance).
+    float r1 = sin(length(uv - vec2(15.0, 12.0)) * 2.5 - t * 1.4);
+    float r2 = sin(length(uv - vec2(22.0, 24.0)) * 2.2 + t * 1.1);
+    // Soft noise breakup — keeps caustics organic rather than mathy.
+    float n = noise2(uv * 0.55 + t * 0.2);
+
+    // Caustic ramp : retain visible cells via mild pow sharpening,
+    // floor at 0.15 keeps the underside from going pure-black.
+    float caustic = (r1 + r2) * 0.5 * 0.6 + n * 0.4;
+    caustic = pow(clamp(caustic * 0.5 + 0.5, 0.0, 1.0), 1.4);
+    caustic = clamp(caustic, 0.15, 1.0);
+
+    // Mix factor 0.65 — lets the underside base color show through
+    // in troughs and caustic highlights pop in peaks. Reads as ocean
+    // refraction rather than a flat blue wash.
+    baseCol = mix(uColorUnderside, uColorCaustic, caustic * 0.65);
+  }
 
   // Atmospheric fog by view-space distance — camera at Ch1 sits at
   // distance ~8 from origin, so push fog to [15, 40] to keep the near
@@ -144,6 +199,8 @@ const OceanShaderMaterial = shaderMaterial(
     uColorDeep: new THREE.Color("#1A4D6B"),
     uColorMid: new THREE.Color("#2D5F7C"),
     uColorFoam: new THREE.Color("#B8C5D6"),
+    uColorUnderside: new THREE.Color("#163A52"),
+    uColorCaustic: new THREE.Color("#7DB5DC"),
     uFogColor: new THREE.Color("#0A1628"),
   },
   VERTEX_SHADER,
@@ -164,6 +221,7 @@ declare module "@react-three/fiber" {
 type OceanShaderMaterialImpl = THREE.ShaderMaterial & {
   uTime: number;
   uScrollProgress: number;
+  uFogColor: THREE.Color;
 };
 
 export function OceanPlane() {
@@ -178,12 +236,19 @@ export function OceanPlane() {
       0,
       1,
     );
+    // Mirror the scene fog color into our shader's fog uniform so the
+    // underwater fog ramp (driven by <UnderwaterFog />) stays in sync
+    // with the ocean's distance-fade. Falls back gracefully if no fog.
+    const sceneFog = state.scene.fog;
+    if (sceneFog && (sceneFog as THREE.Fog).color) {
+      materialRef.current.uFogColor.copy((sceneFog as THREE.Fog).color);
+    }
   });
 
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]}>
       <planeGeometry args={[60, 60, 80, 80]} />
-      <oceanShaderMaterial ref={materialRef} />
+      <oceanShaderMaterial ref={materialRef} side={THREE.DoubleSide} />
     </mesh>
   );
 }
