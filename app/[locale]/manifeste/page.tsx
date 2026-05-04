@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { Chapter1Paper } from "./_components/chapter-1-paper";
-import { Chapter2Cost } from "./_components/chapter-2-cost";
-import { Chapter3Excuses } from "./_components/chapter-3-excuses";
-import { Chapter4OtherWorld } from "./_components/chapter-4-otherworld";
-import { Chapter5Paths } from "./_components/chapter-5-paths";
-import { Chapter6Condition } from "./_components/chapter-6-condition";
-import { Chapter7Reveal } from "./_components/chapter-7-reveal";
+import { ManifesteCanvas } from "./_components/manifeste-canvas";
 import { SkipButton } from "./_components/skip-button";
 
 export async function generateMetadata({
@@ -35,15 +29,17 @@ export default async function ManifestePage({
   setRequestLocale(locale);
 
   return (
-    <main className="bg-black text-white" id="manifeste-content">
+    <main
+      id="manifeste-content"
+      className="fixed inset-0 bg-[#0A1628] text-white"
+    >
       <SkipButton />
-      <Chapter1Paper />
-      <Chapter2Cost />
-      <Chapter3Excuses />
-      <Chapter4OtherWorld />
-      <Chapter5Paths />
-      <Chapter6Condition />
-      <Chapter7Reveal />
+      <ManifesteCanvas />
+
+      {/* Pass 1 indicator — to be removed in Pass 2 */}
+      <div className="pointer-events-none absolute bottom-6 left-6 z-10 font-mono text-[10px] uppercase tracking-[0.4em] text-cyan-200/40 md:bottom-8 md:left-8">
+        Pass 1 / scrollytelling foundation
+      </div>
     </main>
   );
 }
