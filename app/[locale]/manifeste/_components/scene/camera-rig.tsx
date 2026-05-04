@@ -26,23 +26,47 @@ const WAYPOINTS: [number, number, number][] = [
   [0, 0, 2.2], // Ch7 (center)
 ];
 
-const LOOK_AT = new THREE.Vector3(0, 0, 0);
+// Look-at targets — a parallel curve so each chapter can frame its
+// subject. Without this, low-altitude Ch1 with lookAt origin makes
+// the camera look almost horizontally, pushing the ocean plane out of
+// the frustum. Tilting down via lookAt below origin pulls the ocean
+// into the lower half of the frame.
+const LOOK_AT_WAYPOINTS: [number, number, number][] = [
+  [0, -3, 0], // Ch1 — tilt down to see ocean horizon
+  [0, -2, 0], // Ch2 — slight upward as camera rises
+  [0, -1, 0], // Ch3 — almost level
+  [0, 0, 0], // Ch4 — origin during the dive
+  [0, 0, 0], // Ch5 — top-down on the coast (Pass 4)
+  [0, 0.5, 0], // Ch6 — network nodes (Pass 4)
+  [0, 0, 0], // Ch7 — logo at origin (Pass 5)
+];
+
+// Reusable Vector3 to avoid per-frame allocation.
+const TMP_LOOKAT = new THREE.Vector3();
 
 export function CameraRig() {
   const scroll = useScroll();
-  const { camera } = useThree();
+  const { camera, invalidate } = useThree();
 
-  const curve = useMemo(() => {
+  const positionCurve = useMemo(() => {
     const points = WAYPOINTS.map((p) => new THREE.Vector3(...p));
-    // Catmull-Rom spline; tension 0.3 → smooth but not floppy
+    return new THREE.CatmullRomCurve3(points, false, "catmullrom", 0.3);
+  }, []);
+
+  const lookAtCurve = useMemo(() => {
+    const points = LOOK_AT_WAYPOINTS.map((p) => new THREE.Vector3(...p));
     return new THREE.CatmullRomCurve3(points, false, "catmullrom", 0.3);
   }, []);
 
   useFrame(() => {
     const t = THREE.MathUtils.clamp(scroll.offset, 0, 1);
-    const point = curve.getPoint(t);
-    camera.position.copy(point);
-    camera.lookAt(LOOK_AT);
+    camera.position.copy(positionCurve.getPoint(t));
+    lookAtCurve.getPoint(t, TMP_LOOKAT);
+    camera.lookAt(TMP_LOOKAT);
+    // Force-invalidate so the renderer doesn't optimize this frame
+    // away — useful in "demand" frameloop scenarios (which ScrollControls
+    // can implicitly trigger).
+    invalidate();
   });
 
   return null;

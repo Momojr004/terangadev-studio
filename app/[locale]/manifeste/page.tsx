@@ -35,10 +35,11 @@ export default async function ManifestePage({
     >
       <SkipButton />
       <ManifesteCanvas />
+      {/* Kickstart applied via ManifesteCanvas internal effect */}
 
-      {/* Pass 1 indicator — to be removed in Pass 2 */}
+      {/* Dev pass indicator — remove at final ship V2 */}
       <div className="pointer-events-none absolute bottom-6 left-6 z-10 font-mono text-[10px] uppercase tracking-[0.4em] text-cyan-200/40 md:bottom-8 md:left-8">
-        Pass 1 / scrollytelling foundation
+        Pass 2 / ocean scene · Ch1-Ch3
       </div>
     </main>
   );
