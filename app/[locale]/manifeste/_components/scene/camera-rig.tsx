@@ -22,7 +22,7 @@ const WAYPOINTS: [number, number, number][] = [
   [1.5, 3, 5.5], // Ch3
   [2, -2.5, 3], // Ch4 (dive — deeper, see ocean underside)
   [0, 5, 4.5], // Ch5 (top-down)
-  [-1, 3, 2.5], // Ch6
+  [-2, 2.5, 3.5], // Ch6 — pulled west to frame all 3 nodes (Plateau/Almadies/Yoff)
   [0, 0, 2.2], // Ch7 (center)
 ];
 
@@ -37,7 +37,7 @@ const LOOK_AT_WAYPOINTS: [number, number, number][] = [
   [0, -1, 0], // Ch3 — almost level
   [0, 0.5, 0], // Ch4 — tilt UP to see ocean underside + caustics
   [0, 0, 0], // Ch5 — top-down on the coast (Pass 4)
-  [0, 0.5, 0], // Ch6 — network nodes (Pass 4)
+  [0.5, 0, 0], // Ch6 — recenter look-at to keep all 3 nodes in frame
   [0, 0, 0], // Ch7 — logo at origin (Pass 5)
 ];
 

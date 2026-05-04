@@ -39,7 +39,7 @@ export default async function ManifestePage({
 
       {/* Dev pass indicator — remove at final ship V2 */}
       <div className="pointer-events-none absolute bottom-6 left-6 z-10 font-mono text-[10px] uppercase tracking-[0.4em] text-cyan-200/40 md:bottom-8 md:left-8">
-        Pass 3 / underwater dive · Ch1-Ch4
+        Pass 4 / coast + network · Ch1-Ch6
       </div>
     </main>
   );

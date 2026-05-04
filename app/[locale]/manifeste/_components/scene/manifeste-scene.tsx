@@ -6,7 +6,9 @@ import { useScroll } from "@react-three/drei";
 import * as THREE from "three";
 
 import { CameraRig } from "./camera-rig";
+import { CoastGeometry } from "./coast-geometry";
 import { DepthBubbles } from "./depth-bubbles";
+import { NetworkNodes } from "./network-nodes";
 import { OceanPlane } from "./ocean-plane";
 import { ParticleFlow } from "./particle-flow";
 
@@ -15,14 +17,17 @@ import { ParticleFlow } from "./particle-flow";
  * across the entire manifeste.
  *
  * Pass 2 : Ch1-Ch3 ocean visuals — OceanPlane + ParticleFlow.
- * Pass 3 (current) : Ch4 "La traversée" dive — adds DepthBubbles
- * rising from the abyss + UnderwaterFog ramping the scene fog
- * color when the camera plunges below the surface. The OceanPlane
- * shader now renders a caustic underside via gl_FrontFacing branch
- * (Option A) — single mesh, no extra geometry cost.
+ * Pass 3 : Ch4 "La traversée" dive — adds DepthBubbles rising from
+ * the abyss + UnderwaterFog ramping the scene fog color when the
+ * camera plunges below the surface. The OceanPlane shader renders a
+ * caustic underside via gl_FrontFacing branch (Option A).
+ * Pass 4 (current) : Ch5 "La structure" + Ch6 "Le réseau" — adds
+ * CoastGeometry (low-poly presqu'île de Dakar emerging from the
+ * water) and NetworkNodes (3 lit beacons over Plateau / Almadies /
+ * Yoff with pulsing cyan connections evoking the dakarois tech
+ * ecosystem).
  *
- * Pass 4+ will add : coast geometry (Ch5), network nodes (Ch6),
- * logo convergence (Ch7).
+ * Pass 5 will add : Ch7 logo convergence.
  */
 
 const FOG_SURFACE = new THREE.Color("#0A1628");
@@ -105,6 +110,8 @@ export function ManifesteScene() {
       <OceanPlane />
       <ParticleFlow />
       <DepthBubbles />
+      <CoastGeometry />
+      <NetworkNodes />
       <CameraRig />
     </>
   );
