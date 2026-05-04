@@ -39,7 +39,7 @@ export default async function ManifestePage({
 
       {/* Dev pass indicator — remove at final ship V2 */}
       <div className="pointer-events-none absolute bottom-6 left-6 z-10 font-mono text-[10px] uppercase tracking-[0.4em] text-cyan-200/40 md:bottom-8 md:left-8">
-        Pass 5 / convergence · Ch1-Ch7
+        Pass 6 / typography · Ch1-Ch7 final
       </div>
     </main>
   );

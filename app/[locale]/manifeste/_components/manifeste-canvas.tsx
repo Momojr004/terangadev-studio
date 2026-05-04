@@ -2,8 +2,9 @@
 
 import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Preload, ScrollControls } from "@react-three/drei";
+import { Preload, Scroll, ScrollControls } from "@react-three/drei";
 import { ManifesteScene } from "./scene/manifeste-scene";
+import { ManifesteOverlays } from "./overlays/manifeste-overlays";
 
 /**
  * Force ScrollControls to wake up its frameloop on mount. Without
@@ -96,6 +97,14 @@ export function ManifesteCanvas() {
               additive radial halo plane drawn behind the logo geometry —
               same dramatic effect with zero pipeline disruption.
               See logo-convergence.tsx LogoHaloMaterial. */}
+          {/* Pass 6 — kinetic typography overlays for Ch1-Ch7. Rendered
+              via <Scroll html> so the children share the R3F context
+              (useScroll/useFrame) yet portal into a regular DOM container
+              with full CSS control. The wrapper sticks to the viewport
+              while ScrollControls advances the WebGL scene beneath. */}
+          <Scroll html style={{ width: "100%", pointerEvents: "none" }}>
+            <ManifesteOverlays />
+          </Scroll>
           <Preload all />
         </ScrollControls>
       </Canvas>
