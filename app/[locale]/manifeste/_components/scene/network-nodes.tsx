@@ -244,9 +244,13 @@ export function NetworkNodes() {
 
   useFrame((state) => {
     const t = THREE.MathUtils.clamp(scroll.offset, 0, 1);
-    // Ch6 ramp : fade in 0.70 → 0.78. No fade-out — connections
-    // remain visible into Ch7 entry where Pass 5 will take over.
-    const fade = THREE.MathUtils.smoothstep(t, 0.70, 0.78);
+    // Ch6 ramp : fade in 0.70 → 0.78, hold through 0.93, then fade
+    // out 0.93 → 0.98 so the Pass 5 convergence + logo own the
+    // final frame visually. Without this fade-out the network
+    // nodes' bloom competed with the logo's bloom for attention.
+    const fadeIn = THREE.MathUtils.smoothstep(t, 0.70, 0.78);
+    const fadeOut = 1 - THREE.MathUtils.smoothstep(t, 0.93, 0.98);
+    const fade = fadeIn * fadeOut;
 
     if (nodeMaterialRef.current) {
       nodeMaterialRef.current.uOpacity = fade;

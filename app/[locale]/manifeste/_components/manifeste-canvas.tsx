@@ -88,6 +88,14 @@ export function ManifesteCanvas() {
             n'ont pas besoin d'être recalibrés. */}
         <ScrollControls pages={14} damping={0.2} maxSpeed={2}>
           <ManifesteScene />
+          {/* No EffectComposer / postprocessing : @react-three/postprocessing
+              v3 wraps the renderer with its own tonemap+colorspace pipeline,
+              which double-applies on top of Three's auto-tonemap and lifts
+              the dim Pass 1-4 visuals to mid-blue regardless of bloom config
+              tuning. The Ch7 logo "arrival glow" is achieved instead via an
+              additive radial halo plane drawn behind the logo geometry —
+              same dramatic effect with zero pipeline disruption.
+              See logo-convergence.tsx LogoHaloMaterial. */}
           <Preload all />
         </ScrollControls>
       </Canvas>

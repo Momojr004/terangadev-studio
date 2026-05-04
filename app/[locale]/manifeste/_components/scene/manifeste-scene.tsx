@@ -7,7 +7,9 @@ import * as THREE from "three";
 
 import { CameraRig } from "./camera-rig";
 import { CoastGeometry } from "./coast-geometry";
+import { ConvergenceParticles } from "./convergence-particles";
 import { DepthBubbles } from "./depth-bubbles";
+import { LogoConvergence } from "./logo-convergence";
 import { NetworkNodes } from "./network-nodes";
 import { OceanPlane } from "./ocean-plane";
 import { ParticleFlow } from "./particle-flow";
@@ -21,13 +23,17 @@ import { ParticleFlow } from "./particle-flow";
  * the abyss + UnderwaterFog ramping the scene fog color when the
  * camera plunges below the surface. The OceanPlane shader renders a
  * caustic underside via gl_FrontFacing branch (Option A).
- * Pass 4 (current) : Ch5 "La structure" + Ch6 "Le réseau" — adds
- * CoastGeometry (low-poly presqu'île de Dakar emerging from the
- * water) and NetworkNodes (3 lit beacons over Plateau / Almadies /
- * Yoff with pulsing cyan connections evoking the dakarois tech
- * ecosystem).
+ * Pass 4 : Ch5 "La structure" + Ch6 "Le réseau" — adds CoastGeometry
+ * (low-poly presqu'île de Dakar emerging from the water) and
+ * NetworkNodes (3 lit beacons over Plateau / Almadies / Yoff with
+ * pulsing cyan connections evoking the dakarois tech ecosystem).
  *
- * Pass 5 will add : Ch7 logo convergence.
+ * Pass 5 (current) : Ch7 "La convergence" — adds ConvergenceParticles
+ * (~180 cyan motes rushing inward from a sphere shell) and
+ * LogoConvergence (the brand "T" mark materializing at origin with
+ * an easeOutBack snap, plus an additive radial halo plane behind it
+ * for the "arrival glow" — replaces postprocessing bloom which broke
+ * Pass 1-4 colorspace).
  */
 
 const FOG_SURFACE = new THREE.Color("#0A1628");
@@ -112,6 +118,8 @@ export function ManifesteScene() {
       <DepthBubbles />
       <CoastGeometry />
       <NetworkNodes />
+      <ConvergenceParticles />
+      <LogoConvergence />
       <CameraRig />
     </>
   );
