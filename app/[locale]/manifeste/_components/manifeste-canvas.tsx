@@ -82,7 +82,11 @@ export function ManifesteCanvas() {
           camera.updateProjectionMatrix();
         }}
       >
-        <ScrollControls pages={7} damping={0.2} maxSpeed={2}>
+        {/* pages={14} = 2 viewports par chapitre. Donne le souffle pour
+            la typographie kinétique HTML overlays (Pass 6). Le scroll
+            progress reste 0-1 normalisé, donc les ramps shader/camera
+            n'ont pas besoin d'être recalibrés. */}
+        <ScrollControls pages={14} damping={0.2} maxSpeed={2}>
           <ManifesteScene />
           <Preload all />
         </ScrollControls>
