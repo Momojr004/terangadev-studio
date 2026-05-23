@@ -183,6 +183,32 @@
     "pillar4Title": "Délais respectés",
     "pillar4Body": "Hydrautech en <2 mois. Ndougalma 2 mois en avance. La règle, pas l'exception."
   },
+  "TeamTeaser": {
+    "tag": "On est six, à Dakar",
+    "headline": "L'équipe qui construit, ship et maintient.",
+    "subhead": "Une équipe stable depuis 2022. Les mêmes mains du brief jusqu'à la maintenance — pas de juniors qu'on parachute en cours de route.",
+    "viewAll": "Découvrir le studio"
+  },
+  "NotesTeaser": {
+    "tag": "Notes",
+    "headline": "On écrit ce qu'on apprend en codant nos produits.",
+    "viewAll": "Lire toutes les notes",
+    "readingMinutes": "{count} min de lecture"
+  },
+  "Testimonials": {
+    "tag": "Ils nous ont fait confiance",
+    "headline": "Trois mots de clients qui ont vu le résultat.",
+    "t1Company": "Hydrautech · matériel hydraulique industriel",
+    "t1Quote": "On gérait 200+ matériels sur cahier, avec les erreurs qui vont avec. En moins de 2 mois, on avait une plateforme, 10 employés formés, et plus une fiche perdue.",
+    "t1Role": "Gérant",
+    "t2Company": "Ndougalma · e-commerce alimentaire",
+    "t2Quote": "Je suis venu avec une idée et zéro expérience produit. Ils ont cadré le business model, codé le MVP et lancé le marketing avant le go-live. Livré 2 mois en avance.",
+    "t2Role": "Fondateur",
+    "t3Company": "Auto-école pilote · marketplace Créneau",
+    "t3Quote": "Quand 30 auto-écoles s'inscrivent sur la plateforme en 5 mois, on sait que le produit répond à un vrai besoin. On a juste à l'utiliser.",
+    "t3Role": "Auto-école pilote",
+    "validationNotice": "Témoignages en cours de validation par les clients concernés."
+  },
   "Work": {
     "tag": "Cas clients",
     "headline": "Trois projets qui racontent ce qu'on fait.",
@@ -606,7 +632,15 @@
       "line1": "Ton stock dans un cahier.",
       "line2": "Tes employés sur WhatsApp.",
       "line3": "Tes clients sur le téléphone.",
-      "line4": "C'est l'aujourd'hui de 80% des PME africaines."
+      "line4": "C'est l'aujourd'hui de 80% des PME africaines.",
+      "supportStat": "80%",
+      "supportLine": "des PME en Afrique de l'Ouest tournent sans logiciel de gestion.",
+      "supportSource": "Source : Banque mondiale · 2024",
+      "lossLabel": "Ce que tu perds chaque jour",
+      "loss1": "Stocks invisibles · cahier",
+      "loss2": "Rendez-vous oubliés · téléphone",
+      "loss3": "Conversations perdues · WhatsApp",
+      "loss4": "Factures qui disparaissent · papier"
     },
     "chapter02": {
       "label": "Chapitre 02 / 07",
@@ -621,7 +655,12 @@
       "stat3Value": "1",
       "stat3Suffix": "",
       "stat3Label": "audit à risque à chaque facture papier.",
-      "question": "Combien tu paies par mois sans le savoir ?"
+      "question": "Combien tu paies par mois sans le savoir ?",
+      "asideTitle": "Sur 12 mois",
+      "stat1Annual": "~84h / an",
+      "stat2Annual": "~12 clients / an",
+      "stat3Annual": "Risque permanent",
+      "asideFootnote": "Estimation sur la base d'une PME moyenne de 8 à 12 salariés."
     },
     "chapter03": {
       "label": "Chapitre 03 / 07",
@@ -631,7 +670,12 @@
       "citation3": "« Mes employés ne sauront pas s'en servir. »",
       "citation4": "« Mon métier est trop spécifique pour un logiciel. »",
       "punchline": "Toutes vraies.",
-      "punchline2": "Toutes datées."
+      "punchline2": "Toutes datées.",
+      "rebutTitle": "Réalité",
+      "rebut1": "Une première plateforme coûte moins qu'un mois de salaire cumulé.",
+      "rebut2": "Hydrautech, Ndougalma, Créneau : tous dakarois.",
+      "rebut3": "Formation 2 jours sur site incluse, à chaque livrable.",
+      "rebut4": "Auto-écoles, photographes, salons, hydraulique — on a déjà fait."
     },
     "chapter04": {
       "label": "Chapitre 04 / 07",
@@ -640,7 +684,17 @@
       "line2": "Tes équipes : autonomes sur leur outil.",
       "line3": "Tes clients : qui te trouvent en ligne par eux-mêmes.",
       "punch1": "Tu n'es pas en retard.",
-      "punch2": "Tu es à la frontière."
+      "punch2": "Tu es à la frontière.",
+      "beforeTitle": "Avant",
+      "before1": "Stocks : invisibles",
+      "before2": "Équipes : dépendantes du gérant",
+      "before3": "Clients : par téléphone uniquement",
+      "before4": "Décisions : à l'instinct",
+      "afterTitle": "Après",
+      "after1": "Stocks : tracés en temps réel",
+      "after2": "Équipes : autonomes sur l'outil",
+      "after3": "Clients : qui te trouvent en ligne",
+      "after4": "Décisions : appuyées sur de la donnée"
     },
     "chapter05": {
       "label": "Chapitre 05 / 07",
@@ -651,7 +705,16 @@
       "path2Title": "Tu portes",
       "path2Body": "une idée, mais tu n'as pas le code.",
       "path3Title": "Tu cherches",
-      "path3Body": "un outil pour ton métier — il existe peut-être déjà."
+      "path3Body": "un outil pour ton métier — il existe peut-être déjà.",
+      "path1Case": "Cas : Hydrautech",
+      "path1Duration": "8 semaines · brief → prod",
+      "path1Price": "À partir de 1,8M FCFA",
+      "path2Case": "Cas : Ndougalma",
+      "path2Duration": "12 semaines · idée → marché",
+      "path2Price": "Selon scope · sur devis",
+      "path3Case": "Cas : Créneau · Nurapic · Sama · Ticket",
+      "path3Duration": "Onboarding 2 sem.",
+      "path3Price": "Abonnement mensuel"
     },
     "chapter06": {
       "label": "Chapitre 06 / 07",
@@ -660,7 +723,31 @@
       "condition1": "Le code doit rester à toi.",
       "condition2": "L'équipe doit comprendre ta réalité.",
       "condition3": "Les délais doivent être respectés.",
-      "condition4": "L'infrastructure doit être à Dakar — ou ailleurs si tu veux. Mais à toi."
+      "condition4": "L'infrastructure doit être à Dakar — ou ailleurs si tu veux. Mais à toi.",
+      "conditionNote1": "Schémas livrés, dépôt à ton nom, zéro vendor lock-in.",
+      "conditionNote2": "Équipe basée à Dakar. Décisions prises ici.",
+      "conditionNote3": "Plan de décaissement et créneaux de validation contractualisés.",
+      "conditionNote4": "OVH France par défaut. Oracle Sénégal, GCP, AWS, VPS : tu choisis.",
+      "kw1_1": "Schémas TypeScript",
+      "kw1_2": "Repo · ton dépôt",
+      "kw1_3": "Migration libre",
+      "kw1_4": "Zéro vendor lock-in",
+      "kw1_5": "Standards ouverts",
+      "kw2_1": "Équipe à Dakar",
+      "kw2_2": "Même fuseau horaire",
+      "kw2_3": "Visites sur site",
+      "kw2_4": "Décisions ici",
+      "kw2_5": "Connaissance terrain",
+      "kw3_1": "Plan contractuel",
+      "kw3_2": "Créneaux de validation",
+      "kw3_3": "Demos hebdomadaires",
+      "kw3_4": "Décaissement séquentiel",
+      "kw3_5": "Zéro surprise",
+      "kw4_1": "OVH France",
+      "kw4_2": "Oracle Sénégal",
+      "kw4_3": "GCP · AWS",
+      "kw4_4": "Ton VPS",
+      "kw4_5": "Souveraineté technique"
     },
     "chapter07": {
       "label": "Chapitre 07 / 07",
@@ -672,7 +759,15 @@
       "transition2": "Voici les projets qu'on a livrés.",
       "transition3": "Voici comment on bosse avec toi.",
       "cta": "Découvrir le site",
-      "ctaSub": "On a fini de te raconter. Maintenant, regarde."
+      "ctaSub": "On a fini de te raconter. Maintenant, regarde.",
+      "finalStat1": "4",
+      "finalStat1Label": "SaaS en prod",
+      "finalStat2": "30+",
+      "finalStat2Label": "projets livrés",
+      "finalStat3": "6",
+      "finalStat3Label": "clients en maintenance",
+      "finalStat4": "<2",
+      "finalStat4Label": "mois pour Hydrautech"
     }
   }
 }

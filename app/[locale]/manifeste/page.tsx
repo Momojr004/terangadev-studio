@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { ManifesteCanvas } from "./_components/manifeste-canvas";
+import { ManifesteNav } from "./_components/manifeste-nav";
+import { ManifesteScrollProvider } from "./_components/scroll-source";
 import { SkipButton } from "./_components/skip-button";
+import { Chapter1Paper } from "./_components/chapter-1-paper";
+import { Chapter2Cost } from "./_components/chapter-2-cost";
+import { Chapter3Excuses } from "./_components/chapter-3-excuses";
+import { Chapter4OtherWorld } from "./_components/chapter-4-otherworld";
+import { Chapter5Paths } from "./_components/chapter-5-paths";
+import { Chapter6Condition } from "./_components/chapter-6-condition";
+import { Chapter7Reveal } from "./_components/chapter-7-reveal";
 
 export async function generateMetadata({
   params,
@@ -20,6 +29,17 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * V3 layout:
+ *  - <ManifesteCanvas/> is `position: fixed; pointer-events: none; z:0`
+ *    behind everything, so it stays pinned while the document scrolls.
+ *  - The 7 chapters are rendered as a normal vertical stack — each is
+ *    `min-h-dvh` with its own background (paper, dark, etc.), creating
+ *    natural scroll height (~7 viewports).
+ *  - <ManifesteScrollProvider/> wraps the whole thing so R3F components
+ *    inside the Canvas can read scroll progress (0..1) without colliding
+ *    with the i18n context that the chapters need.
+ */
 export default async function ManifestePage({
   params,
 }: {
@@ -29,18 +49,22 @@ export default async function ManifestePage({
   setRequestLocale(locale);
 
   return (
-    <main
-      id="manifeste-content"
-      className="fixed inset-0 bg-[#0A1628] text-white"
-    >
-      <SkipButton />
+    <ManifesteScrollProvider>
       <ManifesteCanvas />
-      {/* Kickstart applied via ManifesteCanvas internal effect */}
-
-      {/* Dev pass indicator — remove at final ship V2 */}
-      <div className="pointer-events-none absolute bottom-6 left-6 z-10 font-mono text-[10px] uppercase tracking-[0.4em] text-cyan-200/40 md:bottom-8 md:left-8">
-        Pass 2 / ocean scene · Ch1-Ch3
-      </div>
-    </main>
+      <ManifesteNav />
+      <main
+        id="manifeste-content"
+        className="relative z-10 bg-transparent text-white"
+      >
+        <SkipButton />
+        <Chapter1Paper />
+        <Chapter2Cost />
+        <Chapter3Excuses />
+        <Chapter4OtherWorld />
+        <Chapter5Paths />
+        <Chapter6Condition />
+        <Chapter7Reveal />
+      </main>
+    </ManifesteScrollProvider>
   );
 }

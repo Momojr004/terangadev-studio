@@ -183,6 +183,32 @@
     "pillar4Title": "Deadlines kept",
     "pillar4Body": "Hydrautech in <2 months. Ndougalma 2 months early. The rule, not the exception."
   },
+  "TeamTeaser": {
+    "tag": "Six of us, in Dakar",
+    "headline": "The team that builds, ships and maintains.",
+    "subhead": "A stable team since 2022. Same hands from brief to maintenance — no junior swap-in mid-project.",
+    "viewAll": "Meet the studio"
+  },
+  "NotesTeaser": {
+    "tag": "Notes",
+    "headline": "We write what we learn coding our own products.",
+    "viewAll": "Read all notes",
+    "readingMinutes": "{count} min read"
+  },
+  "Testimonials": {
+    "tag": "They trusted us",
+    "headline": "Three words from clients who saw the outcome.",
+    "t1Company": "Hydrautech · industrial hydraulic equipment",
+    "t1Quote": "We tracked 200+ pieces of gear on paper, with the errors that come with it. In under 2 months we had a platform, 10 people trained, and not a single record lost.",
+    "t1Role": "Manager",
+    "t2Company": "Ndougalma · online grocery",
+    "t2Quote": "I came with an idea and zero product experience. They scoped the business model, shipped the MVP and ran the marketing before go-live. Delivered 2 months ahead.",
+    "t2Role": "Founder",
+    "t3Company": "Pilot driving school · Créneau marketplace",
+    "t3Quote": "When 30 driving schools sign up in 5 months, you know the product hit a real need. We just have to use it.",
+    "t3Role": "Pilot driving school",
+    "validationNotice": "Quotes pending validation by the clients involved."
+  },
   "Work": {
     "tag": "Case studies",
     "headline": "Three projects that say what we do.",
@@ -606,7 +632,15 @@
       "line1": "Your stock in a notebook.",
       "line2": "Your staff on WhatsApp.",
       "line3": "Your clients on the phone.",
-      "line4": "That's the reality of 80% of African SMEs today."
+      "line4": "That's the reality of 80% of African SMEs today.",
+      "supportStat": "80%",
+      "supportLine": "of SMEs in West Africa operate without management software.",
+      "supportSource": "Source: World Bank · 2024",
+      "lossLabel": "What you lose every day",
+      "loss1": "Invisible inventory · notebook",
+      "loss2": "Forgotten appointments · phone",
+      "loss3": "Lost conversations · WhatsApp",
+      "loss4": "Invoices that vanish · paper"
     },
     "chapter02": {
       "label": "Chapter 02 / 07",
@@ -621,7 +655,12 @@
       "stat3Value": "1",
       "stat3Suffix": "",
       "stat3Label": "tax audit risk on every paper invoice.",
-      "question": "How much are you paying every month without knowing it?"
+      "question": "How much are you paying every month without knowing it?",
+      "asideTitle": "Over 12 months",
+      "stat1Annual": "~84h / year",
+      "stat2Annual": "~12 clients / year",
+      "stat3Annual": "Standing risk",
+      "asideFootnote": "Estimated on an average SME of 8 to 12 employees."
     },
     "chapter03": {
       "label": "Chapter 03 / 07",
@@ -631,7 +670,12 @@
       "citation3": "\"My team won't know how to use it.\"",
       "citation4": "\"My business is too specific for software.\"",
       "punchline": "All true.",
-      "punchline2": "All outdated."
+      "punchline2": "All outdated.",
+      "rebutTitle": "Reality",
+      "rebut1": "A first platform costs less than one cumulative month of payroll.",
+      "rebut2": "Hydrautech, Ndougalma, Créneau: all Dakar-built.",
+      "rebut3": "Two days of on-site training included with every delivery.",
+      "rebut4": "Driving schools, photographers, salons, hydraulics — we've done it."
     },
     "chapter04": {
       "label": "Chapter 04 / 07",
@@ -640,7 +684,17 @@
       "line2": "Your teams: autonomous on their tool.",
       "line3": "Your clients: finding you online by themselves.",
       "punch1": "You're not behind.",
-      "punch2": "You're at the frontier."
+      "punch2": "You're at the frontier.",
+      "beforeTitle": "Before",
+      "before1": "Inventory: invisible",
+      "before2": "Teams: dependent on the owner",
+      "before3": "Clients: phone only",
+      "before4": "Decisions: gut feel",
+      "afterTitle": "After",
+      "after1": "Inventory: tracked in real time",
+      "after2": "Teams: autonomous on the tool",
+      "after3": "Clients: who find you online",
+      "after4": "Decisions: backed by data"
     },
     "chapter05": {
       "label": "Chapter 05 / 07",
@@ -651,7 +705,16 @@
       "path2Title": "You're launching",
       "path2Body": "an idea, but you don't have the code.",
       "path3Title": "You're looking for",
-      "path3Body": "a tool for your trade — it may already exist."
+      "path3Body": "a tool for your trade — it may already exist.",
+      "path1Case": "Case: Hydrautech",
+      "path1Duration": "8 weeks · brief → prod",
+      "path1Price": "From 1.8M FCFA",
+      "path2Case": "Case: Ndougalma",
+      "path2Duration": "12 weeks · idea → market",
+      "path2Price": "Scope-based · on quote",
+      "path3Case": "Case: Créneau · Nurapic · Sama · Ticket",
+      "path3Duration": "Onboarding 2 weeks",
+      "path3Price": "Monthly subscription"
     },
     "chapter06": {
       "label": "Chapter 06 / 07",
@@ -660,7 +723,31 @@
       "condition1": "The code must stay yours.",
       "condition2": "The team must understand your reality.",
       "condition3": "Deadlines must be respected.",
-      "condition4": "The infrastructure must be in Dakar — or elsewhere if you want. But yours."
+      "condition4": "The infrastructure must be in Dakar — or elsewhere if you want. But yours.",
+      "conditionNote1": "Schemas shipped, repo in your name, zero vendor lock-in.",
+      "conditionNote2": "Team in Dakar. Decisions taken here.",
+      "conditionNote3": "Payment plan and validation slots set in the contract.",
+      "conditionNote4": "OVH France by default. Oracle Senegal, GCP, AWS, VPS: your call.",
+      "kw1_1": "TypeScript schemas",
+      "kw1_2": "Repo · your org",
+      "kw1_3": "Free migration",
+      "kw1_4": "No vendor lock-in",
+      "kw1_5": "Open standards",
+      "kw2_1": "Team in Dakar",
+      "kw2_2": "Same time zone",
+      "kw2_3": "On-site visits",
+      "kw2_4": "Decisions here",
+      "kw2_5": "Field knowledge",
+      "kw3_1": "Contract plan",
+      "kw3_2": "Validation slots",
+      "kw3_3": "Weekly demos",
+      "kw3_4": "Phased payments",
+      "kw3_5": "No surprises",
+      "kw4_1": "OVH France",
+      "kw4_2": "Oracle Senegal",
+      "kw4_3": "GCP · AWS",
+      "kw4_4": "Your own VPS",
+      "kw4_5": "Technical sovereignty"
     },
     "chapter07": {
       "label": "Chapter 07 / 07",
@@ -672,7 +759,15 @@
       "transition2": "Here are the projects we shipped.",
       "transition3": "Here's how we work with you.",
       "cta": "Discover the site",
-      "ctaSub": "We're done talking. Now, watch."
+      "ctaSub": "We're done talking. Now, watch.",
+      "finalStat1": "4",
+      "finalStat1Label": "live SaaS",
+      "finalStat2": "30+",
+      "finalStat2Label": "projects shipped",
+      "finalStat3": "6",
+      "finalStat3Label": "maintenance clients",
+      "finalStat4": "<2",
+      "finalStat4Label": "months for Hydrautech"
     }
   }
 }

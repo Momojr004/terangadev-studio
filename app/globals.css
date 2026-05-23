@@ -11,7 +11,11 @@
   --color-tech-gray: #8e9196;
   --color-tech-gray-light: #f6f6f7;
 
-  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  /* Main display font is now Plus Jakarta Sans (Google-Sans-like)
+     across the whole site. Newsreader stays available for editorial
+     italic moments via var(--font-newsreader). */
+  --font-display: var(--font-plus-jakarta-sans), system-ui, -apple-system, sans-serif;
+  --font-editorial: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 
