@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Logo } from "./logo";
 import { MainNav } from "./main-nav";
 import { MobileNav } from "./mobile-nav";
@@ -35,12 +36,12 @@ export function Header() {
         <div className="ml-auto flex items-center gap-3 md:ml-0 md:gap-4">
           <LocaleSwitcher />
           <ThemeToggle />
-          <a
-            href="#contact"
+          <Link
+            href="/contact"
             className="bg-teranga-primary hover:bg-teranga-secondary hidden h-9 items-center rounded-full px-5 text-sm font-medium text-white transition-colors duration-200 md:inline-flex"
           >
             {t("cta")}
-          </a>
+          </Link>
           <MobileNav />
         </div>
       </div>

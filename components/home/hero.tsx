@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { HeroCanvas } from "@/components/hero/hero-canvas";
 
 export function Hero() {
@@ -39,14 +40,16 @@ export function Hero() {
         </p>
 
         <div className="flex flex-wrap gap-4">
-          <a
-            href="#contact"
+          <Link
+            href="/contact"
             className="bg-teranga-primary hover:bg-teranga-secondary inline-flex h-12 items-center rounded-full px-7 text-sm font-medium text-white transition-colors duration-300 [transition-timing-function:var(--ease-expo-out)]"
           >
             {t("ctaPrimary")}
-          </a>
+          </Link>
           <a
-            href="#contact"
+            href="https://cal.com/terangadev"
+            target="_blank"
+            rel="noreferrer"
             className="border-border hover:bg-surface bg-bg/60 inline-flex h-12 items-center rounded-full border px-7 text-sm font-medium backdrop-blur-sm transition-colors duration-300 [transition-timing-function:var(--ease-expo-out)]"
           >
             {t("ctaSecondary")}
