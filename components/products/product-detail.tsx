@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { productMeta, type ProductSlug } from "@/lib/products";
 import { cn } from "@/lib/cn";
 import { InterestForm } from "./interest-form";
+import { ProductPreview } from "./product-preview";
 
 export function ProductDetail({ slug }: { slug: ProductSlug }) {
   const meta = productMeta[slug];
@@ -73,6 +74,11 @@ export function ProductDetail({ slug }: { slug: ProductSlug }) {
               </a>
             </div>
           )}
+
+          {/* Site preview — full width below the hero copy */}
+          <div className="mt-16 md:mt-20">
+            <ProductPreview slug={slug} />
+          </div>
         </div>
 
         <div

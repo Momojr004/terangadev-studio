@@ -498,34 +498,34 @@
     "ctaButton": "Discutons de ton projet"
   },
   "TeamArona": {
-    "name": "Arona Momo",
-    "role": "CEO & Co-fondateur",
-    "body": "Le « Serigne bi » du studio. Architecte produit, fullstack Laravel depuis 8 ans. Vision business + main dans le code."
+    "name": "Arona",
+    "role": "Architecte Produit · Fullstack",
+    "body": "Le « Serigne bi » du studio. Vision business + main dans le code, Laravel depuis 8 ans. Décide, code, ship."
   },
   "TeamBabacar": {
     "name": "Babacar Diop",
-    "role": "Lead Backend & Infrastructure",
-    "body": "Garde-fou des stacks en prod. Si ça tient depuis 2 ans sans alertes, c'est qu'il est passé par là."
+    "role": "Lead Backend · APIs & Données",
+    "body": "L'architecte des APIs et des bases. Laravel, PostgreSQL, modèles propres. Le back qui ne casse pas, c'est lui."
   },
   "TeamMouhamed": {
     "name": "Mouhamed",
-    "role": "Lead Frontend & Refonte Produit",
-    "body": "Direction artistique et front. Tu lis ce site grâce à lui."
+    "role": "Lead Frontend · Direction Artistique",
+    "body": "Direction artistique + intégration. Tu lis ce site grâce à lui. Du Figma au composant React, même main."
   },
   "TeamRane": {
     "name": "Rane",
-    "role": "Fullstack Developer",
-    "body": "Filament en surcouche Laravel, c'est sa signature. Il transforme un cahier des charges en back-office en 3 semaines."
+    "role": "Fullstack · Plateformes Métier",
+    "body": "Filament en surcouche Laravel, c'est sa signature. Cahier des charges → back-office en 3 semaines."
   },
   "TeamIbnou": {
     "name": "Ibnou",
-    "role": "Mobile & Frontend",
-    "body": "React Native + web. L'interface mobile de Nurapic, c'est lui."
+    "role": "Lead Réseaux & Sécurité · Plateformes",
+    "body": "Réseaux, audits sécurité et dev applicatif. La couche infra et le code, même cerveau."
   },
   "TeamYabaye": {
     "name": "Yabaye",
-    "role": "DevOps & Sécurité",
-    "body": "Docker, Ansible, OVH. Si ton infra ne plante pas à 3h du matin, c'est grâce à ses cron."
+    "role": "Lead Communications · Communauté",
+    "body": "La voix du studio dehors. Communautés, contenus, lancements. Si les SaaS trouvent leur public, c'est elle."
   },
   "Rejoindre": {
     "tag": "Rejoindre",

@@ -498,34 +498,34 @@
     "ctaButton": "Let's talk about your project"
   },
   "TeamArona": {
-    "name": "Arona Momo",
-    "role": "CEO & Co-founder",
-    "body": "The studio's \"Serigne bi\". Product architect, fullstack Laravel for 8 years. Business vision + hands in the code."
+    "name": "Arona",
+    "role": "Product Architect · Fullstack",
+    "body": "The studio's \"Serigne bi\". Business vision + hands in the code, Laravel for 8 years. Decides, codes, ships."
   },
   "TeamBabacar": {
     "name": "Babacar Diop",
-    "role": "Lead Backend & Infrastructure",
-    "body": "Production stack guardrail. If something has been running 2 years without alerts, he's been through it."
+    "role": "Backend Lead · APIs & Data",
+    "body": "API and database architect. Laravel, PostgreSQL, clean models. The backend that doesn't break — that's him."
   },
   "TeamMouhamed": {
     "name": "Mouhamed",
-    "role": "Lead Frontend & Product Redesign",
-    "body": "Art direction and frontend. You're reading this site thanks to him."
+    "role": "Frontend Lead · Art Direction",
+    "body": "Art direction + frontend build. You're reading this site thanks to him. Figma to React component, same hand."
   },
   "TeamRane": {
     "name": "Rane",
-    "role": "Fullstack Developer",
-    "body": "Filament on top of Laravel — his signature. Turns a spec into a back-office in 3 weeks."
+    "role": "Fullstack · Vertical Platforms",
+    "body": "Filament on top of Laravel — his signature. Spec → back-office in 3 weeks."
   },
   "TeamIbnou": {
     "name": "Ibnou",
-    "role": "Mobile & Frontend",
-    "body": "React Native + web. Nurapic's mobile interface is his work."
+    "role": "Networks & Security Lead · Platforms",
+    "body": "Networks, security audits and application code. Infra layer and app layer, same brain."
   },
   "TeamYabaye": {
     "name": "Yabaye",
-    "role": "DevOps & Security",
-    "body": "Docker, Ansible, OVH. If your infrastructure doesn't crash at 3am, thank his crons."
+    "role": "Communications Lead · Community",
+    "body": "The studio's voice outside. Communities, content, launches. If our SaaS find their audience, it's her."
   },
   "Rejoindre": {
     "tag": "Careers",
