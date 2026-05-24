@@ -36,10 +36,14 @@ export function ManifesteNav() {
     return () => cancelAnimationFrame(raf);
   }, [scroll]);
 
-  const [activeChapter, setActiveChapter] = useState(1);
+  // 0 means "intro section visible" (no dot is active). 1..7 means the
+  // chapter of that number is the dominant section on screen.
+  const [activeChapter, setActiveChapter] = useState(0);
   useEffect(() => {
-    const sections = Array.from({ length: CHAPTER_COUNT }, (_, i) =>
-      document.getElementById(`chapter-${i + 1}`),
+    // Observe chapter-0 (the intro) AND chapter-1..7 so transitions
+    // from intro to Ch1 flip the active dot correctly.
+    const sections = Array.from({ length: CHAPTER_COUNT + 1 }, (_, i) =>
+      document.getElementById(`chapter-${i}`),
     ).filter((el): el is HTMLElement => el !== null);
     if (sections.length === 0) return;
 
@@ -51,7 +55,7 @@ export function ManifesteNav() {
         if (visible.length === 0) return;
         const id = visible[0].target.id;
         const n = parseInt(id.replace("chapter-", ""), 10);
-        if (n >= 1 && n <= CHAPTER_COUNT) setActiveChapter(n);
+        if (n >= 0 && n <= CHAPTER_COUNT) setActiveChapter(n);
       },
       {
         threshold: [0.15, 0.35, 0.6],

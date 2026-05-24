@@ -768,6 +768,14 @@
       "finalStat3Label": "clients en maintenance",
       "finalStat4": "<2",
       "finalStat4Label": "mois pour Hydrautech"
+    },
+    "intro": {
+      "eyebrow": "Manifeste · TerangaDev",
+      "hookLine1": "Avant de te vendre quoi que ce soit,",
+      "hookLine2": "on veut te raconter",
+      "hookLine3": "ce que tu rates.",
+      "subhead": "Sept chapitres. Quinze minutes. Une décision à la fin.",
+      "hint": "Sois patient · scrolle"
     }
   }
 }

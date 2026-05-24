@@ -5,6 +5,7 @@ import { ManifesteNav } from "./_components/manifeste-nav";
 import { ManifesteScrollProvider } from "./_components/scroll-source";
 import { SkipButton } from "./_components/skip-button";
 import { Chapter1Paper } from "./_components/chapter-1-paper";
+import { ManifesteIntro } from "./_components/manifeste-intro";
 import { Chapter2Cost } from "./_components/chapter-2-cost";
 import { Chapter3Excuses } from "./_components/chapter-3-excuses";
 import { Chapter4OtherWorld } from "./_components/chapter-4-otherworld";
@@ -57,6 +58,7 @@ export default async function ManifestePage({
         className="relative z-10 bg-transparent text-white"
       >
         <SkipButton />
+        <ManifesteIntro />
         <Chapter1Paper />
         <Chapter2Cost />
         <Chapter3Excuses />
