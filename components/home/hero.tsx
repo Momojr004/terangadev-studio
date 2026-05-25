@@ -1,8 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { HeroCanvas } from "@/components/hero/hero-canvas";
 import { HeroHeadline } from "@/components/home/hero-headline";
-import { HeroKeywords } from "@/components/home/hero-keywords";
 import { SectionBlobs } from "@/components/site/section-blobs";
 import { Magnetic } from "@/components/motion/magnetic";
 
@@ -60,28 +58,10 @@ export function Hero() {
         ]}
       />
 
-      {/* R3F Canvas pinned to right half — kept only for dark mode */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 hidden dark:md:block"
-      >
-        <div className="absolute inset-y-0 right-0 w-1/2 lg:w-3/5">
-          <HeroCanvas />
-        </div>
-        <div className="from-bg via-bg/80 absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r to-transparent lg:w-2/5" />
-      </div>
-
-      {/* Mobile-only soft brand glow at top (dark mode only) */}
-      <div
-        aria-hidden
-        className="from-teranga-secondary/15 via-teranga-primary/10 pointer-events-none absolute inset-x-0 top-0 hidden h-96 bg-gradient-to-b to-transparent dark:block md:dark:hidden"
-      />
-
-      {/* Keyword constellation — only shows on dark mode (would
-          compete with the colored SVG blobs in light mode). */}
-      <div className="hidden dark:block">
-        <HeroKeywords />
-      </div>
+      {/* Dark mode uses the same layout as light mode — labs.google
+          design language applied uniformly across themes. The WebGL
+          sphere & keyword constellation that previously lived here
+          have been removed for parity. */}
 
       <div className="relative mx-auto flex min-h-[calc(100dvh-5rem)] max-w-6xl flex-col items-start justify-center gap-10 px-6 py-24">
         <p className="text-teranga-primary font-mono text-xs uppercase tracking-[0.2em]">
