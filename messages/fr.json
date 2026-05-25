@@ -2,7 +2,7 @@
   "Site": {
     "name": "TerangaDev",
     "tagline": "Studio produit dakarois.",
-    "description": "Le seul studio à Dakar qui shippe ses propres SaaS depuis 2022 — et qui t'accompagne de l'idée à la maintenance."
+    "description": "Le seul studio à Dakar qui shippe ses propres SaaS depuis 2024 — et qui t'accompagne de l'idée à la maintenance."
   },
   "Nav": {
     "produits": "Produits",
@@ -34,9 +34,9 @@
   },
   "Home": {
     "tag": "Studio produit dakarois",
-    "headlineFirst": "Le seul studio à Dakar qui shippe ses propres SaaS depuis 2022 —",
+    "headlineFirst": "Le seul studio à Dakar qui shippe ses propres SaaS depuis 2024 —",
     "headlineSecond": "et qui t'accompagne de l'idée à la maintenance.",
-    "subhead": "On code, on vend et on maintient nos propres SaaS depuis 2022. On bâtit le tien avec la même rigueur — de l'idée à la maintenance, formation comprise.",
+    "subhead": "On code, on vend et on maintient nos propres SaaS depuis 2024. On bâtit le tien avec la même rigueur — de l'idée à la maintenance, formation comprise.",
     "ctaPrimary": "Discutons de ton projet",
     "ctaSecondary": "Réserver un appel de 30 min"
   },
@@ -45,7 +45,7 @@
     "stat1Value": "4",
     "stat1Label": "SaaS en prod sous notre marque",
     "stat2Value": "30",
-    "stat2Label": "projets livrés depuis 2022",
+    "stat2Label": "projets livrés depuis 2024",
     "stat3Value": "6",
     "stat3Label": "clients sous contrat de maintenance",
     "stat4Value": "<2",
@@ -186,7 +186,7 @@
   "TeamTeaser": {
     "tag": "On est six, à Dakar",
     "headline": "L'équipe qui construit, ship et maintient.",
-    "subhead": "Une équipe stable depuis 2022. Les mêmes mains du brief jusqu'à la maintenance — pas de juniors qu'on parachute en cours de route.",
+    "subhead": "Une équipe stable depuis 2024. Les mêmes mains du brief jusqu'à la maintenance — pas de juniors qu'on parachute en cours de route.",
     "viewAll": "Découvrir le studio"
   },
   "NotesTeaser": {
@@ -477,9 +477,9 @@
   "Studio": {
     "tag": "Studio",
     "headline": "On est six, à Dakar.",
-    "subhead": "Pas un freelance qui sous-traite. Pas une agence qui empile les juniors. Une équipe stable depuis 2022 qui construit ses propres produits et ceux de ses clients.",
+    "subhead": "Pas un freelance qui sous-traite. Pas une agence qui empile les juniors. Une équipe stable depuis 2024 qui construit ses propres produits et ceux de ses clients.",
     "historyTitle": "L'histoire courte",
-    "historyBody": "TerangaDev a démarré en 2022 avec une idée simple : prouver qu'un studio basé à Dakar peut shipper des produits sous sa propre marque, pas seulement vendre du temps de dev. Quatre ans plus tard, on a 4 SaaS en prod, 6 clients sous maintenance active, et une équipe de six personnes qui partagent la même obsession : faire vivre les produits qu'on construit.",
+    "historyBody": "TerangaDev a démarré en 2024 avec une idée simple : prouver qu'un studio basé à Dakar peut shipper des produits sous sa propre marque, pas seulement vendre du temps de dev. Quatre ans plus tard, on a 4 SaaS en prod, 6 clients sous maintenance active, et une équipe de six personnes qui partagent la même obsession : faire vivre les produits qu'on construit.",
     "manifestoTag": "Manifeste",
     "manifestoTitle": "Souveraineté technique, pas militante.",
     "manifestoSubhead": "Quatre principes qui orientent chaque décision technique qu'on prend. Pas un slogan — un cadre opérationnel.",
@@ -754,7 +754,7 @@
       "title": "Voici TerangaDev",
       "wordmark": "TerangaDev",
       "tagline": "Studio produit dakarois.",
-      "promise": "On code, on shippe, on accompagne — depuis 2022.",
+      "promise": "On code, on shippe, on accompagne — depuis 2024.",
       "transition1": "Voici nos 4 SaaS en prod.",
       "transition2": "Voici les projets qu'on a livrés.",
       "transition3": "Voici comment on bosse avec toi.",

@@ -7,6 +7,7 @@ import {
   SectionHeadline,
 } from "@/components/site/section";
 import { fetchPublishedNotes, type NotesLocale } from "@/lib/notes";
+import { SectionBlobs } from "@/components/site/section-blobs";
 
 export async function NotesTeaser({ locale }: { locale: string }) {
   const safeLocale: NotesLocale = locale === "en" ? "en" : "fr";
@@ -24,8 +25,34 @@ export async function NotesTeaser({ locale }: { locale: string }) {
   });
 
   return (
-    <Section variant="surface">
-      <div className="flex flex-col items-start gap-8 md:flex-row md:items-end md:justify-between">
+    <Section variant="surface" className="relative overflow-x-clip">
+      <SectionBlobs
+        blobs={[
+          {
+            shape: "blob3",
+            color: "#FB7185",
+            size: "26vw",
+            position: { top: "15%", left: "-12%" },
+            rotation: -18,
+            animation: "blobDriftA",
+            duration: 20,
+            opacity: 0.45,
+          },
+          {
+            shape: "blob4",
+            color: "#4EA8F9",
+            size: "22vw",
+            position: { bottom: "-12%", right: "8%" },
+            rotation: 24,
+            animation: "blobDriftC",
+            duration: 24,
+            delay: -9,
+            opacity: 0.4,
+          },
+        ]}
+      />
+
+      <div className="relative flex flex-col items-start gap-8 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
           <SectionTag>{t("tag")}</SectionTag>
           <SectionHeadline>{t("headline")}</SectionHeadline>
@@ -39,7 +66,7 @@ export async function NotesTeaser({ locale }: { locale: string }) {
         </Link>
       </div>
 
-      <ul className="mt-16 grid gap-x-8 gap-y-12 md:grid-cols-3">
+      <ul className="relative mt-16 grid gap-x-8 gap-y-12 md:grid-cols-3">
         {notes.map((note) => {
           const dateLabel = note.publishedAt
             ? dateFmt.format(new Date(note.publishedAt))

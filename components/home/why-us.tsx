@@ -9,6 +9,7 @@ import {
   SectionSubhead,
 } from "@/components/site/section";
 import { staggerParent, staggerChild } from "@/components/motion/reveal";
+import { SectionBlobs } from "@/components/site/section-blobs";
 
 export function WhyUs() {
   const t = useTranslations("WhyUs");
@@ -21,8 +22,34 @@ export function WhyUs() {
   ];
 
   return (
-    <Section variant="surface">
-      <div className="max-w-3xl">
+    <Section variant="surface" className="relative overflow-x-clip">
+      <SectionBlobs
+        blobs={[
+          {
+            shape: "blob2",
+            color: "#4EA8F9",
+            size: "32vw",
+            position: { top: "-15%", right: "-10%" },
+            rotation: 18,
+            animation: "blobDriftB",
+            duration: 17,
+            opacity: 0.8,
+          },
+          {
+            shape: "blob4",
+            color: "#F2C94C",
+            size: "26vw",
+            position: { bottom: "-18%", left: "-8%" },
+            rotation: -28,
+            animation: "blobDriftA",
+            duration: 16,
+            delay: -15,
+            opacity: 0.7,
+          },
+        ]}
+      />
+
+      <div className="relative max-w-3xl">
         <SectionTag>{t("tag")}</SectionTag>
         <SectionHeadline>{t("headline")}</SectionHeadline>
         <SectionSubhead>{t("subhead")}</SectionSubhead>
@@ -33,7 +60,7 @@ export function WhyUs() {
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
         variants={staggerParent}
-        className="mt-16 grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-4"
+        className="relative mt-16 grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-4"
       >
         {pillars.map((p, idx) => (
           <motion.li

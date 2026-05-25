@@ -10,6 +10,7 @@ import {
   SectionHeadline,
 } from "@/components/site/section";
 import { staggerParent, staggerChild } from "@/components/motion/reveal";
+import { SectionBlobs } from "@/components/site/section-blobs";
 
 export function WorkTeaser() {
   const t = useTranslations("Work");
@@ -36,8 +37,34 @@ export function WorkTeaser() {
   ];
 
   return (
-    <Section>
-      <div className="flex flex-col items-start gap-8 md:flex-row md:items-end md:justify-between">
+    <Section className="relative overflow-x-clip">
+      <SectionBlobs
+        blobs={[
+          {
+            shape: "blob1",
+            color: "#4EA8F9",
+            size: "26vw",
+            position: { top: "20%", right: "-10%" },
+            rotation: 30,
+            animation: "blobDriftA",
+            duration: 19,
+            opacity: 0.5,
+          },
+          {
+            shape: "blob3",
+            color: "#F2C94C",
+            size: "20vw",
+            position: { bottom: "10%", left: "-8%" },
+            rotation: -18,
+            animation: "blobDriftC",
+            duration: 23,
+            delay: -10,
+            opacity: 0.4,
+          },
+        ]}
+      />
+
+      <div className="relative flex flex-col items-start gap-8 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
           <SectionTag>{t("tag")}</SectionTag>
           <SectionHeadline>{t("headline")}</SectionHeadline>
@@ -56,7 +83,7 @@ export function WorkTeaser() {
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
         variants={staggerParent}
-        className="mt-16 divide-border border-border divide-y border-y"
+        className="relative mt-16 divide-border border-border divide-y border-y"
       >
         {cases.map((c, idx) => (
           <motion.li key={idx} variants={staggerChild}>

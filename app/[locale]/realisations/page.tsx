@@ -127,50 +127,62 @@ function RealisationsContent({
           </span>
         </div>
 
-        <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {portfolioEntries.map((entry) => (
-            <li key={entry.id}>
-              <a
-                href={entry.url ?? "#"}
-                target={entry.url ? "_blank" : undefined}
-                rel={entry.url ? "noreferrer" : undefined}
-                className="border-border bg-bg hover:border-teranga-primary/40 group flex h-full flex-col overflow-hidden rounded-2xl border transition-colors duration-300"
+        {/* Portfolio entries — alternating layout (image right / left),
+            ~60vh per item so 1.5-2 projects share a scroll viewport.
+            Large image, big typography, visible visit CTA. */}
+        <ul className="flex flex-col gap-12 md:gap-20">
+          {portfolioEntries.map((entry, idx) => {
+            const reversed = idx % 2 === 1;
+            return (
+              <li
+                key={entry.id}
+                className="flex items-center md:min-h-[60vh]"
               >
-                <div className="border-border bg-surface relative aspect-[16/10] w-full overflow-hidden border-b">
-                  <Image
-                    src={entry.image}
-                    alt={`Aperçu de ${entry.title}`}
-                    width={800}
-                    height={500}
-                    sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
-                    className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 [transition-timing-function:var(--ease-expo-out)] group-hover:scale-[1.03]"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col gap-3 p-6">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-teranga-primary font-mono text-[10px] uppercase tracking-[0.2em]">
-                      {categoryLabels[entry.category]}
-                    </span>
-                    <span className="text-muted font-mono text-[10px] uppercase tracking-[0.2em]">
-                      {entry.year}
-                    </span>
+                <a
+                  href={entry.url ?? "#"}
+                  target={entry.url ? "_blank" : undefined}
+                  rel={entry.url ? "noreferrer" : undefined}
+                  className={`group grid w-full items-center gap-10 md:grid-cols-2 md:gap-16 ${reversed ? "md:[&>*:first-child]:order-2" : ""}`}
+                >
+                  <div className="border-border bg-bg relative aspect-[4/3] w-full overflow-hidden rounded-3xl border shadow-sm transition-shadow duration-500 group-hover:shadow-xl [transition-timing-function:var(--ease-expo-out)]">
+                    <Image
+                      src={entry.image}
+                      alt={`Aperçu de ${entry.title}`}
+                      width={1200}
+                      height={900}
+                      sizes="(min-width: 768px) 45vw, 92vw"
+                      className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 [transition-timing-function:var(--ease-expo-out)] group-hover:scale-[1.04]"
+                    />
                   </div>
-                  <h3 className="font-display text-2xl leading-tight font-medium tracking-tight group-hover:text-teranga-primary transition-colors">
-                    {entry.title}
-                  </h3>
-                  <p className="text-muted mt-auto text-sm leading-relaxed">
-                    {entry.description}
-                  </p>
-                  {entry.url && (
-                    <span className="text-teranga-primary mt-3 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.18em] transition-transform group-hover:translate-x-1">
-                      {visitSite}
-                      <ArrowUpRight className="size-3.5" />
-                    </span>
-                  )}
-                </div>
-              </a>
-            </li>
-          ))}
+                  <div className="flex flex-col gap-6">
+                    <div className="flex items-center gap-4">
+                      <span className="text-teranga-primary font-mono text-[10px] uppercase tracking-[0.25em]">
+                        {categoryLabels[entry.category]}
+                      </span>
+                      <span className="text-muted/60 font-mono text-[10px]">
+                        ·
+                      </span>
+                      <span className="text-muted font-mono text-[10px] uppercase tracking-[0.25em]">
+                        {entry.year}
+                      </span>
+                    </div>
+                    <h3 className="font-display text-4xl leading-tight font-medium tracking-tight md:text-5xl lg:text-6xl group-hover:text-teranga-primary transition-colors duration-500 [transition-timing-function:var(--ease-expo-out)]">
+                      {entry.title}
+                    </h3>
+                    <p className="text-muted max-w-xl text-base leading-relaxed md:text-lg">
+                      {entry.description}
+                    </p>
+                    {entry.url && (
+                      <span className="text-teranga-primary mt-2 inline-flex items-center gap-2 text-sm font-medium transition-transform duration-300 group-hover:translate-x-1 [transition-timing-function:var(--ease-expo-out)]">
+                        {visitSite}
+                        <ArrowUpRight className="size-4" />
+                      </span>
+                    )}
+                  </div>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </section>
     </>

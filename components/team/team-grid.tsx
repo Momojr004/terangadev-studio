@@ -27,10 +27,10 @@ function TeamMemberCard({ member }: { member: (typeof teamMembers)[number] }) {
   const t = useTranslations(member.namespace);
   return (
     <motion.li variants={staggerChild} className="flex flex-col gap-5">
-      <div className="group relative aspect-[4/5] overflow-hidden rounded-3xl bg-neutral-900">
+      <div className="bg-surface dark:bg-neutral-900 group relative aspect-[4/5] overflow-hidden rounded-3xl">
         <div
           aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,#1f1f24_0%,#0a0a0c_70%)] grayscale"
+          className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,#e7e9ee_0%,#ced3dc_70%)] grayscale dark:bg-[radial-gradient(120%_80%_at_50%_0%,#1f1f24_0%,#0a0a0c_70%)]"
         />
         <div
           aria-hidden

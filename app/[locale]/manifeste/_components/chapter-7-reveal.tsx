@@ -90,7 +90,7 @@ export function Chapter7Reveal() {
 
       <DecorativeScatter
         items={[
-          { content: "depuis 2022", top: "85%", left: "4%", rotate: -3, color: "rgba(125,211,192,0.55)", size: "text-xs", spaced: true },
+          { content: "depuis 2024", top: "85%", left: "4%", rotate: -3, color: "rgba(125,211,192,0.55)", size: "text-xs", spaced: true },
           { content: "✱", top: "12%", right: "5%", rotate: 14, size: "text-2xl", color: "rgba(252,211,77,0.3)", mono: false },
           { content: "Point E · Dakar", top: "92%", right: "5%", rotate: 2, color: "rgba(94,234,212,0.55)", size: "text-[10px]", spaced: true },
           { content: "+", top: "90%", left: "48%", rotate: 22, size: "text-xl", color: "rgba(252,211,77,0.3)", mono: false },

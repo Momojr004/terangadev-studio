@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import { ManifesteBackdrop } from "./_components/manifeste-backdrop";
 import { ManifesteCanvas } from "./_components/manifeste-canvas";
 import { ManifesteNav } from "./_components/manifeste-nav";
 import { ManifesteScrollProvider } from "./_components/scroll-source";
@@ -51,6 +52,7 @@ export default async function ManifestePage({
 
   return (
     <ManifesteScrollProvider>
+      <ManifesteBackdrop />
       <ManifesteCanvas />
       <ManifesteNav />
       <main

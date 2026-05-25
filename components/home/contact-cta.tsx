@@ -12,6 +12,7 @@ import {
 } from "@/components/site/section";
 import { staggerParent, staggerChild } from "@/components/motion/reveal";
 import { siteConfig } from "@/lib/site-config";
+import { SectionBlobs } from "@/components/site/section-blobs";
 
 export function ContactCTA() {
   const t = useTranslations("Contact");
@@ -43,8 +44,45 @@ export function ContactCTA() {
   ];
 
   return (
-    <Section id="contact">
-      <div className="max-w-3xl">
+    <Section id="contact" className="relative overflow-x-clip">
+      <SectionBlobs
+        blobs={[
+          {
+            shape: "blob3",
+            color: "#7CE891",
+            size: "36vw",
+            position: { top: "-20%", left: "-12%" },
+            rotation: 15,
+            animation: "blobDriftC",
+            duration: 16,
+            opacity: 0.85,
+          },
+          {
+            shape: "blob1",
+            color: "#FB7185",
+            size: "32vw",
+            position: { bottom: "-25%", right: "-10%" },
+            rotation: -22,
+            animation: "blobDriftD",
+            duration: 15,
+            delay: -12,
+            opacity: 0.75,
+          },
+          {
+            shape: "blob4",
+            color: "#F2C94C",
+            size: "22vw",
+            position: { top: "45%", right: "30%" },
+            rotation: 8,
+            animation: "blobDriftA",
+            duration: 14,
+            delay: -25,
+            opacity: 0.4,
+          },
+        ]}
+      />
+
+      <div className="relative max-w-3xl">
         <SectionTag>{t("tag")}</SectionTag>
         <SectionHeadline>{t("headline")}</SectionHeadline>
         <SectionSubhead>{t("subhead")}</SectionSubhead>
@@ -55,7 +93,7 @@ export function ContactCTA() {
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
         variants={staggerParent}
-        className="mt-16 grid gap-4 md:grid-cols-3"
+        className="relative mt-16 grid gap-4 md:grid-cols-3"
       >
         {channels.map((c, idx) => {
           const Icon = c.icon;

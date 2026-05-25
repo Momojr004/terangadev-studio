@@ -12,6 +12,7 @@ import {
 } from "@/components/site/section";
 import { staggerParent, staggerChild } from "@/components/motion/reveal";
 import { cn } from "@/lib/cn";
+import { SectionBlobs } from "@/components/site/section-blobs";
 
 export function ProductsTeaser() {
   const t = useTranslations("Products");
@@ -52,8 +53,34 @@ export function ProductsTeaser() {
   ];
 
   return (
-    <Section variant="surface">
-      <div className="flex flex-col items-start gap-8 md:flex-row md:items-end md:justify-between">
+    <Section variant="surface" className="relative overflow-x-clip">
+      <SectionBlobs
+        blobs={[
+          {
+            shape: "blob2",
+            color: "#F2C94C",
+            size: "30vw",
+            position: { top: "-15%", left: "-10%" },
+            rotation: -22,
+            animation: "blobDriftB",
+            duration: 17,
+            opacity: 0.6,
+          },
+          {
+            shape: "blob3",
+            color: "#FB7185",
+            size: "24vw",
+            position: { bottom: "8%", right: "-10%" },
+            rotation: 18,
+            animation: "blobDriftD",
+            duration: 21,
+            delay: -7,
+            opacity: 0.5,
+          },
+        ]}
+      />
+
+      <div className="relative flex flex-col items-start gap-8 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
           <SectionTag>{t("tag")}</SectionTag>
           <SectionHeadline>{t("headline")}</SectionHeadline>
@@ -66,7 +93,7 @@ export function ProductsTeaser() {
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
         variants={staggerParent}
-        className="mt-16 grid gap-4 md:grid-cols-2"
+        className="relative mt-16 grid gap-4 md:grid-cols-2"
       >
         {products.map((p, idx) => (
           <motion.li key={idx} variants={staggerChild}>

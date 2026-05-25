@@ -27,30 +27,35 @@ function FrameloopKick() {
 
 export function ManifesteCanvas() {
   return (
-    <Canvas
-      camera={{ position: [0, 0.5, 8], fov: 45, near: 0.1, far: 100 }}
-      dpr={[1, 1.6]}
-      frameloop="always"
-      gl={{
-        antialias: true,
-        alpha: false,
-        powerPreference: "high-performance",
-      }}
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "#0A1628",
-        zIndex: 0,
-        pointerEvents: "none",
-      }}
-      onCreated={({ camera }) => {
-        camera.lookAt(0, -3, 0);
-        camera.updateProjectionMatrix();
-      }}
+    <div
+      id="manifeste-canvas-wrap"
+      aria-hidden
+      className="pointer-events-none fixed inset-0 z-0"
+      style={{ opacity: 0 }}
     >
-      <FrameloopKick />
-      <ManifesteScene />
-      <Preload all />
-    </Canvas>
+      <Canvas
+        camera={{ position: [0, 0.5, 8], fov: 45, near: 0.1, far: 100 }}
+        dpr={[1, 1.6]}
+        frameloop="always"
+        gl={{
+          antialias: true,
+          alpha: false,
+          powerPreference: "high-performance",
+        }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "#0A1628",
+        }}
+        onCreated={({ camera }) => {
+          camera.lookAt(0, -3, 0);
+          camera.updateProjectionMatrix();
+        }}
+      >
+        <FrameloopKick />
+        <ManifesteScene />
+        <Preload all />
+      </Canvas>
+    </div>
   );
 }
