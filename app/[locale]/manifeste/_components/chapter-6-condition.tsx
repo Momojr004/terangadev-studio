@@ -5,6 +5,7 @@ import { useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Plus_Jakarta_Sans, Special_Elite, JetBrains_Mono } from "next/font/google";
 import { ChapterHeader } from "./chapter-header";
+import { ChapterAtmosphere } from "./chapter-atmosphere";
 
 const editorial = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
@@ -325,6 +326,9 @@ export function Chapter6Condition() {
 
   return (
     <section id="chapter-6" className="relative">
+      {/* Narrative atmosphere : 4 dots pulsing (= 4 conditions) */}
+      <ChapterAtmosphere kind="pulse" />
+
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"

@@ -12,6 +12,7 @@ import { useTranslations } from "next-intl";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { ChapterHeader, gradientTextStyle } from "./chapter-header";
 import { DecorativeScatter } from "./decorative-scatter";
+import { ChapterAtmosphere } from "./chapter-atmosphere";
 
 const mono = JetBrains_Mono({
   subsets: ["latin"],
@@ -130,6 +131,9 @@ export function Chapter2Cost() {
       id="chapter-2"
       className="relative flex min-h-dvh flex-col justify-center overflow-hidden px-6 py-24 md:px-16 lg:px-24"
     >
+      {/* Narrative atmosphere : FCFA amounts raining down */}
+      <ChapterAtmosphere kind="money" />
+
       {/* Chapter-tinted halo : rose alarm for the silent cost. */}
       <div
         aria-hidden

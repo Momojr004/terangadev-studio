@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Special_Elite } from "next/font/google";
 import { ChapterHeader, gradientTextStyle } from "./chapter-header";
+import { ChapterAtmosphere } from "./chapter-atmosphere";
 
 const typewriter = Special_Elite({
   subsets: ["latin"],
@@ -47,6 +48,9 @@ export function Chapter1Paper() {
       id="chapter-1"
       className={`relative flex min-h-dvh flex-col justify-center overflow-hidden px-6 py-24 text-amber-50 md:px-16 lg:px-24 ${typewriter.className}`}
     >
+      {/* Narrative atmosphere : paper sheets falling */}
+      <ChapterAtmosphere kind="paper" />
+
       {/* Chapter-tinted halo : warm amber wash for the paper world. */}
       <div
         aria-hidden

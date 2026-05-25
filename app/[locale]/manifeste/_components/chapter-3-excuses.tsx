@@ -11,6 +11,7 @@ import {
 } from "next/font/google";
 import { ChapterHeader } from "./chapter-header";
 import { DecorativeScatter } from "./decorative-scatter";
+import { ChapterAtmosphere } from "./chapter-atmosphere";
 
 const typewriter = Special_Elite({
   subsets: ["latin"],
@@ -97,6 +98,9 @@ export function Chapter3Excuses() {
       id="chapter-3"
       className="relative flex min-h-dvh flex-col overflow-hidden px-6 py-24 md:px-16 lg:px-24"
     >
+      {/* Narrative atmosphere : crosses drawing over the excuses */}
+      <ChapterAtmosphere kind="crosses" />
+
       {/* Chapter-tinted halo : magenta/fuchsia wash — chorus of voices. */}
       <div
         aria-hidden

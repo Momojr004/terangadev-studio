@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Plus_Jakarta_Sans, JetBrains_Mono, Special_Elite } from "next/font/google";
 import { ChapterHeader } from "./chapter-header";
 import { DecorativeScatter } from "./decorative-scatter";
+import { ChapterAtmosphere } from "./chapter-atmosphere";
 
 const editorial = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
@@ -63,6 +64,9 @@ export function Chapter5Paths() {
       id="chapter-5"
       className="relative flex min-h-dvh flex-col overflow-hidden px-6 py-24 md:px-16 lg:px-24"
     >
+      {/* Narrative atmosphere : 3 dots traveling down the beams */}
+      <ChapterAtmosphere kind="beams" />
+
       {/* Chapter-tinted halo : teal/emerald — three branching paths. */}
       <div
         aria-hidden
