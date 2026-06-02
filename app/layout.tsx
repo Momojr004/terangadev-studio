@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import {
   Newsreader,
@@ -6,6 +7,7 @@ import {
   Plus_Jakarta_Sans,
 } from "next/font/google";
 import { getLocale } from "next-intl/server";
+import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
 // Newsreader stays available (used by a few editorial italic moments
@@ -39,6 +41,52 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
   weight: ["400", "500", "600"],
 });
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description:
+    "Studio produit dakarois qui conçoit, lance et maintient des SaaS sur mesure.",
+  applicationName: siteConfig.name,
+  manifest: "/site.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    apple: [{ url: "/logo.png", type: "image/png" }],
+  },
+  openGraph: {
+    type: "website",
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: siteConfig.name,
+    description:
+      "Studio produit dakarois qui conçoit, lance et maintient des SaaS sur mesure.",
+    images: [
+      {
+        url: "/logo.png",
+        width: 774,
+        height: 528,
+        alt: "Logo TerangaDev",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description:
+      "Studio produit dakarois qui conçoit, lance et maintient des SaaS sur mesure.",
+    images: ["/logo.png"],
+  },
+};
+
+export const viewport = {
+  themeColor: "#0a68f7",
+};
 
 export default async function RootLayout({
   children,
