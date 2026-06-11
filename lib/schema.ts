@@ -28,7 +28,7 @@ export function organizationSchema() {
       availableLanguage: ["French", "English"],
       areaServed: ["SN", "FR", "US", "GB"],
     },
-    foundingDate: "2022",
+    foundingDate: "2024",
     foundingLocation: {
       "@type": "Place",
       name: "Dakar, Senegal",

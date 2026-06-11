@@ -1,7 +1,7 @@
 # TerangaDev — Studio produit dakarois
 
 Le repo du site refondu **terangadev.com** — studio produit basé à Dakar
-qui shippe ses propres SaaS depuis 2022 et accompagne ses clients de
+qui shippe ses propres SaaS depuis 2024 et accompagne ses clients de
 l'idée à la maintenance.
 
 > Brief de cadrage complet : voir [`BRIEF.md`](./BRIEF.md).

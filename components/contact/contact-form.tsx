@@ -69,6 +69,9 @@ const schema = z.object({
   budget: z.enum(budgets),
   timeline: z.enum(timelines),
   message: z.string().min(10),
+  // Honeypot — must stay empty for humans. Registered (so its value flows
+  // through `data`) but unvalidated; the API drops any submission that fills it.
+  company_url: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -112,6 +115,16 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5">
+      {/* Honeypot — visually hidden, off the tab order, ignored by humans. */}
+      <input
+        {...register("company_url")}
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[-9999px] h-0 w-0 opacity-0"
+      />
+
       {status === "error" && (
         <div className="flex items-center gap-3 rounded-2xl border border-red-500/40 bg-red-500/5 p-4">
           <AlertCircle className="size-5 shrink-0 text-red-500" />

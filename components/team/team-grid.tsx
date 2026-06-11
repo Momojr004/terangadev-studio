@@ -6,32 +6,55 @@ import { teamMembers } from "@/lib/team";
 import { staggerParent, staggerChild } from "@/components/motion/reveal";
 import { cn } from "@/lib/cn";
 
+function SilhouettePlaceholder() {
+  return (
+    <svg
+      viewBox="0 0 200 250"
+      preserveAspectRatio="xMidYMax meet"
+      aria-hidden
+      className="absolute inset-x-0 bottom-0 h-[88%] w-full text-white/15 transition-colors duration-700 group-hover:text-white/25 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
+    >
+      <circle cx="100" cy="78" r="36" fill="currentColor" />
+      <path
+        d="M28 250 C 28 175, 60 142, 100 142 C 140 142, 172 175, 172 250 Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 function TeamMemberCard({ member }: { member: (typeof teamMembers)[number] }) {
   const t = useTranslations(member.namespace);
   return (
-    <motion.li
-      variants={staggerChild}
-      className="flex flex-col gap-5"
-    >
-      <div className="border-border bg-surface relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-3xl border">
+    <motion.li variants={staggerChild} className="flex flex-col gap-5">
+      <div className="bg-surface dark:bg-neutral-900 group relative aspect-[4/5] overflow-hidden rounded-3xl">
         <div
           aria-hidden
-          className="from-teranga-secondary/20 to-teranga-primary/30 absolute inset-0 bg-gradient-to-br"
+          className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,#e7e9ee_0%,#ced3dc_70%)] grayscale dark:bg-[radial-gradient(120%_80%_at_50%_0%,#1f1f24_0%,#0a0a0c_70%)]"
         />
-        <span className="relative font-display text-7xl font-medium tracking-tight text-fg/30 md:text-8xl">
-          {member.initials}
-        </span>
+        <div
+          aria-hidden
+          className="from-teranga-primary/30 to-teranga-secondary/40 absolute inset-0 bg-gradient-to-br opacity-0 mix-blend-overlay transition-opacity duration-700 group-hover:opacity-100 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
+        />
+        <SilhouettePlaceholder />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/85 via-black/40 to-transparent"
+        />
+        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
+          <h3 className="font-display text-2xl leading-tight font-medium tracking-tight text-white drop-shadow">
+            {t("name")}
+          </h3>
+          <span className="text-white/50 font-mono text-[10px] uppercase tracking-[0.18em]">
+            {member.initials}
+          </span>
+        </div>
       </div>
       <div>
-        <h3 className="font-display text-2xl leading-tight font-medium tracking-tight">
-          {t("name")}
-        </h3>
-        <p className="text-teranga-primary mt-1 font-mono text-xs uppercase tracking-[0.18em]">
+        <p className="text-teranga-primary font-mono text-xs uppercase tracking-[0.18em]">
           {t("role")}
         </p>
-        <p className="text-muted mt-3 text-sm leading-relaxed">
-          {t("body")}
-        </p>
+        <p className="text-muted mt-3 text-sm leading-relaxed">{t("body")}</p>
         <ul className="mt-4 flex flex-wrap gap-1.5">
           {member.stack.map((tech) => (
             <li

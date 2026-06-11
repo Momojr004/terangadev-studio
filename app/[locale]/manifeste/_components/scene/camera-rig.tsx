@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useScroll } from "@react-three/drei";
 import * as THREE from "three";
+import { useManifesteScroll } from "../scroll-source";
 
 /**
  * 7 camera waypoints — placeholder positions for Pass 1.
@@ -16,36 +16,34 @@ import * as THREE from "three";
  *   Ch6 réseau (closer orbit) →
  *   Ch7 nœud central (convergence to logo)
  */
+// Ocean waypoints — camera tilts down to keep the wave plane in the
+// lower 2/3 of the frame at every chapter.
 const WAYPOINTS: [number, number, number][] = [
-  [0, 0.5, 8], // Ch1
-  [0, 2, 7], // Ch2
-  [1.5, 3, 5.5], // Ch3
-  [2, -1, 3.5], // Ch4 (dive)
-  [0, 5, 4.5], // Ch5 (top-down)
-  [-1, 3, 2.5], // Ch6
-  [0, 0, 2.2], // Ch7 (center)
+  [0, 0.5, 8],
+  [0, 2, 7],
+  [1.5, 3, 5.5],
+  [2, -1, 3.5],
+  [0, 5, 4.5],
+  [-1, 3, 2.5],
+  [0, 0, 2.2],
 ];
 
-// Look-at targets — a parallel curve so each chapter can frame its
-// subject. Without this, low-altitude Ch1 with lookAt origin makes
-// the camera look almost horizontally, pushing the ocean plane out of
-// the frustum. Tilting down via lookAt below origin pulls the ocean
-// into the lower half of the frame.
 const LOOK_AT_WAYPOINTS: [number, number, number][] = [
-  [0, -3, 0], // Ch1 — tilt down to see ocean horizon
-  [0, -2, 0], // Ch2 — slight upward as camera rises
-  [0, -1, 0], // Ch3 — almost level
-  [0, 0, 0], // Ch4 — origin during the dive
-  [0, 0, 0], // Ch5 — top-down on the coast (Pass 4)
-  [0, 0.5, 0], // Ch6 — network nodes (Pass 4)
-  [0, 0, 0], // Ch7 — logo at origin (Pass 5)
+  [0, -3, 0],
+  [0, -2, 0],
+  [0, -1, 0],
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0.5, 0],
+  [0, 0, 0],
 ];
 
 // Reusable Vector3 to avoid per-frame allocation.
+const TMP_POS = new THREE.Vector3();
 const TMP_LOOKAT = new THREE.Vector3();
 
 export function CameraRig() {
-  const scroll = useScroll();
+  const scroll = useManifesteScroll();
   const { camera, invalidate } = useThree();
 
   const positionCurve = useMemo(() => {
@@ -58,14 +56,58 @@ export function CameraRig() {
     return new THREE.CatmullRomCurve3(points, false, "catmullrom", 0.3);
   }, []);
 
-  useFrame(() => {
+  // Mouse parallax — read by useFrame, written by a single window
+  // listener. Normalized to [-1, 1] on each axis. Smoothed in-frame so
+  // the camera glides instead of snapping.
+  const pointer = useRef({ x: 0, y: 0 });
+  const smoothPointer = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      pointer.current.y = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, []);
+
+  useFrame((state) => {
     const t = THREE.MathUtils.clamp(scroll.offset, 0, 1);
-    camera.position.copy(positionCurve.getPoint(t));
+
+    // Base waypoint along the scroll curve.
+    positionCurve.getPoint(t, TMP_POS);
+
+    // Cosmic breathing sway + slow orbital arc around the galaxy
+    // center. The orbital component is the visible constant motion the
+    // user feels even when scroll is paused. Amplitudes modest enough
+    // to never compete with chapter copy.
+    const breath = state.clock.elapsedTime;
+    const orbit = breath * 0.06;
+    TMP_POS.x += Math.sin(orbit) * 0.5 + Math.sin(breath * 0.30) * 0.06;
+    TMP_POS.y += Math.sin(breath * 0.22 + 1.7) * 0.08;
+    // Subtle Z float so the depth feels alive.
+    TMP_POS.z += Math.cos(orbit * 0.5) * 0.3;
+
+    // Subtle pointer parallax — present but discreet.
+    smoothPointer.current.x = THREE.MathUtils.lerp(
+      smoothPointer.current.x,
+      pointer.current.x,
+      0.035,
+    );
+    smoothPointer.current.y = THREE.MathUtils.lerp(
+      smoothPointer.current.y,
+      pointer.current.y,
+      0.035,
+    );
+    const parallaxStrength = 0.25 * (1 - t * 0.7);
+    TMP_POS.x += smoothPointer.current.x * parallaxStrength;
+    TMP_POS.y += -smoothPointer.current.y * parallaxStrength * 0.6;
+
+    camera.position.copy(TMP_POS);
+
     lookAtCurve.getPoint(t, TMP_LOOKAT);
     camera.lookAt(TMP_LOOKAT);
-    // Force-invalidate so the renderer doesn't optimize this frame
-    // away — useful in "demand" frameloop scenarios (which ScrollControls
-    // can implicitly trigger).
+
     invalidate();
   });
 

@@ -128,13 +128,13 @@ export function MobileNav() {
                 }}
                 className="mt-8 flex flex-col gap-3"
               >
-                <a
-                  href="#contact"
+                <Link
+                  href="/contact"
                   onClick={() => setOpen(false)}
                   className="bg-teranga-primary hover:bg-teranga-secondary inline-flex h-12 w-full items-center justify-center rounded-full px-6 text-sm font-medium text-white transition-colors"
                 >
                   {t("cta")}
-                </a>
+                </Link>
                 <a
                   href={`https://wa.me/${siteConfig.whatsapp}`}
                   target="_blank"

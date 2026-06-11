@@ -1,54 +1,136 @@
 "use client";
 
 import { useMemo, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
-import { useScroll } from "@react-three/drei";
+import { extend, useFrame, type ThreeElement } from "@react-three/fiber";
+import { shaderMaterial } from "@react-three/drei";
 import * as THREE from "three";
+import { useManifesteScroll } from "../scroll-source";
+import { mulberry32 } from "@/lib/rng";
 
 /**
- * Particle flow above the ocean — Ch1-Ch3 of the manifeste.
+ * Drifting sparkle field above the ocean.
  *
- * 600 points drifting in +X (marine current), wrapping at the cylinder edge.
- * Color lerps from contemplative off-white (#F5F5F0) → data-state cyan
- * (#7DD3C0) as scroll passes 0.20 (entering Ch3 transformation arc).
- *
- * <points> chosen over instancedMesh : 600 quads at PointsMaterial size 0.02
- * is ~ free; we get additive blending and depthWrite=false for clean layering
- * over the OceanPlane shader.
+ * Each particle is rendered as a 4-pointed star via a fragment shader
+ * (the default <pointsMaterial> would draw a square, which the user
+ * found ugly). Per-particle phase makes each spark twinkle on its own
+ * clock so the field reads as alive, not synced.
  */
 
 const PARTICLE_COUNT = 600;
-const FIELD_RADIUS = 25; // X/Z half-extent of cylinder
-const FIELD_HEIGHT = 4; // Y span (0 → 3 above plane at -0.5 → particles 0..4)
+const FIELD_RADIUS = 22;
+const FIELD_HEIGHT = 5;
 const FIELD_Y_BASE = 0;
-const FLOW_SPEED = 0.35; // world units / second along +X
+const FLOW_SPEED = 0.35;
 const COLOR_BASE = new THREE.Color("#F5F5F0");
 const COLOR_DATA = new THREE.Color("#7DD3C0");
 
+const STAR_VERTEX = /* glsl */ `
+attribute float aSize;
+attribute float aPhase;
+attribute float aTwinkleAmp;
+uniform float uTime;
+uniform float uPixelRatio;
+uniform float uOpacity;
+varying float vAlpha;
+
+void main() {
+  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+  gl_Position = projectionMatrix * mvPosition;
+
+  // Per-particle twinkle : each star pulses on its own phase so the
+  // field never reads as a single synchronised animation.
+  float twinkle = 1.0 - aTwinkleAmp * 0.5 * (1.0 + sin(uTime * 2.2 + aPhase * 6.2831));
+  vAlpha = uOpacity * twinkle;
+
+  // Size attenuation so far stars are smaller.
+  gl_PointSize = aSize * uPixelRatio * (340.0 / -mvPosition.z);
+}
+`;
+
+const STAR_FRAGMENT = /* glsl */ `
+uniform vec3 uColor;
+varying float vAlpha;
+
+void main() {
+  // Convert PointCoord [0,1] to centered uv [-0.5, 0.5].
+  vec2 uv = gl_PointCoord - vec2(0.5);
+  vec2 absUv = abs(uv);
+
+  // 4-pointed star : pixels on the cardinal axes (where one of |uv.x|
+  // or |uv.y| is small) get strong alpha, diagonal pixels get less.
+  // The product (1 - min*K) bounded with smoothstep gives the spokes.
+  float radial = smoothstep(0.5, 0.0, length(uv));
+  float axisStrength = clamp(1.0 - min(absUv.x, absUv.y) * 7.0, 0.0, 1.0);
+  float spokes = pow(axisStrength, 2.0) * radial;
+
+  // Bright center bloom.
+  float center = smoothstep(0.12, 0.0, length(uv)) * 1.2;
+
+  float shape = clamp(spokes + center, 0.0, 1.4);
+  gl_FragColor = vec4(uColor, shape * vAlpha);
+}
+`;
+
+const SparkleMaterial = shaderMaterial(
+  {
+    uTime: 0,
+    uPixelRatio: 1,
+    uOpacity: 0.7,
+    uColor: new THREE.Color("#F5F5F0"),
+  },
+  STAR_VERTEX,
+  STAR_FRAGMENT,
+);
+
+extend({ SparkleMaterial });
+
+declare module "@react-three/fiber" {
+  interface ThreeElements {
+    sparkleMaterial: ThreeElement<typeof SparkleMaterial>;
+  }
+}
+
+type SparkleMaterialImpl = THREE.ShaderMaterial & {
+  uTime: number;
+  uPixelRatio: number;
+  uOpacity: number;
+  uColor: THREE.Color;
+};
+
 export function ParticleFlow() {
   const pointsRef = useRef<THREE.Points>(null);
-  const materialRef = useRef<THREE.PointsMaterial>(null);
-  const scroll = useScroll();
-
-  // Reusable color instance — avoid per-frame allocation.
+  const materialRef = useRef<SparkleMaterialImpl>(null);
+  const scroll = useManifesteScroll();
   const tmpColor = useMemo(() => new THREE.Color(), []);
+  const dpr =
+    typeof window !== "undefined"
+      ? Math.min(window.devicePixelRatio || 1, 1.6)
+      : 1;
 
-  // Initial positions : random distribution in a cylinder, biased toward
-  // camera Z range so density looks right from the rig path.
-  const positions = useMemo(() => {
-    const arr = new Float32Array(PARTICLE_COUNT * 3);
+  // Initial particle attributes : positions skewed toward camera Z,
+  // size/twinkle randomised per particle.
+  const buffers = useMemo(() => {
+    const rand = mulberry32(0x5eed_f10e);
+    const positions = new Float32Array(PARTICLE_COUNT * 3);
+    const sizes = new Float32Array(PARTICLE_COUNT);
+    const phases = new Float32Array(PARTICLE_COUNT);
+    const twinkleAmps = new Float32Array(PARTICLE_COUNT);
+
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      // Bias Z slightly toward [-10, 10] (camera path range) but allow spread.
-      const zBias = (Math.random() - 0.5) * 2; // -1..1
+      const zBias = (rand() - 0.5) * 2;
       const z =
         zBias < 0
           ? -Math.pow(Math.abs(zBias), 1.4) * FIELD_RADIUS
           : Math.pow(zBias, 1.4) * FIELD_RADIUS;
-      arr[i * 3 + 0] = (Math.random() - 0.5) * 2 * FIELD_RADIUS;
-      arr[i * 3 + 1] = FIELD_Y_BASE + Math.random() * FIELD_HEIGHT;
-      arr[i * 3 + 2] = z;
+      positions[i * 3 + 0] = (rand() - 0.5) * 2 * FIELD_RADIUS;
+      positions[i * 3 + 1] = FIELD_Y_BASE + rand() * FIELD_HEIGHT;
+      positions[i * 3 + 2] = z;
+      // Size skewed low : most particles small, a few are bright sparkles.
+      sizes[i] = 0.5 + Math.pow(rand(), 2.4) * 2.8;
+      phases[i] = rand();
+      twinkleAmps[i] = 0.4 + rand() * 0.6;
     }
-    return arr;
+    return { positions, sizes, phases, twinkleAmps };
   }, []);
 
   useFrame((state, delta) => {
@@ -56,8 +138,7 @@ export function ParticleFlow() {
     const material = materialRef.current;
     if (!points || !material) return;
 
-    // 1. Drift particles along +X with periodic wrap. Direct mutation of the
-    //    underlying buffer is the cheap path — mark needsUpdate once.
+    // 1. Drift particles along +X with wrap.
     const attr = points.geometry.attributes
       .position as THREE.BufferAttribute;
     const arr = attr.array as Float32Array;
@@ -66,24 +147,20 @@ export function ParticleFlow() {
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const idx = i * 3;
       arr[idx] += dx;
-      if (arr[idx] > limit) {
-        arr[idx] = -limit;
-      }
+      if (arr[idx] > limit) arr[idx] = -limit;
     }
     attr.needsUpdate = true;
 
-    // 2. Scroll-driven color + opacity ramp.
-    //    progress < 0.20 : off-white at 50% (contemplative).
-    //    progress > 0.20 : lerp toward cyan at 80% (data state).
+    // 2. Scroll-driven color shift + opacity ramp.
     const t = THREE.MathUtils.clamp(scroll.offset, 0, 1);
     const dataMix = THREE.MathUtils.smoothstep(t, 0.2, 0.4);
     tmpColor.copy(COLOR_BASE).lerp(COLOR_DATA, dataMix);
-    material.color.copy(tmpColor);
-    material.opacity = THREE.MathUtils.lerp(0.5, 0.8, dataMix);
+    material.uColor.copy(tmpColor);
+    material.uOpacity = THREE.MathUtils.lerp(0.55, 0.85, dataMix);
 
-    // Use elapsedTime for any future shader work — kept for parity with
-    // useFrame contract per repo convention.
-    void state.clock.elapsedTime;
+    // 3. Time + DPR for the shader.
+    material.uTime = state.clock.elapsedTime;
+    material.uPixelRatio = dpr;
   });
 
   return (
@@ -91,18 +168,32 @@ export function ParticleFlow() {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          args={[positions, 3]}
+          args={[buffers.positions, 3]}
           count={PARTICLE_COUNT}
           itemSize={3}
         />
+        <bufferAttribute
+          attach="attributes-aSize"
+          args={[buffers.sizes, 1]}
+          count={PARTICLE_COUNT}
+          itemSize={1}
+        />
+        <bufferAttribute
+          attach="attributes-aPhase"
+          args={[buffers.phases, 1]}
+          count={PARTICLE_COUNT}
+          itemSize={1}
+        />
+        <bufferAttribute
+          attach="attributes-aTwinkleAmp"
+          args={[buffers.twinkleAmps, 1]}
+          count={PARTICLE_COUNT}
+          itemSize={1}
+        />
       </bufferGeometry>
-      <pointsMaterial
+      <sparkleMaterial
         ref={materialRef}
-        size={0.05}
-        sizeAttenuation
-        color={COLOR_BASE}
         transparent
-        opacity={0.5}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
       />

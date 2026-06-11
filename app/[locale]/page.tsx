@@ -5,6 +5,9 @@ import { ICPPaths } from "@/components/home/icp-paths";
 import { ProductsTeaser } from "@/components/home/products-teaser";
 import { WorkTeaser } from "@/components/home/work-teaser";
 import { WhyUs } from "@/components/home/why-us";
+import { TeamTeaser } from "@/components/home/team-teaser";
+import { Testimonials } from "@/components/home/testimonials";
+import { NotesTeaser } from "@/components/home/notes-teaser";
 import { ContactCTA } from "@/components/home/contact-cta";
 
 export default async function Home({
@@ -23,6 +26,9 @@ export default async function Home({
       <ProductsTeaser />
       <WorkTeaser />
       <WhyUs />
+      <TeamTeaser />
+      <Testimonials />
+      <NotesTeaser locale={locale} />
       <ContactCTA />
     </>
   );

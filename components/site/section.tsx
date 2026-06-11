@@ -17,8 +17,10 @@ export function Section({
       id={id}
       className={cn(
         "py-24 md:py-32",
-        variant === "surface" && "bg-surface",
-        variant === "dark" && "bg-teranga-dark text-white",
+        // surface/dark variants kept transparent so the global site
+        // backdrop is the single source of truth for color rhythm —
+        // no more visible stripes between sections.
+        variant === "dark" && "dark:bg-teranga-dark dark:text-white",
         className,
       )}
     >

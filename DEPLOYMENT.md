@@ -3,6 +3,8 @@
 > Checklist opérationnelle pour le ship V1 sur `terangadev.com`.
 > Suivre dans l'ordre. Cocher au fur et à mesure.
 
+**Stack (branche `ibnou-v2`)** : Next.js 16 (Turbopack) · React 19 · **Node 22** · Payload CMS 3 · **SQLite** (`@payloadcms/db-sqlite` / libsql) · Resend (emails) · next-intl (FR/EN). Build vérifié **exit 0**, ESLint **0 erreur / 0 warning**, typecheck OK.
+
 ---
 
 ## 0. Pré-requis (avant de lancer le déploiement)
@@ -38,11 +40,12 @@
 - [ ] Fail2ban installé sur SSH
 
 ### Stack runtime
-- [ ] Node.js 22 LTS installé via nodesource
-- [ ] pnpm installé : `npm install -g pnpm`
+- [ ] Node.js **22 LTS** installé via nodesource — **requis** (des deps, dont `undici`, exigent les Web APIs de Node 22 ; Node 20 plante)
+- [ ] pnpm activé via corepack : `corepack enable && corepack prepare pnpm@latest --activate`
 - [ ] PM2 ou systemd unit pour process management
-- [ ] PostgreSQL 17 installé + secured (pg_hba.conf, password rotation)
-- [ ] Database Payload créée : `createdb terangadev`
+- [ ] **Base SQLite** (`@payloadcms/db-sqlite` / libsql) — **aucun serveur de base de données à provisionner**. Deux options :
+  - **Fichier local** (défaut, le plus simple) : la base vit dans un fichier sur le disque du VPS (ex. `/opt/terangadev/data/terangadev.db`), à inclure dans les backups.
+  - **libsql managé** (Turso / serveur libsql) : possible, mais le code ne lit aujourd'hui que `DATABASE_URI` comme `client.url` — un token d'auth nécessiterait d'ajouter `authToken` dans `payload.config.ts`.
 - [ ] Caddy ou Nginx pour reverse proxy + auto-HTTPS Let's Encrypt
 - [ ] Disk space monitoring (df, alertes > 80%)
 
@@ -54,18 +57,19 @@ NODE_ENV=production
 
 # Payload
 PAYLOAD_SECRET=<rotate via openssl rand -hex 32>
-DATABASE_URI=postgres://terangadev:<password>@localhost:5432/terangadev
+# SQLite/libsql — fichier local (défaut). Voir §1 pour l'option libsql managé.
+DATABASE_URI=file:/opt/terangadev/data/terangadev.db
 
-# Resend
+# Resend (formulaire /contact, via app/api/contact/route.ts)
 RESEND_API_KEY=re_<key>
 CONTACT_EMAIL=contact@terangadev.com
 CONTACT_FROM=TerangaDev <contact@terangadev.com>
-
-# Site URL
-NEXT_PUBLIC_SITE_URL=https://terangadev.com
 ```
 
+> ℹ️ **`NEXT_PUBLIC_SITE_URL` n'est plus requis** : l'URL canonique est codée en dur dans `lib/site-config.ts` (et reprise par `robots.ts` / `sitemap.ts`). Pour changer de domaine, éditer ce fichier.
+
 - [ ] Permissions strictes sur `.env.production` : `chmod 600`, owner = node user
+- [ ] Créer le dossier de la base : `mkdir -p /opt/terangadev/data` (si fichier SQLite local)
 
 ---
 
@@ -94,10 +98,11 @@ NEXT_PUBLIC_SITE_URL=https://terangadev.com
 
 ### Première mise en ligne
 - [ ] `git clone https://github.com/Momojr004/terangadev-studio.git /opt/terangadev/app`
-- [ ] `cd /opt/terangadev/app && pnpm install --frozen-lockfile`
-- [ ] `pnpm payload generate:importmap`
-- [ ] `pnpm payload migrate` (crée les tables PostgreSQL Payload)
-- [ ] `pnpm build` (vérifier 0 erreur)
+- [ ] `cd /opt/terangadev/app && git checkout ibnou-v2` (branche de travail courante — ou `main` une fois `ibnou-v2` mergée)
+- [ ] `pnpm install --frozen-lockfile` (avec **Node 22** actif)
+- [ ] `pnpm payload generate:importmap` — **requis** : génère `app/(payload)/admin/importMap.js` (gitignoré). Sans lui, le build casse sur la route `/admin`. *(Ce projet n'a aucun composant admin custom → le fichier généré est simplement `export const importMap = {}`.)*
+- [ ] **Migrations Payload (SQLite)** : aucune migration n'est versionnée dans le repo (pas de dossier `migrations/`). Lancer `pnpm payload migrate:create` (génère la 1ère migration) **puis** `pnpm payload migrate` (crée les tables). Committer le dossier `migrations/` pour les déploiements suivants.
+- [ ] `pnpm build` (vérifier **exit 0** — build validé localement : 21 routes compilées, 55 pages statiques générées)
 - [ ] `pnpm start --port 3000` ou via PM2 : `pm2 start "pnpm start" --name terangadev`
 - [ ] Vérifier que le service répond sur `localhost:3000`
 - [ ] Reverse proxy Caddy/Nginx pointe sur `localhost:3000`
@@ -111,7 +116,7 @@ NEXT_PUBLIC_SITE_URL=https://terangadev.com
 - [ ] `/services/plateformes-gestion` → service detail + tarifs
 - [ ] `/admin` → wizard Payload pour 1er user
 - [ ] `/api/contact` → POST avec payload valide retourne 200
-- [ ] `/sitemap.xml` → XML valide avec 51 URLs
+- [ ] `/sitemap.xml` → XML valide avec **46 URLs** (23 chemins × FR/EN : 10 statiques + 4 produits + 2 réalisations + 7 services)
 - [ ] `/robots.txt` → contenu correct
 
 ### Verifications EN
@@ -133,7 +138,7 @@ NEXT_PUBLIC_SITE_URL=https://terangadev.com
 ### Monitoring
 - [ ] UptimeRobot configuré : ping `/` toutes les 5 min, alerte mail si down
 - [ ] Logs PM2 ou systemd visibles (`pm2 logs` ou `journalctl -u terangadev`)
-- [ ] Backup PostgreSQL quotidien automatisé (cron `pg_dump` + S3-compatible storage OVH)
+- [ ] Backup SQLite quotidien automatisé (cron : `sqlite3 terangadev.db ".backup '/backups/terangadev-$(date +\%F).db'"` → storage S3-compatible OVH)
 - [ ] Plausible self-hosted ou cloud déployé (optionnel V1.0)
 
 ### SEO submission
@@ -173,7 +178,7 @@ NEXT_PUBLIC_SITE_URL=https://terangadev.com
 
 ### Si le build prod plante au déploiement
 - [ ] Rollback git : `git checkout <previous tag> && pnpm install && pnpm build && pm2 restart`
-- [ ] Si DB schema cassé : restore backup PostgreSQL le plus récent
+- [ ] Si DB cassée : restore le backup SQLite le plus récent (remplacer le fichier `terangadev.db` par la dernière copie `.backup`)
 
 ### Si DNS doit être basculé en urgence vers ancien site
 - [ ] Inverser A record vers IP ancien serveur
@@ -209,4 +214,4 @@ Items marqués comme "polish optionnel" pendant le V1 :
 ---
 
 *Document de référence pour le ship V1. À compléter et cocher au fur et à mesure.
-Dernière révision : 2026-05-04.*
+Dernière révision : 2026-06-11 — resync sur la branche `ibnou-v2` : stack DB **SQLite** (et non PostgreSQL), Node 22 requis, étapes importmap + migrations clarifiées, `NEXT_PUBLIC_SITE_URL` retiré (URL en dur). Build vérifié exit 0 + lint propre.*

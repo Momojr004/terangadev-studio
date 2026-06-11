@@ -5,20 +5,23 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 
 const schema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   company: z.string().min(1),
   message: z.string().optional(),
+  // Honeypot — must stay empty for humans; the API drops filled submissions.
+  company_url: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
 
-export function InterestForm() {
+export function InterestForm({ product }: { product?: string }) {
   const t = useTranslations("ProductDetail");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(false);
 
   const {
     register,
@@ -28,14 +31,19 @@ export function InterestForm() {
     resolver: zodResolver(schema),
   });
 
-  function onSubmit(_data: FormValues) {
-    // V0: simulate submission. Real Resend wiring will land in J+45.
-    return new Promise<void>((resolve) =>
-      setTimeout(() => {
-        setSubmitted(true);
-        resolve();
-      }, 600),
-    );
+  async function onSubmit(data: FormValues) {
+    setError(false);
+    try {
+      const res = await fetch("/api/interest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, product }),
+      });
+      if (!res.ok) throw new Error("submit failed");
+      setSubmitted(true);
+    } catch {
+      setError(true);
+    }
   }
 
   if (submitted) {
@@ -49,6 +57,23 @@ export function InterestForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+      {/* Honeypot — visually hidden, off the tab order, ignored by humans. */}
+      <input
+        {...register("company_url")}
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[-9999px] h-0 w-0 opacity-0"
+      />
+
+      {error && (
+        <div className="flex items-center gap-3 rounded-2xl border border-red-500/40 bg-red-500/5 p-4">
+          <AlertCircle className="size-5 shrink-0 text-red-500" />
+          <p className="text-sm">{t("formError")}</p>
+        </div>
+      )}
+
       <div className="grid gap-2">
         <label
           htmlFor="name"

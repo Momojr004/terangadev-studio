@@ -2,8 +2,9 @@
 
 import { useRef } from "react";
 import { extend, useFrame, type ThreeElement } from "@react-three/fiber";
-import { shaderMaterial, useScroll } from "@react-three/drei";
+import { shaderMaterial } from "@react-three/drei";
 import * as THREE from "three";
+import { useManifesteScroll } from "../scroll-source";
 
 /**
  * Ocean surface — Ch1-Ch3 of the manifeste scrollytelling.
@@ -80,21 +81,28 @@ ${SIMPLEX_3D_GLSL}
 void main() {
   vec3 pos = position;
 
-  // Base houle : two sine waves overlaid for organic motion.
-  // Period ~3-4s, amplitude up to 0.15 unit per brief.
+  // Calmer houle vs. previous pass — the manifesto chapters take the
+  // foreground; the ocean breathes behind them. Amplitudes reduced ~40%
+  // so the surface feels alive without competing with copy.
   float wave1 = sin(pos.x * 0.35 + uTime * 0.55) * 0.08;
   float wave2 = sin(pos.y * 0.28 + uTime * 0.40 + 1.7) * 0.07;
-  float baseDisp = wave1 + wave2;
+  float wave3 = sin((pos.x + pos.y) * 0.22 + uTime * 0.32) * 0.035;
+  float baseDisp = wave1 + wave2 + wave3;
 
-  // Ch2 ramp : 0.15 → 0.30 amplifies amplitude.
+  // Ambient simplex layer, gentle.
+  float ambientNoise = snoise(vec3(pos.xy * 0.22, uTime * 0.18)) * 0.05;
+
+  // Ch2 ramp.
   float houleRamp = smoothstep(0.15, 0.30, uScrollProgress);
-  float houleDisp = snoise(vec3(pos.xy * 0.18, uTime * 0.25)) * 0.18 * houleRamp;
+  float houleDisp = snoise(vec3(pos.xy * 0.18, uTime * 0.25)) * 0.16 * houleRamp;
 
-  // Ch3 ramp : 0.30 → 0.43 adds orthogonal "flow trajectories".
+  // Ch3 ramp.
   float flowRamp = smoothstep(0.30, 0.43, uScrollProgress);
   float flowA = snoise(vec3(pos.x * 0.55 - uTime * 0.6, pos.y * 0.05, 0.0));
   float flowB = snoise(vec3(pos.x * 0.05, pos.y * 0.55 + uTime * 0.45, 1.7));
-  float flowDisp = (flowA + flowB) * 0.06 * flowRamp;
+  float flowDisp = (flowA + flowB) * 0.05 * flowRamp;
+
+  baseDisp += ambientNoise;
 
   float displacement = baseDisp + houleDisp + flowDisp;
   pos.z += displacement;
@@ -117,20 +125,25 @@ varying float vDisplacement;
 varying vec3 vViewPosition;
 
 void main() {
-  // Gradient from deep (#1A4D6B) at troughs to mid (#2D5F7C) at crests.
-  // vDisplacement spans roughly [-0.2, +0.3]; remap to [0,1].
-  float h = clamp((vDisplacement + 0.2) / 0.5, 0.0, 1.0);
+  // Gradient from deep to mid. Now the displacement range is wider
+  // (~[-0.35, +0.45]) thanks to boosted wave amplitudes, so we remap
+  // accordingly to keep crests bright and troughs deeply blue.
+  float h = clamp((vDisplacement + 0.35) / 0.8, 0.0, 1.0);
   vec3 baseCol = mix(uColorDeep, uColorMid, h);
 
-  // Foam suggestion : subtle rim where displacement exceeds threshold.
-  float foam = smoothstep(0.12, 0.22, vDisplacement);
-  baseCol = mix(baseCol, uColorFoam, foam * 0.55);
+  // Foam : subtle rim, dialed back so the ocean stays atmospheric and
+  // doesn't compete with chapter typography.
+  float foam = smoothstep(0.10, 0.22, vDisplacement);
+  baseCol = mix(baseCol, uColorFoam, foam * 0.45);
 
-  // Atmospheric fog by view-space distance — camera at Ch1 sits at
-  // distance ~8 from origin, so push fog to [15, 40] to keep the near
-  // ocean clearly visible while distant edges still dissolve to bg.
+  // Atmospheric fog by view-space distance. Camera at Ch1 sits ~8 units
+  // from origin and the ocean plane spans 60 units, so corner vertices
+  // reach ~37 units. Previous [15, 40] range meant ALL but a small near
+  // disc was fogged into the bg color — visually killing the scene.
+  // [45, 110] keeps the full visible plane readable as ocean before the
+  // horizon dissolves.
   float dist = length(vViewPosition);
-  float fogFactor = smoothstep(15.0, 40.0, dist);
+  float fogFactor = smoothstep(45.0, 110.0, dist);
   vec3 finalCol = mix(baseCol, uFogColor, fogFactor);
 
   gl_FragColor = vec4(finalCol, 1.0);
@@ -141,9 +154,12 @@ const OceanShaderMaterial = shaderMaterial(
   {
     uTime: 0,
     uScrollProgress: 0,
-    uColorDeep: new THREE.Color("#1A4D6B"),
-    uColorMid: new THREE.Color("#2D5F7C"),
-    uColorFoam: new THREE.Color("#B8C5D6"),
+    // Palette refresh: deeper, more saturated blues plus brighter foam so
+    // crests catch the light. Anchored on the brand gradient so the ocean
+    // visually belongs to the same world as the logo and the CTAs.
+    uColorDeep: new THREE.Color("#0A4870"),
+    uColorMid: new THREE.Color("#3E8FBD"),
+    uColorFoam: new THREE.Color("#E0EAF5"),
     uFogColor: new THREE.Color("#0A1628"),
   },
   VERTEX_SHADER,
@@ -168,7 +184,7 @@ type OceanShaderMaterialImpl = THREE.ShaderMaterial & {
 
 export function OceanPlane() {
   const materialRef = useRef<OceanShaderMaterialImpl>(null);
-  const scroll = useScroll();
+  const scroll = useManifesteScroll();
 
   useFrame((state) => {
     if (!materialRef.current) return;
@@ -182,7 +198,10 @@ export function OceanPlane() {
 
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]}>
-      <planeGeometry args={[60, 60, 80, 80]} />
+      {/* Higher tessellation so the boosted wave amplitudes don't reveal
+          triangular faceting at grazing angles. 120×120 still cheap on
+          modern GPUs (~14k tris). */}
+      <planeGeometry args={[80, 80, 140, 140]} />
       <oceanShaderMaterial ref={materialRef} />
     </mesh>
   );

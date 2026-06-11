@@ -9,6 +9,9 @@ import {
   Permanent_Marker,
   JetBrains_Mono,
 } from "next/font/google";
+import { ChapterHeader } from "./chapter-header";
+import { DecorativeScatter } from "./decorative-scatter";
+import { ChapterAtmosphere } from "./chapter-atmosphere";
 
 const typewriter = Special_Elite({
   subsets: ["latin"],
@@ -92,61 +95,81 @@ export function Chapter3Excuses() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-dvh flex-col overflow-hidden bg-[#14130f] px-6 py-24 md:px-16 lg:px-24"
+      id="chapter-3"
+      className="relative flex min-h-dvh flex-col overflow-hidden px-6 py-24 md:px-16 lg:px-24"
     >
-      {/* Concrete wall texture */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.35] mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E")`,
-        }}
-      />
+      {/* Narrative atmosphere : crosses drawing over the excuses */}
+      <ChapterAtmosphere kind="crosses" />
 
-      {/* Subtle warm street-lamp light from top-right */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-20"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 60% at 80% 0%, #c89060 0%, transparent 55%)",
-        }}
-      />
-
-      {/* Vignette */}
+      {/* Chapter-tinted halo : magenta/fuchsia wash — chorus of voices. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at center, transparent 25%, rgba(0,0,0,0.7) 100%)",
+            "radial-gradient(ellipse at 50% 50%, rgba(232,121,249,0.10) 0%, rgba(6,16,32,0.55) 60%, rgba(6,16,32,0.75) 100%)",
         }}
       />
 
-      {/* Chapter label */}
-      <p
-        style={{ animationDelay: "0s" } as CSSProperties}
-        className={`relative z-10 manifeste-citation ${inView ? "is-visible" : ""} ${typewriter.className} text-[10px] uppercase tracking-[0.4em] text-amber-700/70 md:text-xs`}
-      >
-        {t("label")}
-      </p>
+      <DecorativeScatter
+        items={[
+          { content: "(souvent)", top: "5%", right: "3%", rotate: 5, color: "rgba(255,255,255,0.3)", size: "text-xs" },
+          { content: "✕", top: "8%", left: "3%", rotate: -12, size: "text-2xl", color: "rgba(252,211,77,0.3)", mono: false },
+          { content: "→ datée", top: "94%", right: "4%", rotate: 4, color: "rgba(252,211,77,0.45)", size: "text-xs", spaced: true },
+          { content: "?", top: "92%", left: "3%", rotate: 8, size: "text-3xl", color: "rgba(253,164,175,0.25)", mono: false },
+        ]}
+      />
 
-      {/* Scattered citations on wall */}
-      <div className="relative z-10 flex-1">
-        {citations.map((c, i) => (
-          <p
-            key={i}
-            style={
-              {
-                transform: `rotate(${c.rotation}deg)`,
-                animationDelay: `${c.delay}s`,
-              } as CSSProperties
-            }
-            className={`manifeste-citation ${inView ? "is-visible" : ""} absolute max-w-md ${c.position} ${c.fontClass} ${c.size} ${c.color} leading-tight tracking-tight md:max-w-xl`}
-          >
-            {c.text}
+      <ChapterHeader index={3} title={t("title")} theme="magenta" />
+
+      {/* Citations + responses : structured grid so each excuse meets
+          its real answer. Citations preserve their multi-typo character
+          (typewriter, italic serif, marker, stencil) so the chapter still
+          reads as a "wall of voices" — but paired with our rebuttals. */}
+      <div className="relative z-10 mt-4 grid gap-x-12 gap-y-10 md:grid-cols-12 md:gap-y-14">
+        <div className="flex items-baseline gap-3 md:col-span-12">
+          <span className="from-teranga-secondary to-teranga-primary inline-block h-px w-10 bg-gradient-to-r" />
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/45">
+            04 excuses · 04 réponses
           </p>
-        ))}
+        </div>
+        {citations.map((c, i) => {
+          const rebutKey = `rebut${i + 1}` as
+            | "rebut1"
+            | "rebut2"
+            | "rebut3"
+            | "rebut4";
+          return (
+            <div
+              key={i}
+              className="contents"
+              style={{ animationDelay: `${c.delay}s` } as CSSProperties}
+            >
+              <div className="md:col-span-6">
+                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/30">
+                  0{i + 1} · excuse
+                </span>
+                <p
+                  style={{ animationDelay: `${c.delay}s` } as CSSProperties}
+                  className={`manifeste-citation ${inView ? "is-visible" : ""} mt-3 ${c.fontClass} ${c.size} ${c.color} leading-[1.05] tracking-tight`}
+                >
+                  {c.text}
+                </p>
+              </div>
+              <div className="md:col-span-6 md:border-l md:border-white/10 md:pl-8">
+                <span className="text-teranga-secondary font-mono text-[10px] uppercase tracking-[0.3em]">
+                  0{i + 1} · {t("rebutTitle").toLowerCase()}
+                </span>
+                <p
+                  style={{ animationDelay: `${c.delay + 0.35}s` } as CSSProperties}
+                  className={`manifeste-citation ${inView ? "is-visible" : ""} ${editorial.className} mt-3 text-lg leading-snug text-white/85 md:text-xl`}
+                >
+                  {t(rebutKey)}
+                </p>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Punchline — center bottom, definitive */}

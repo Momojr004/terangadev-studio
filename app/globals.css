@@ -11,7 +11,11 @@
   --color-tech-gray: #8e9196;
   --color-tech-gray-light: #f6f6f7;
 
-  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  /* Main display font is now Plus Jakarta Sans (Google-Sans-like)
+     across the whole site. Newsreader stays available for editorial
+     italic moments via var(--font-newsreader). */
+  --font-display: var(--font-plus-jakarta-sans), system-ui, -apple-system, sans-serif;
+  --font-editorial: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 
@@ -70,11 +74,32 @@
 
 @layer base {
   :root {
-    --bg: #ffffff;
+    /* Light mode: cool off-white base + manifeste-style blue auroras.
+       --bg and --surface set to the SAME value so alternating
+       sections don't create any visible stripe at all. */
+    --bg: #f7f9fc;
     --fg: #1a1b22;
     --muted: #6b7280;
-    --border: #e5e7eb;
-    --surface: #f6f6f7;
+    --border: #e3e8ef;
+    --surface: #f7f9fc;
+
+    /* Site backdrop — LIGHT: three blue auroras drifting on the
+       cool off-white base. Same "shining/breathing" feel as the
+       manifeste dark backdrop, just inverted for a light surface. */
+    --backdrop-base: #f7f9fc;
+    --backdrop-grad: linear-gradient(
+      180deg,
+      #fbfcfe 0%,
+      #f4f7fb 55%,
+      #eef2f8 100%
+    );
+    --blob-a: rgba(78, 168, 249, 0.55);   /* brand cyan — bright */
+    --blob-b: rgba(126, 178, 240, 0.45);  /* soft sky blue */
+    --blob-c: rgba(167, 206, 247, 0.50);  /* pale periwinkle */
+    --blob-op-a: 0.85;
+    --blob-op-b: 0.75;
+    --blob-op-c: 0.8;
+    --vignette: none;
   }
 
   .dark {
@@ -83,6 +108,26 @@
     --muted: #94a3b8;
     --border: #1e293b;
     --surface: #111827;
+
+    /* Site backdrop — DARK palette: saturated auroras on a navy base */
+    --backdrop-base: #04060e;
+    --backdrop-grad: linear-gradient(
+      180deg,
+      rgba(6, 16, 31, 0.96) 0%,
+      rgba(5, 8, 17, 0.94) 55%,
+      rgba(4, 6, 14, 0.96) 100%
+    );
+    --blob-a: rgba(78, 168, 249, 0.55);   /* brand cyan */
+    --blob-b: rgba(167, 139, 250, 0.50);  /* violet */
+    --blob-c: rgba(125, 211, 192, 0.50);  /* teal */
+    --blob-op-a: 0.5;
+    --blob-op-b: 0.45;
+    --blob-op-c: 0.45;
+    --vignette: radial-gradient(
+      ellipse 120% 90% at 50% 50%,
+      transparent 50%,
+      rgba(2, 4, 10, 0.55) 100%
+    );
   }
 
   html {
@@ -108,12 +153,19 @@
   }
 
   body {
-    background-color: var(--color-bg);
+    /* Background is now painted by .site-backdrop (fixed, -z-10) so
+       blobs can show through. Theme bg color still applies to the
+       html element below as a fallback. */
+    background-color: transparent;
     color: var(--color-fg);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  html {
+    background-color: var(--color-bg);
   }
 
   ::selection {
@@ -131,6 +183,349 @@
       scroll-behavior: auto !important;
     }
   }
+}
+
+/* ------------------------------------------------------------------
+   Blob backdrop keyframes — defined globally because React 19's Float
+   hoists <style> tags rendered at body-level out of the component
+   tree, which broke the SiteBackdrop hydration. Keeping them here
+   lets both ManifesteBackdrop and SiteBackdrop reference them with
+   the same animation-name without rendering their own <style>.
+   ------------------------------------------------------------------ */
+
+@keyframes manifesteBlobA {
+  0%   { transform: translate3d(-12vw, -8vh, 0) scale(1.00); }
+  50%  { transform: translate3d( 10vw,  6vh, 0) scale(1.18); }
+  100% { transform: translate3d(-12vw, -8vh, 0) scale(1.00); }
+}
+@keyframes manifesteBlobB {
+  0%   { transform: translate3d( 14vw, -6vh, 0) scale(1.10); }
+  50%  { transform: translate3d(-8vw,  10vh, 0) scale(0.92); }
+  100% { transform: translate3d( 14vw, -6vh, 0) scale(1.10); }
+}
+@keyframes manifesteBlobC {
+  0%   { transform: translate3d(-6vw,  12vh, 0) scale(0.95); }
+  50%  { transform: translate3d( 12vw, -4vh, 0) scale(1.20); }
+  100% { transform: translate3d(-6vw,  12vh, 0) scale(0.95); }
+}
+@keyframes manifesteBlobD {
+  0%   { transform: translate3d( 10vw,  8vh, 0) scale(1.05); }
+  50%  { transform: translate3d(-14vw, -10vh, 0) scale(1.25); }
+  100% { transform: translate3d( 10vw,  8vh, 0) scale(1.05); }
+}
+@keyframes siteBlobA {
+  0%   { transform: translate3d(-10vw, -8vh, 0) scale(1.00); }
+  50%  { transform: translate3d( 12vw,  6vh, 0) scale(1.18); }
+  100% { transform: translate3d(-10vw, -8vh, 0) scale(1.00); }
+}
+@keyframes siteBlobB {
+  0%   { transform: translate3d( 12vw, -4vh, 0) scale(1.10); }
+  50%  { transform: translate3d(-8vw,  10vh, 0) scale(0.92); }
+  100% { transform: translate3d( 12vw, -4vh, 0) scale(1.10); }
+}
+@keyframes siteBlobC {
+  0%   { transform: translate3d(-8vw,  10vh, 0) scale(0.95); }
+  50%  { transform: translate3d( 10vw, -6vh, 0) scale(1.20); }
+  100% { transform: translate3d(-8vw,  10vh, 0) scale(0.95); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .manifeste-blob,
+  .site-blob {
+    animation: none !important;
+  }
+}
+
+/* Floating tech icons — 3 subtle float variants. Vertical + slight
+   horizontal drift + opacity pulse to feel "alive" without distracting. */
+@keyframes iconFloatA {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%      { transform: translate3d(4px, -10px, 0) rotate(6deg); }
+}
+@keyframes iconFloatB {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%      { transform: translate3d(-6px, 8px, 0) rotate(-5deg); }
+}
+@keyframes iconFloatC {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%      { transform: translate3d(8px, 6px, 0) rotate(4deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  span[style*="iconFloat"] { animation: none !important; }
+}
+
+/* Decorative SVG blobs (labs.google-inspired) — combined drift +
+   rotation + breathing scale. 4 desynchronized variants per section.
+   Amplitudes and scale pulses are tuned so motion is visibly alive
+   without being distracting. */
+@keyframes blobDriftA {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  25%  { transform: translate3d(40px, -30px, 0) rotate(90deg) scale(1.08); }
+  50%  { transform: translate3d(60px, 20px, 0) rotate(180deg) scale(0.94); }
+  75%  { transform: translate3d(20px, 40px, 0) rotate(270deg) scale(1.05); }
+  100% { transform: translate3d(0, 0, 0) rotate(360deg) scale(1); }
+}
+@keyframes blobDriftB {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  25%  { transform: translate3d(-50px, 25px, 0) rotate(-80deg) scale(0.92); }
+  50%  { transform: translate3d(-30px, -35px, 0) rotate(-180deg) scale(1.1); }
+  75%  { transform: translate3d(35px, -15px, 0) rotate(-280deg) scale(0.96); }
+  100% { transform: translate3d(0, 0, 0) rotate(-360deg) scale(1); }
+}
+@keyframes blobDriftC {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  25%  { transform: translate3d(30px, 45px, 0) rotate(70deg) scale(1.06); }
+  50%  { transform: translate3d(-20px, 50px, 0) rotate(140deg) scale(0.9); }
+  75%  { transform: translate3d(-40px, 10px, 0) rotate(250deg) scale(1.08); }
+  100% { transform: translate3d(0, 0, 0) rotate(360deg) scale(1); }
+}
+@keyframes blobDriftD {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  25%  { transform: translate3d(-25px, -40px, 0) rotate(-100deg) scale(1.07); }
+  50%  { transform: translate3d(-50px, 30px, 0) rotate(-200deg) scale(0.94); }
+  75%  { transform: translate3d(15px, 35px, 0) rotate(-300deg) scale(1.04); }
+  100% { transform: translate3d(0, 0, 0) rotate(-360deg) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  svg[style*="blobDrift"] { animation: none !important; }
+}
+
+/* Hero keyword constellation — floating monospace words behind the
+   hero headline. Each word picks one of these three drift loops. */
+.hero-keyword {
+  color: var(--color-teranga-primary);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+@keyframes heroKeyword_driftA {
+  0%   { opacity: 0;    transform: translate3d(-8px,  6px, 0); }
+  20%  { opacity: 0.12; }
+  50%  { opacity: 0.16; transform: translate3d(10px, -10px, 0); }
+  80%  { opacity: 0.10; }
+  100% { opacity: 0;    transform: translate3d(-8px,  6px, 0); }
+}
+@keyframes heroKeyword_driftB {
+  0%   { opacity: 0;    transform: translate3d(6px,  -8px, 0); }
+  25%  { opacity: 0.10; }
+  50%  { opacity: 0.18; transform: translate3d(-12px, 10px, 0); }
+  75%  { opacity: 0.08; }
+  100% { opacity: 0;    transform: translate3d(6px,  -8px, 0); }
+}
+@keyframes heroKeyword_driftC {
+  0%   { opacity: 0;    transform: translate3d(0,    -6px, 0); }
+  30%  { opacity: 0.14; }
+  50%  { opacity: 0.20; transform: translate3d(8px,   8px, 0); }
+  70%  { opacity: 0.10; }
+  100% { opacity: 0;    transform: translate3d(0,    -6px, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-keyword { animation: none !important; opacity: 0.08 !important; }
+}
+
+/* ========================================================
+   Manifeste — atmospheric particles per chapter (storytelling)
+   ======================================================== */
+
+/* Ch1 — Papier : feuilles qui tombent en virevoltant */
+@keyframes paperFall {
+  0%   { transform: translate3d(0, -10vh, 0) rotate(0deg);  opacity: 0;   }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.7; }
+  100% { transform: translate3d(20vw, 110vh, 0) rotate(720deg); opacity: 0; }
+}
+.paper-sheet {
+  position: absolute;
+  width: 28px;
+  height: 36px;
+  border-radius: 2px;
+  background: linear-gradient(135deg, #f5f0e1 0%, #e8e0c8 100%);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  animation: paperFall linear infinite;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* Ch2 — Coût : chiffres FCFA qui descendent en pluie */
+@keyframes moneyFall {
+  0%   { transform: translate3d(0, -10vh, 0); opacity: 0;  }
+  15%  { opacity: 0.55; }
+  85%  { opacity: 0.55; }
+  100% { transform: translate3d(0, 110vh, 0); opacity: 0; }
+}
+.money-drop {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: rgba(251, 113, 133, 0.85); /* magenta-pink — "ce que tu paies sans le savoir" */
+  text-shadow: 0 0 8px rgba(251, 113, 133, 0.4);
+  animation: moneyFall linear infinite;
+  will-change: transform, opacity;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Ch3 — Excuses : barrures diagonales qui se dessinent puis s'effacent */
+@keyframes crossDraw {
+  0%, 100% { stroke-dashoffset: 200; opacity: 0; }
+  20%      { opacity: 0.6; }
+  50%      { stroke-dashoffset: 0;   opacity: 0.6; }
+  80%      { opacity: 0.4; }
+}
+.excuse-cross {
+  position: absolute;
+  pointer-events: none;
+  stroke-dasharray: 200;
+  animation: crossDraw 6s ease-in-out infinite;
+}
+
+/* Ch5 — Chemins : 3 dots qui glissent verticalement le long des beams */
+@keyframes beamTravel {
+  0%   { transform: translate3d(0, -20vh, 0) scale(0.6); opacity: 0; }
+  20%  { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  80%  { opacity: 1; }
+  100% { transform: translate3d(0, 120vh, 0) scale(0.6); opacity: 0; }
+}
+.beam-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0.4) 60%, transparent 80%);
+  box-shadow: 0 0 16px 4px rgba(78, 168, 249, 0.55);
+  animation: beamTravel ease-in-out infinite;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* Ch6 — Condition : 4 dots qui pulsent (= 4 conditions) */
+@keyframes conditionPulse {
+  0%, 100% { transform: scale(1);   opacity: 0.35; box-shadow: 0 0 12px 2px rgba(78,168,249,0.4); }
+  50%      { transform: scale(1.4); opacity: 0.9;  box-shadow: 0 0 28px 6px rgba(78,168,249,0.7); }
+}
+.condition-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4EA8F9;
+  animation: conditionPulse ease-in-out infinite;
+  will-change: transform, opacity, box-shadow;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paper-sheet,
+  .money-drop,
+  .excuse-cross,
+  .beam-dot,
+  .condition-dot {
+    animation: none !important;
+    opacity: 0.4 !important;
+  }
+}
+
+/* Manifeste sparkles — small soft points that twinkle (scale +
+   opacity) on random staggered loops. Larger, brighter than v1 and
+   with a stronger glow so they read like real twinkling stars. */
+@keyframes manifesteSparkle {
+  0%, 100% { opacity: 0;    transform: translate3d(0, 0, 0) scale(0.3); }
+  40%      { opacity: 1;    transform: translate3d(20px, -30px, 0) scale(1.1); }
+  60%      { opacity: 0.9;  transform: translate3d(35px, -45px, 0) scale(1); }
+}
+@keyframes manifesteSparkleAlt {
+  0%, 100% { opacity: 0;    transform: translate3d(0, 0, 0) scale(0.3); }
+  40%      { opacity: 1;    transform: translate3d(-25px, 35px, 0) scale(1.1); }
+  60%      { opacity: 0.9;  transform: translate3d(-40px, 50px, 0) scale(1); }
+}
+@keyframes manifesteSparkleDiag {
+  0%, 100% { opacity: 0;    transform: translate3d(0, 0, 0) scale(0.3); }
+  40%      { opacity: 1;    transform: translate3d(28px, 22px, 0) scale(1.1); }
+  60%      { opacity: 0.9;  transform: translate3d(40px, 35px, 0) scale(1); }
+}
+.manifeste-sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(220, 240, 255, 0.6) 35%,
+    rgba(255, 255, 255, 0) 75%
+  );
+  box-shadow:
+    0 0 12px 2px rgba(125, 211, 192, 0.55),
+    0 0 22px 4px rgba(78, 168, 249, 0.25);
+  animation-name: manifesteSparkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  pointer-events: none;
+}
+.manifeste-sparkle--lg {
+  width: 12px;
+  height: 12px;
+  box-shadow:
+    0 0 18px 3px rgba(125, 211, 192, 0.7),
+    0 0 36px 6px rgba(78, 168, 249, 0.35);
+}
+.manifeste-sparkle--sm {
+  width: 4px;
+  height: 4px;
+  box-shadow: 0 0 6px 1px rgba(125, 211, 192, 0.5);
+}
+@media (prefers-reduced-motion: reduce) {
+  .manifeste-sparkle { animation: none !important; opacity: 0.5 !important; }
+}
+
+/* Site-wide backdrop (rendered in [locale]/layout.tsx).
+   Theme-aware via custom properties defined in :root (light) and
+   .dark (dark). Manifeste keeps its own stronger backdrop and
+   overlays this one. */
+.site-backdrop {
+  background-color: var(--backdrop-base);
+  background-image: var(--backdrop-grad);
+}
+
+.site-blob {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+  pointer-events: none;
+}
+.site-blob--a {
+  top: -20%;
+  left: -15%;
+  width: 90vmin;
+  height: 90vmin;
+  background: radial-gradient(circle, var(--blob-a) 0%, rgba(0, 0, 0, 0) 78%);
+  filter: blur(80px);
+  opacity: var(--blob-op-a);
+  animation: siteBlobA 20s ease-in-out 0s infinite;
+}
+.site-blob--b {
+  top: 30%;
+  left: 55%;
+  width: 85vmin;
+  height: 85vmin;
+  background: radial-gradient(circle, var(--blob-b) 0%, rgba(0, 0, 0, 0) 78%);
+  filter: blur(80px);
+  opacity: var(--blob-op-b);
+  animation: siteBlobB 24s ease-in-out -6s infinite;
+}
+.site-blob--c {
+  top: 60%;
+  left: -10%;
+  width: 85vmin;
+  height: 85vmin;
+  background: radial-gradient(circle, var(--blob-c) 0%, rgba(0, 0, 0, 0) 78%);
+  filter: blur(90px);
+  opacity: var(--blob-op-c);
+  animation: siteBlobC 26s ease-in-out -14s infinite;
+}
+.site-vignette {
+  position: absolute;
+  inset: 0;
+  background: var(--vignette);
 }
 
 /* === Manifeste — CSS-driven animations (deterministic, bypass Framer cascade bug) === */

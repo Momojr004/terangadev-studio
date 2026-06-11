@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
+import { clientIp, isRateLimited } from "@/lib/rate-limit";
+
+const RATE_LIMIT_MAX = 5; // requests…
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // …per 10 minutes / IP
 
 const schema = z.object({
   name: z.string().min(2),
@@ -60,7 +64,32 @@ Reply directement à ce message — l'email du prospect est dans Reply-To.
 
 export async function POST(request: Request) {
   try {
+    // 1. Rate limit per IP (cheapest gate first).
+    if (
+      isRateLimited(
+        `contact:${clientIp(request)}`,
+        RATE_LIMIT_MAX,
+        RATE_LIMIT_WINDOW_MS,
+      )
+    ) {
+      return NextResponse.json(
+        { ok: false, error: "rate_limited" },
+        { status: 429 },
+      );
+    }
+
     const body = await request.json();
+
+    // 2. Honeypot : `company_url` is a hidden field no human fills. If a bot
+    //    populated it, pretend success and drop the submission silently.
+    if (
+      typeof body?.company_url === "string" &&
+      body.company_url.trim() !== ""
+    ) {
+      return NextResponse.json({ ok: true });
+    }
+
+    // 3. Validate (zod strips the honeypot and any other extra keys).
     const data = schema.parse(body);
 
     const apiKey = process.env.RESEND_API_KEY;

@@ -10,6 +10,7 @@ import {
   SectionHeadline,
 } from "@/components/site/section";
 import { staggerParent, staggerChild } from "@/components/motion/reveal";
+import { SectionBlobs } from "@/components/site/section-blobs";
 
 export function ICPPaths() {
   const t = useTranslations("ICP");
@@ -36,8 +37,34 @@ export function ICPPaths() {
   ];
 
   return (
-    <Section>
-      <div className="max-w-3xl">
+    <Section className="relative overflow-x-clip">
+      <SectionBlobs
+        blobs={[
+          {
+            shape: "blob4",
+            color: "#A78BFA",
+            size: "28vw",
+            position: { top: "10%", right: "-12%" },
+            rotation: 20,
+            animation: "blobDriftC",
+            duration: 18,
+            opacity: 0.55,
+          },
+          {
+            shape: "blob1",
+            color: "#7CE891",
+            size: "22vw",
+            position: { bottom: "-12%", left: "5%" },
+            rotation: -10,
+            animation: "blobDriftA",
+            duration: 22,
+            delay: -8,
+            opacity: 0.45,
+          },
+        ]}
+      />
+
+      <div className="relative max-w-3xl">
         <SectionTag>{t("tag")}</SectionTag>
         <SectionHeadline>{t("headline")}</SectionHeadline>
       </div>
@@ -47,7 +74,7 @@ export function ICPPaths() {
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
         variants={staggerParent}
-        className="mt-16 grid gap-6 md:grid-cols-3"
+        className="relative mt-16 grid gap-6 md:grid-cols-3"
       >
         {cards.map((card, idx) => (
           <motion.li

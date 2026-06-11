@@ -8,7 +8,7 @@
 
 ## 0. Contexte
 
-- **Entreprise** : TerangaDev — agence/studio IT sénégalais, fondée en 2022
+- **Entreprise** : TerangaDev — agence/studio IT sénégalais, fondée en 2024
 - **CEO & co-fondateur** : Arona Momo ("Serigne bi"), basé à Dakar
 - **Équipe** : Arona, Babacar Diop, Mouhamed (lead refonte), Rane, Ibnou, Yabaye
 - **Site existant** : terangadev.com (générique, à remplacer)
@@ -24,7 +24,7 @@
 ## 1. Positionnement
 
 ### One-liner officiel — Hero principal
-> **Le seul studio à Dakar qui shippe ses propres SaaS depuis 2022 — et qui t'accompagne de l'idée à la maintenance.**
+> **Le seul studio à Dakar qui shippe ses propres SaaS depuis 2024 — et qui t'accompagne de l'idée à la maintenance.**
 
 ### Tagline courte — sous logo, signatures, meta description
 > **Studio produit dakarois.**
@@ -67,7 +67,7 @@
 | Metric | Valeur | Source |
 |---|---|---|
 | **SaaS en prod sous notre marque** | **4** (Créneau, Nurapic, Sama Reservation, Ticket-Events) | Direct |
-| **Projets livrés depuis 2022** | **~30** (vitrines, e-com, plateformes incluses) | Estimation |
+| **Projets livrés depuis 2024** | **~30** (vitrines, e-com, plateformes incluses) | Estimation |
 | **Clients sous contrat de maintenance actif** | **6** | Direct |
 | **Délai record de livraison** | **Hydrautech : <2 mois** (plateforme gestion + formation 10+ employés + 200+ matériels tracés) | Direct |
 | **Délai d'avance moyen** | **Ndougalma : 5 mois → 3 mois** (livré 2 mois en avance) | Direct |
@@ -222,7 +222,7 @@ Produits  ·  Réalisations  ·  Services  ·  Notes  ·  Studio          [Discu
 │  ┌─────────────────────────┬─────────────────────────────────────┐  │
 │  │ Le seul studio à Dakar  │  [Scène R3F — V1: gradient GSAP    │  │
 │  │ qui shippe ses propres  │   animé / V2: WebGL custom]         │  │
-│  │ SaaS depuis 2022 —      │                                      │  │
+│  │ SaaS depuis 2024 —      │                                      │  │
 │  │ et qui t'accompagne     │                                      │  │
 │  │ de l'idée à la          │                                      │  │
 │  │ maintenance.            │                                      │  │

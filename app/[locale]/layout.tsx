@@ -74,6 +74,20 @@ export default async function LocaleLayout({
         enableSystem
         disableTransitionOnChange
       >
+        {/* Pure-CSS site-wide backdrop — server-rendered, no client
+            component. Sits OUTSIDE LenisProvider to avoid hydration
+            interference from ReactLenis root manipulation. The
+            manifeste route renders its own stronger backdrop at z:0
+            that covers this one. */}
+        <div
+          aria-hidden
+          className="site-backdrop pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+        >
+          <div className="site-blob site-blob--a" />
+          <div className="site-blob site-blob--b" />
+          <div className="site-blob site-blob--c" />
+          <div className="site-vignette" />
+        </div>
         <LenisProvider>
           <ConditionalShell header={<Header />} footer={<Footer />}>
             {children}
