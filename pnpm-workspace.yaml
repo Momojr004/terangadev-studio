@@ -10,3 +10,7 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - unrs-resolver
+# Sécurité : force fast-uri >=3.1.2 (CVE path-traversal / host-confusion).
+# Dép. transitive via @payloadcms/db-sqlite > @payloadcms/drizzle.
+overrides:
+  fast-uri: '^3.1.2'
