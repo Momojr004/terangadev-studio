@@ -5,6 +5,7 @@ import { extend, useFrame, type ThreeElement } from "@react-three/fiber";
 import { shaderMaterial } from "@react-three/drei";
 import * as THREE from "three";
 import { useManifesteScroll } from "../scroll-source";
+import { mulberry32 } from "@/lib/rng";
 
 /**
  * Drifting sparkle field above the ocean.
@@ -109,24 +110,25 @@ export function ParticleFlow() {
   // Initial particle attributes : positions skewed toward camera Z,
   // size/twinkle randomised per particle.
   const buffers = useMemo(() => {
+    const rand = mulberry32(0x5eed_f10e);
     const positions = new Float32Array(PARTICLE_COUNT * 3);
     const sizes = new Float32Array(PARTICLE_COUNT);
     const phases = new Float32Array(PARTICLE_COUNT);
     const twinkleAmps = new Float32Array(PARTICLE_COUNT);
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const zBias = (Math.random() - 0.5) * 2;
+      const zBias = (rand() - 0.5) * 2;
       const z =
         zBias < 0
           ? -Math.pow(Math.abs(zBias), 1.4) * FIELD_RADIUS
           : Math.pow(zBias, 1.4) * FIELD_RADIUS;
-      positions[i * 3 + 0] = (Math.random() - 0.5) * 2 * FIELD_RADIUS;
-      positions[i * 3 + 1] = FIELD_Y_BASE + Math.random() * FIELD_HEIGHT;
+      positions[i * 3 + 0] = (rand() - 0.5) * 2 * FIELD_RADIUS;
+      positions[i * 3 + 1] = FIELD_Y_BASE + rand() * FIELD_HEIGHT;
       positions[i * 3 + 2] = z;
       // Size skewed low : most particles small, a few are bright sparkles.
-      sizes[i] = 0.5 + Math.pow(Math.random(), 2.4) * 2.8;
-      phases[i] = Math.random();
-      twinkleAmps[i] = 0.4 + Math.random() * 0.6;
+      sizes[i] = 0.5 + Math.pow(rand(), 2.4) * 2.8;
+      phases[i] = rand();
+      twinkleAmps[i] = 0.4 + rand() * 0.6;
     }
     return { positions, sizes, phases, twinkleAmps };
   }, []);

@@ -85,7 +85,7 @@ function TicketMockup({ accent }: { accent: string }) {
           <span className="text-[10px] uppercase tracking-[0.18em] text-white/60">Évènements</span>
           <span className="text-[10px] uppercase tracking-[0.18em] text-white/60">Organiser</span>
           <span className="rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-white" style={{ background: accent }}>
-            S'inscrire
+            S&apos;inscrire
           </span>
         </div>
       </div>

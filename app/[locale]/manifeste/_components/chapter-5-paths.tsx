@@ -3,7 +3,7 @@
 import { useRef, type CSSProperties } from "react";
 import { useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { Plus_Jakarta_Sans, JetBrains_Mono, Special_Elite } from "next/font/google";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { ChapterHeader } from "./chapter-header";
 import { DecorativeScatter } from "./decorative-scatter";
 import { ChapterAtmosphere } from "./chapter-atmosphere";
@@ -17,12 +17,6 @@ const editorial = Plus_Jakarta_Sans({
 const mono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
-  display: "swap",
-});
-
-const typewriter = Special_Elite({
-  subsets: ["latin"],
-  weight: ["400"],
   display: "swap",
 });
 

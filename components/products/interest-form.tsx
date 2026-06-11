@@ -28,7 +28,7 @@ export function InterestForm() {
     resolver: zodResolver(schema),
   });
 
-  function onSubmit(_data: FormValues) {
+  function onSubmit() {
     // V0: simulate submission. Real Resend wiring will land in J+45.
     return new Promise<void>((resolve) =>
       setTimeout(() => {

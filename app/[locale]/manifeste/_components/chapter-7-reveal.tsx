@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { Plus_Jakarta_Sans, Special_Elite } from "next/font/google";
 import { useRouter } from "@/i18n/navigation";
+import { mulberry32 } from "@/lib/rng";
 import { ChapterHeader, gradientTextStyle } from "./chapter-header";
 import { DecorativeScatter } from "./decorative-scatter";
 
@@ -22,17 +23,24 @@ const typewriter = Special_Elite({
   display: "swap",
 });
 
-function ConvergingDots() {
-  // 24 dots, distributed around the edges, animated to converge toward center
-  const positions = Array.from({ length: 24 }, (_, i) => {
+// 24 dots distributed around the edges, animated to converge toward center.
+// Computed once at module scope with a fixed seed : deterministic, so the
+// inline positions baked into SSR'd DOM hydrate without a mismatch.
+const CONVERGING_DOTS = (() => {
+  const rand = mulberry32(0xc0_07_d075);
+  return Array.from({ length: 24 }, (_, i) => {
     const angle = (i / 24) * Math.PI * 2;
-    const radius = 45 + Math.random() * 10;
+    const radius = 45 + rand() * 10;
     return {
       x: 50 + Math.cos(angle) * radius,
       y: 50 + Math.sin(angle) * radius,
-      delay: 0.6 + Math.random() * 1.4,
+      delay: 0.6 + rand() * 1.4,
     };
   });
+})();
+
+function ConvergingDots() {
+  const positions = CONVERGING_DOTS;
 
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">

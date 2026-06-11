@@ -4,7 +4,6 @@ import { useMemo, useRef } from "react";
 import { extend, useFrame, type ThreeElement } from "@react-three/fiber";
 import { shaderMaterial } from "@react-three/drei";
 import * as THREE from "three";
-import { useManifesteScroll } from "../scroll-source";
 
 /**
  * Volumetric-feeling nebula clouds.

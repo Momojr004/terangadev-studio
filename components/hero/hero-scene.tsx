@@ -4,6 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, MeshDistortMaterial } from "@react-three/drei";
 import { useRef, useMemo } from "react";
 import * as THREE from "three";
+import { mulberry32 } from "@/lib/rng";
 
 function PrimaryShape() {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -34,6 +35,7 @@ function PrimaryShape() {
 function OrbitDots() {
   const groupRef = useRef<THREE.Group>(null);
   const positions = useMemo(() => {
+    const rand = mulberry32(0x0_b17d075);
     const items: { x: number; y: number; z: number; scale: number }[] = [];
     for (let i = 0; i < 14; i++) {
       const angle = (i / 14) * Math.PI * 2;
@@ -42,7 +44,7 @@ function OrbitDots() {
         x: Math.cos(angle) * radius,
         y: Math.sin(angle * 1.3) * 1.2,
         z: Math.sin(angle) * radius,
-        scale: 0.04 + Math.random() * 0.05,
+        scale: 0.04 + rand() * 0.05,
       });
     }
     return items;

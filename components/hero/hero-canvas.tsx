@@ -1,8 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { useMediaQuery } from "@/lib/client-hooks";
 
 const HeroScene = dynamic(
   () => import("./hero-scene").then((m) => m.HeroScene),
@@ -26,18 +26,14 @@ function HeroFallback() {
 }
 
 export function HeroCanvas() {
-  const [enabled, setEnabled] = useState(false);
   const { resolvedTheme } = useTheme();
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    const isWide = window.matchMedia("(min-width: 768px)").matches;
-    if (reduceMotion || !isWide) return;
-    setEnabled(true);
-  }, []);
+  // WebGL only on wide viewports and when motion is allowed. Reading the
+  // media queries via useSyncExternalStore (in useMediaQuery) keeps the
+  // server snapshot at `false`, so SSR renders the fallback and the client
+  // upgrades after hydration without a setState-in-effect.
+  const reduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const isWide = useMediaQuery("(min-width: 768px)");
+  const enabled = isWide && !reduceMotion;
 
   // In light mode the WebGL sphere reads as a dark blob against the
   // light backdrop — use the soft gradient fallback instead so the

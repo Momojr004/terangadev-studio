@@ -4,6 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Float } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { mulberry32 } from "@/lib/rng";
 
 const PARTICLE_COUNT = 64;
 const SPHERE_RADIUS = 2.2;
@@ -13,19 +14,20 @@ function ParticleNetwork() {
   const groupRef = useRef<THREE.Group>(null);
 
   const { particles, linePositions } = useMemo(() => {
+    const rand = mulberry32(0x4e7_0_4c4);
     const particles: { pos: THREE.Vector3; size: number }[] = [];
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const phi = Math.acos(2 * Math.random() - 1);
-      const theta = Math.random() * Math.PI * 2;
-      const r = SPHERE_RADIUS * (0.55 + Math.random() * 0.45);
+      const phi = Math.acos(2 * rand() - 1);
+      const theta = rand() * Math.PI * 2;
+      const r = SPHERE_RADIUS * (0.55 + rand() * 0.45);
       particles.push({
         pos: new THREE.Vector3(
           r * Math.sin(phi) * Math.cos(theta),
           r * Math.cos(phi),
           r * Math.sin(phi) * Math.sin(theta),
         ),
-        size: 0.022 + Math.random() * 0.045,
+        size: 0.022 + rand() * 0.045,
       });
     }
 

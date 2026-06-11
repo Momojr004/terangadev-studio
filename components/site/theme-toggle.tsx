@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useMounted } from "@/lib/client-hooks";
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const t = useTranslations("Nav");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = useMounted();
 
   if (!mounted) {
     return <div aria-hidden className="size-9" />;

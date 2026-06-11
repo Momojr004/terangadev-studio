@@ -3,19 +3,13 @@
 import { useRef, type CSSProperties } from "react";
 import { useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { Plus_Jakarta_Sans, Special_Elite } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { ChapterHeader, gradientTextStyle } from "./chapter-header";
 import { DecorativeScatter } from "./decorative-scatter";
 
 const editorial = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
   weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const typewriter = Special_Elite({
-  subsets: ["latin"],
-  weight: ["400"],
   display: "swap",
 });
 
