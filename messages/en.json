@@ -105,6 +105,7 @@
     "formMessage": "Anything to tell us? (optional)",
     "formSubmit": "Join the testers",
     "formSuccess": "Got it. We'll come back to you within 48h.",
+    "formError": "Something went wrong. Try again or email us directly.",
     "problemTitle": "The problem",
     "solutionTitle": "Our approach",
     "featuresTitle": "What you can do",

@@ -187,7 +187,7 @@ export function ProductDetail({ slug }: { slug: ProductSlug }) {
                 </ul>
               </div>
               <div>
-                <InterestForm />
+                <InterestForm product={t("name")} />
               </div>
             </div>
           )}

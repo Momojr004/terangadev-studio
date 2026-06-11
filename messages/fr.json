@@ -105,6 +105,7 @@
     "formMessage": "Quelque chose à nous dire ? (optionnel)",
     "formSubmit": "Rejoindre les testeurs",
     "formSuccess": "Bien reçu. On revient vers toi sous 48h.",
+    "formError": "Une erreur est survenue. Réessaie ou écris-nous directement.",
     "problemTitle": "Le problème",
     "solutionTitle": "Notre approche",
     "featuresTitle": "Ce que tu peux faire",
