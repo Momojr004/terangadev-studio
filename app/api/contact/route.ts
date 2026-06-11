@@ -39,6 +39,38 @@ const timelineLabels: Record<string, string> = {
   tbd: "Pas encore défini",
 };
 
+// --- Basic in-memory rate limiting -----------------------------------------
+// Per-IP fixed window. Adequate for the single-instance PM2 deploy described
+// in DEPLOYMENT.md; if the app is ever scaled to multiple instances, move this
+// to a shared store (Redis/Upstash) since the map is per-process.
+const RATE_LIMIT_MAX = 5; // requests…
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // …per 10 minutes / IP
+const rateLimitHits = new Map<string, number[]>();
+
+function clientIp(request: Request): string {
+  const xff = request.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0]!.trim();
+  return request.headers.get("x-real-ip")?.trim() || "unknown";
+}
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (rateLimitHits.get(ip) ?? []).filter(
+    (t) => now - t < RATE_LIMIT_WINDOW_MS,
+  );
+  recent.push(now);
+  rateLimitHits.set(ip, recent);
+  // Opportunistic cleanup so the map can't grow unbounded.
+  if (rateLimitHits.size > 5000) {
+    for (const [key, times] of rateLimitHits) {
+      if (times.every((t) => now - t >= RATE_LIMIT_WINDOW_MS)) {
+        rateLimitHits.delete(key);
+      }
+    }
+  }
+  return recent.length > RATE_LIMIT_MAX;
+}
+
 function formatTextEmail(data: z.infer<typeof schema>): string {
   return `Nouveau contact via terangadev.com
 
@@ -60,7 +92,26 @@ Reply directement à ce message — l'email du prospect est dans Reply-To.
 
 export async function POST(request: Request) {
   try {
+    // 1. Rate limit per IP (cheapest gate first).
+    if (isRateLimited(clientIp(request))) {
+      return NextResponse.json(
+        { ok: false, error: "rate_limited" },
+        { status: 429 },
+      );
+    }
+
     const body = await request.json();
+
+    // 2. Honeypot : `company_url` is a hidden field no human fills. If a bot
+    //    populated it, pretend success and drop the submission silently.
+    if (
+      typeof body?.company_url === "string" &&
+      body.company_url.trim() !== ""
+    ) {
+      return NextResponse.json({ ok: true });
+    }
+
+    // 3. Validate (zod strips the honeypot and any other extra keys).
     const data = schema.parse(body);
 
     const apiKey = process.env.RESEND_API_KEY;
