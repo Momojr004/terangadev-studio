@@ -591,3 +591,62 @@
   animation: manifeste-dot-converge 4.5s cubic-bezier(0.16, 1, 0.3, 1)
     forwards;
 }
+
+/* Scroll cue pill dot — slow breathing pulse. */
+@keyframes manifeste-cue-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+}
+
+.manifeste-cue-dot {
+  animation: manifeste-cue-pulse 2.2s ease-in-out infinite;
+}
+
+/* Animated strike-through — draws left to right once the excuse is on
+   screen (chapter 3). */
+.manifeste-strike-line {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.55s;
+}
+
+.is-visible .manifeste-strike-line {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manifeste-strike-line {
+    transform: scaleX(1);
+    transition: none;
+  }
+}
+
+/* The cahier's idle float — lives on its own wrapper so it composes
+   with (never fights) the GSAP scroll choreography on the parents. */
+@keyframes manifeste-cahier-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+.manifeste-cahier-float {
+  animation: manifeste-cahier-float 5.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manifeste-cue-dot,
+  .manifeste-cahier-float {
+    animation: none;
+  }
+}

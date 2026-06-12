@@ -768,15 +768,23 @@
       "finalStat3": "6",
       "finalStat3Label": "maintenance clients",
       "finalStat4": "<2",
-      "finalStat4Label": "months for Hydrautech"
+      "finalStat4Label": "months for Hydrautech",
+      "closing": "We don't throw your notebook away. We continue it."
     },
     "intro": {
       "eyebrow": "Manifesto · TerangaDev",
       "hookLine1": "Before we sell you anything,",
       "hookLine2": "we want to tell you",
       "hookLine3": "what you're missing.",
+      "objectLine": "Your whole business fits in one object.",
+      "title": "The notebook.",
       "subhead": "Seven chapters. Fifteen minutes. One decision at the end.",
       "hint": "Take your time · scroll"
+    },
+    "slide": {
+      "eyebrow": "While you hesitate,",
+      "line1": "another world",
+      "line2": "already exists."
     }
   }
 }

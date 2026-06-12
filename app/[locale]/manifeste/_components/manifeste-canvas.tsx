@@ -26,6 +26,10 @@ function FrameloopKick() {
 }
 
 export function ManifesteCanvas() {
+  // The 3D layer belongs to the dark acts: it starts invisible and the
+  // ColorScript scrubs its opacity (in at the bascule, out at the cream
+  // finale). Transparent clear color so the color-script background
+  // shows through behind the particles.
   return (
     <div
       id="manifeste-canvas-wrap"
@@ -39,13 +43,13 @@ export function ManifesteCanvas() {
         frameloop="always"
         gl={{
           antialias: true,
-          alpha: false,
+          alpha: true,
           powerPreference: "high-performance",
         }}
         style={{
           position: "absolute",
           inset: 0,
-          background: "#0A1628",
+          background: "transparent",
         }}
         onCreated={({ camera }) => {
           camera.lookAt(0, -3, 0);

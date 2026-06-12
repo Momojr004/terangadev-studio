@@ -77,7 +77,7 @@ export function ManifesteNav() {
       {/* Top progress bar */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-x-0 top-0 z-40 h-[2px] bg-white/8"
+        className="pointer-events-none fixed inset-x-0 top-0 z-40 h-[2px] bg-white/8 mix-blend-difference"
       >
         <div
           className="from-teranga-secondary to-teranga-primary h-full bg-gradient-to-r shadow-[0_0_10px_rgba(78,168,249,0.45)] transition-[width] duration-150 ease-out"
@@ -88,7 +88,7 @@ export function ManifesteNav() {
       {/* Side rail */}
       <nav
         aria-label={labelNav}
-        className="fixed top-1/2 right-6 z-40 hidden -translate-y-1/2 md:block"
+        className="fixed top-1/2 right-6 z-40 hidden -translate-y-1/2 mix-blend-difference md:block"
       >
         <ul className="flex flex-col gap-5">
           {Array.from({ length: CHAPTER_COUNT }, (_, i) => i + 1).map((n) => {

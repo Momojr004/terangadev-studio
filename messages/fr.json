@@ -768,15 +768,23 @@
       "finalStat3": "6",
       "finalStat3Label": "clients en maintenance",
       "finalStat4": "<2",
-      "finalStat4Label": "mois pour Hydrautech"
+      "finalStat4Label": "mois pour Hydrautech",
+      "closing": "On ne jette pas ton cahier. On le continue."
     },
     "intro": {
       "eyebrow": "Manifeste · TerangaDev",
       "hookLine1": "Avant de te vendre quoi que ce soit,",
       "hookLine2": "on veut te raconter",
       "hookLine3": "ce que tu rates.",
+      "objectLine": "Tout ton business tient dans un objet.",
+      "title": "Le cahier.",
       "subhead": "Sept chapitres. Quinze minutes. Une décision à la fin.",
       "hint": "Sois patient · scrolle"
+    },
+    "slide": {
+      "eyebrow": "Pendant que tu hésites,",
+      "line1": "un autre monde",
+      "line2": "existe déjà."
     }
   }
 }

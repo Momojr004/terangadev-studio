@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { ManifesteBackdrop } from "./_components/manifeste-backdrop";
+import { CahierLayer } from "./_components/cahier-layer";
+import { ColorScript, FilmOverlay } from "./_components/color-script";
+import { GiantSlide } from "./_components/giant-slide";
 import { ManifesteCanvas } from "./_components/manifeste-canvas";
 import { ManifesteNav } from "./_components/manifeste-nav";
 import { ManifesteScrollProvider } from "./_components/scroll-source";
+import { ScrollCue } from "./_components/scroll-cue";
 import { SkipButton } from "./_components/skip-button";
 import { Chapter1Paper } from "./_components/chapter-1-paper";
 import { ManifesteIntro } from "./_components/manifeste-intro";
@@ -32,15 +35,24 @@ export async function generateMetadata({
 }
 
 /**
- * V3 layout:
- *  - <ManifesteCanvas/> is `position: fixed; pointer-events: none; z:0`
- *    behind everything, so it stays pinned while the document scrolls.
- *  - The 7 chapters are rendered as a normal vertical stack — each is
- *    `min-h-dvh` with its own background (paper, dark, etc.), creating
- *    natural scroll height (~7 viewports).
- *  - <ManifesteScrollProvider/> wraps the whole thing so R3F components
- *    inside the Canvas can read scroll progress (0..1) without colliding
- *    with the i18n context that the chapters need.
+ * V4 — « LE CAHIER » : one object, one story, three acts.
+ *
+ * Fixed layers (bottom → top):
+ *  - <ColorScript/>     full-bleed background color, tweened per scene
+ *                       (cream → wine → black → navy → cream).
+ *  - <ManifesteCanvas/> WebGL particles — only visible in the dark acts
+ *                       (opacity scrubbed by the ColorScript triggers).
+ *  - <FilmOverlay/>     grain + dark-act vignette, grades everything.
+ *  - <CahierLayer/>     the protagonist: a CSS-3D merchant's notebook,
+ *                       choreographed across Acte I (#acte-papier).
+ *
+ * Acts (scrolling content, z-10):
+ *  - Acte I  (papier)   : hero → ch.1 → ch.2 → ch.3 — the notebook
+ *                         floats, opens, bleeds, loses its pages.
+ *  - Acte II (bascule)  : giant slide + expanding window (ch.4) — the
+ *                         object dissolves into particles, order forms.
+ *  - Acte III (lumière) : ch.5 (pinned horizontal) → ch.6 → ch.7 cream
+ *                         finale: « On ne jette pas ton cahier. »
  */
 export default async function ManifestePage({
   params,
@@ -52,18 +64,24 @@ export default async function ManifestePage({
 
   return (
     <ManifesteScrollProvider>
-      <ManifesteBackdrop />
+      <ColorScript />
       <ManifesteCanvas />
+      <FilmOverlay />
+      <CahierLayer />
       <ManifesteNav />
+      <ScrollCue />
       <main
         id="manifeste-content"
         className="relative z-10 bg-transparent text-white"
       >
         <SkipButton />
-        <ManifesteIntro />
-        <Chapter1Paper />
-        <Chapter2Cost />
-        <Chapter3Excuses />
+        <div id="acte-papier">
+          <ManifesteIntro />
+          <Chapter1Paper />
+          <Chapter2Cost />
+          <Chapter3Excuses />
+          <GiantSlide />
+        </div>
         <Chapter4OtherWorld />
         <Chapter5Paths />
         <Chapter6Condition />

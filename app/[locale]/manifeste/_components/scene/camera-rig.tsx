@@ -16,26 +16,27 @@ import { useManifesteScroll } from "../scroll-source";
  *   Ch6 réseau (closer orbit) →
  *   Ch7 nœud central (convergence to logo)
  */
-// Ocean waypoints — camera tilts down to keep the wave plane in the
-// lower 2/3 of the frame at every chapter.
+// Subtraction edition: one object at the origin, the camera makes a
+// single slow dolly toward it with a gentle lateral drift. No dives,
+// no orbits — the eye always knows where it is.
 const WAYPOINTS: [number, number, number][] = [
-  [0, 0.5, 8],
-  [0, 2, 7],
-  [1.5, 3, 5.5],
-  [2, -1, 3.5],
-  [0, 5, 4.5],
-  [-1, 3, 2.5],
-  [0, 0, 2.2],
+  [0, 0.4, 10],
+  [0.4, 0.5, 9],
+  [0.7, 0.3, 8],
+  [0.4, 0.2, 7],
+  [-0.3, 0.4, 6.5],
+  [-0.5, 0.3, 6],
+  [0, 0.2, 5.2],
 ];
 
 const LOOK_AT_WAYPOINTS: [number, number, number][] = [
-  [0, -3, 0],
-  [0, -2, 0],
-  [0, -1, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0.5, 0],
-  [0, 0, 0],
+  [0, -0.4, 0],
+  [0, -0.4, 0],
+  [0, -0.4, 0],
+  [0, -0.4, 0],
+  [0, -0.4, 0],
+  [0, -0.4, 0],
+  [0, -0.4, 0],
 ];
 
 // Reusable Vector3 to avoid per-frame allocation.
@@ -82,11 +83,8 @@ export function CameraRig() {
     // user feels even when scroll is paused. Amplitudes modest enough
     // to never compete with chapter copy.
     const breath = state.clock.elapsedTime;
-    const orbit = breath * 0.06;
-    TMP_POS.x += Math.sin(orbit) * 0.5 + Math.sin(breath * 0.30) * 0.06;
-    TMP_POS.y += Math.sin(breath * 0.22 + 1.7) * 0.08;
-    // Subtle Z float so the depth feels alive.
-    TMP_POS.z += Math.cos(orbit * 0.5) * 0.3;
+    TMP_POS.x += Math.sin(breath * 0.18) * 0.12;
+    TMP_POS.y += Math.sin(breath * 0.14 + 1.7) * 0.07;
 
     // Subtle pointer parallax — present but discreet.
     smoothPointer.current.x = THREE.MathUtils.lerp(
@@ -99,7 +97,7 @@ export function CameraRig() {
       pointer.current.y,
       0.035,
     );
-    const parallaxStrength = 0.25 * (1 - t * 0.7);
+    const parallaxStrength = 0.15 * (1 - t * 0.7);
     TMP_POS.x += smoothPointer.current.x * parallaxStrength;
     TMP_POS.y += -smoothPointer.current.y * parallaxStrength * 0.6;
 

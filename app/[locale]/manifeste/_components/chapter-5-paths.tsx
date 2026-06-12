@@ -1,16 +1,19 @@
 "use client";
 
-import { useRef, type CSSProperties } from "react";
-import { useInView } from "framer-motion";
+import { useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { ChapterHeader } from "./chapter-header";
-import { DecorativeScatter } from "./decorative-scatter";
-import { ChapterAtmosphere } from "./chapter-atmosphere";
+import { prefersReducedMotion } from "./parallax";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const editorial = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -20,237 +23,140 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
+const ACCENT = "#4EA8F9";
+
+/**
+ * Chapter 5, oryzo.ai horizontal-strip edition: the viewport pins
+ * (sticky) for 300vh while the three path cards — plus a giant closing
+ * line — travel horizontally, scrubbed by scroll. The reader scrolls
+ * *through* the offer instead of skimming a 3-column table.
+ */
 export function Chapter5Paths() {
   const t = useTranslations("Manifeste.chapter05");
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-200px" });
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
-  const paths = [
-    {
-      title: t("path1Title"),
-      body: t("path1Body"),
-      caseRef: t("path1Case"),
-      duration: t("path1Duration"),
-      price: t("path1Price"),
-      delay: 1.2,
+  const paths = [0, 1, 2].map((i) => ({
+    title: t(`path${i + 1}Title`),
+    body: t(`path${i + 1}Body`),
+    caseRef: t(`path${i + 1}Case`),
+    duration: t(`path${i + 1}Duration`),
+  }));
+
+  useGSAP(
+    () => {
+      if (prefersReducedMotion()) return;
+      const section = sectionRef.current;
+      const track = trackRef.current;
+      if (!section || !track) return;
+
+      gsap.to(track, {
+        x: () => -(track.scrollWidth - window.innerWidth),
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
     },
-    {
-      title: t("path2Title"),
-      body: t("path2Body"),
-      caseRef: t("path2Case"),
-      duration: t("path2Duration"),
-      price: t("path2Price"),
-      delay: 1.6,
-    },
-    {
-      title: t("path3Title"),
-      body: t("path3Body"),
-      caseRef: t("path3Case"),
-      duration: t("path3Duration"),
-      price: t("path3Price"),
-      delay: 2.0,
-    },
-  ];
+    { scope: sectionRef },
+  );
 
   return (
-    <section
-      ref={ref}
-      id="chapter-5"
-      className="relative flex min-h-dvh flex-col overflow-hidden px-6 py-24 md:px-16 lg:px-24"
-    >
-      {/* Narrative atmosphere : 3 dots traveling down the beams */}
-      <ChapterAtmosphere kind="beams" />
+    <section ref={sectionRef} id="chapter-5" className="relative h-[300vh]">
+      <div className="sticky top-0 flex h-dvh flex-col justify-center overflow-hidden">
+        <div className="px-6 md:px-16 lg:px-24">
+          <ChapterHeader index={5} title={t("title")} />
+        </div>
 
-      {/* Chapter-tinted halo : teal/emerald — three branching paths. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 30%, rgba(94,234,212,0.12) 0%, rgba(6,16,32,0.55) 60%, rgba(6,16,32,0.80) 100%)",
-        }}
-      />
-
-      <DecorativeScatter
-        items={[
-          { content: "→ port", top: "5%", left: "3%", rotate: -5, color: "rgba(125,211,192,0.5)", size: "text-xs", spaced: true },
-          { content: "✱", top: "8%", right: "4%", rotate: 12, size: "text-2xl", color: "rgba(252,211,77,0.35)", mono: false },
-          { content: "trois entrées · une équipe", top: "94%", left: "4%", rotate: -2, color: "rgba(125,211,192,0.45)", size: "text-[10px]", spaced: true },
-          { content: "+", top: "94%", right: "5%", rotate: 24, size: "text-2xl", color: "rgba(94,234,212,0.4)", mono: false },
-        ]}
-      />
-
-      <ChapterHeader index={5} title={t("title")} theme="teal" />
-
-      {/* Beams diagram */}
-      <div className="relative z-10 mt-16 flex flex-1 items-center justify-center md:mt-24">
-        <svg
-          viewBox="0 0 800 360"
-          className="h-auto w-full max-w-4xl"
-          aria-hidden
+        {/* Horizontal track — wider than the screen on purpose. */}
+        <div
+          ref={trackRef}
+          className="flex items-stretch gap-6 pl-6 pr-[12vw] md:gap-10 md:pl-16 lg:pl-24"
         >
-          <defs>
-            <linearGradient
-              id="beam-gradient"
-              x1="0%"
-              y1="0%"
-              x2="0%"
-              y2="100%"
+          {paths.map((p, i) => {
+            return (
+              <article
+                key={i}
+                className="relative flex w-[78vw] shrink-0 flex-col gap-6 rounded-3xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-[2px] md:w-[42vw] md:p-10 lg:w-[36vw]"
+              >
+                <div className="flex items-center justify-between">
+                  <span
+                    className={`${mono.className} inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/50`}
+                  >
+                    <span
+                      className="inline-block size-1.5 rounded-full"
+                      style={{ backgroundColor: ACCENT }}
+                    />
+                    Voie 0{i + 1}
+                  </span>
+                  <span
+                    className={`${editorial.className} text-5xl font-extrabold leading-none text-white/15 md:text-6xl`}
+                  >
+                    0{i + 1}
+                  </span>
+                </div>
+
+                <div className="mt-2">
+                  <h3
+                    className={`${editorial.className} text-3xl font-bold uppercase leading-[1.02] tracking-[-0.02em] text-white md:text-4xl lg:text-5xl`}
+                  >
+                    {p.title}
+                  </h3>
+                  <p
+                    className={`${editorial.className} mt-4 max-w-md text-base leading-snug text-white/60 md:text-lg`}
+                  >
+                    {p.body}
+                  </p>
+                </div>
+
+                <dl className="mt-auto grid grid-cols-2 gap-4 border-t border-white/10 pt-6">
+                  <div>
+                    <dt
+                      className={`${mono.className} text-[10px] uppercase tracking-[0.25em] text-white/40`}
+                    >
+                      Cas
+                    </dt>
+                    <dd className="mt-1.5 text-sm text-white/85 md:text-base">
+                      {p.caseRef}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt
+                      className={`${mono.className} text-[10px] uppercase tracking-[0.25em] text-white/40`}
+                    >
+                      Délai
+                    </dt>
+                    <dd className="mt-1.5 text-sm text-white/85 md:text-base">
+                      {p.duration}
+                    </dd>
+                  </div>
+                </dl>
+              </article>
+            );
+          })}
+
+          {/* Closing slide — the chapter line, monumental. */}
+          <div className="flex w-[88vw] shrink-0 items-center md:w-[70vw]">
+            <p
+              className={`${editorial.className} text-[clamp(2.4rem,7vw,6.5rem)] font-extrabold uppercase leading-[0.98] tracking-[-0.03em] text-white`}
             >
-              <stop offset="0%" stopColor="#7ecbff" stopOpacity="1" />
-              <stop offset="100%" stopColor="#0a68f7" stopOpacity="0" />
-            </linearGradient>
-            <radialGradient id="source-gradient">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
-              <stop offset="40%" stopColor="#7ecbff" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#0a68f7" stopOpacity="0" />
-            </radialGradient>
-            <radialGradient id="port-gradient">
-              <stop offset="0%" stopColor="#7ecbff" stopOpacity="1" />
-              <stop offset="100%" stopColor="#0a68f7" stopOpacity="0" />
-            </radialGradient>
-          </defs>
-
-          {/* Source halo */}
-          <circle
-            cx="400"
-            cy="40"
-            r="32"
-            fill="url(#source-gradient)"
-            className={`manifeste-citation ${inView ? "is-visible" : ""}`}
-            style={{ animationDelay: "0.2s" } as CSSProperties}
-          />
-          {/* Source dot */}
-          <circle
-            cx="400"
-            cy="40"
-            r="4"
-            fill="#ffffff"
-            className={`manifeste-citation ${inView ? "is-visible" : ""}`}
-            style={{ animationDelay: "0.4s" } as CSSProperties}
-          />
-
-          {/* 3 beams */}
-          {[
-            { x: 130, delay: 0.8 },
-            { x: 400, delay: 1.0 },
-            { x: 670, delay: 1.2 },
-          ].map((beam, i) => (
-            <g key={i}>
-              <line
-                x1="400"
-                y1="44"
-                x2={beam.x}
-                y2="290"
-                stroke="url(#beam-gradient)"
-                strokeWidth="1.5"
-                className={`manifeste-citation ${inView ? "is-visible" : ""}`}
-                style={{ animationDelay: `${beam.delay}s` } as CSSProperties}
-              />
-              {/* Port halo */}
-              <circle
-                cx={beam.x}
-                cy="290"
-                r="22"
-                fill="url(#port-gradient)"
-                className={`manifeste-citation ${inView ? "is-visible" : ""}`}
-                style={
-                  { animationDelay: `${beam.delay + 0.2}s` } as CSSProperties
-                }
-              />
-              {/* Port square */}
-              <rect
-                x={beam.x - 6}
-                y="284"
-                width="12"
-                height="12"
-                fill="#7ecbff"
-                stroke="#ffffff"
-                strokeWidth="1"
-                className={`manifeste-citation ${inView ? "is-visible" : ""}`}
-                style={
-                  { animationDelay: `${beam.delay + 0.3}s` } as CSSProperties
-                }
-              />
-            </g>
-          ))}
-        </svg>
-      </div>
-
-      {/* Path cards — each one densified with reference case, duration
-          and price tier so the chapter doesn't read as just a poetic
-          three-bullet split. Rotations + vertical offsets per card so
-          the row reads as a scattered editorial layout, not a table. */}
-      <div className="relative z-10 mt-12 grid grid-cols-1 gap-6 md:mt-16 md:grid-cols-3 md:gap-8">
-        {paths.map((p, i) => {
-          const accent =
-            i === 0
-              ? { text: "text-cyan-300", from: "from-cyan-400", to: "to-cyan-300", border: "border-cyan-400/20", bg: "bg-cyan-400/[0.04]" }
-              : i === 1
-                ? { text: "text-amber-300", from: "from-amber-300", to: "to-amber-200", border: "border-amber-300/20", bg: "bg-amber-300/[0.04]" }
-                : { text: "text-teal-300", from: "from-teal-300", to: "to-emerald-300", border: "border-teal-300/20", bg: "bg-teal-300/[0.04]" };
-          return (
-          <div
-            key={i}
-            style={{ animationDelay: `${p.delay}s` } as CSSProperties}
-            className={`manifeste-citation ${inView ? "is-visible" : ""} relative flex flex-col gap-5 rounded-2xl border ${accent.border} ${accent.bg} p-6 backdrop-blur-[2px] md:p-8 ${i === 0 ? "md:-rotate-[1.8deg] md:translate-y-4" : i === 1 ? "md:rotate-[1.2deg] md:-translate-y-6" : "md:-rotate-[0.9deg] md:translate-y-8"}`}
-          >
-            <div className="flex items-baseline justify-between">
-              <p
-                className={`${mono.className} text-[10px] uppercase tracking-[0.3em] ${accent.text}`}
-              >
-                0{i + 1}
-              </p>
-              <span className={`${accent.from} ${accent.to} inline-block h-px w-12 bg-gradient-to-r`} />
-            </div>
-
-            <div>
-              <h3
-                className={`${editorial.className} text-2xl leading-tight tracking-tight text-white md:text-3xl`}
-              >
-                {p.title}
-              </h3>
-              <p
-                className={`${editorial.className} mt-2 text-base italic leading-snug text-cyan-100/80 md:text-lg`}
-              >
-                {p.body}
-              </p>
-            </div>
-
-            <dl className="mt-auto grid grid-cols-1 gap-3 border-t border-white/10 pt-5 text-sm">
-              <div className="flex items-baseline justify-between gap-3">
-                <dt
-                  className={`${mono.className} text-[10px] uppercase tracking-[0.25em] text-white/40`}
-                >
-                  Cas
-                </dt>
-                <dd className="text-right text-white/85 text-xs md:text-sm">
-                  {p.caseRef}
-                </dd>
-              </div>
-              <div className="flex items-baseline justify-between gap-3">
-                <dt
-                  className={`${mono.className} text-[10px] uppercase tracking-[0.25em] text-white/40`}
-                >
-                  Délai
-                </dt>
-                <dd className="text-right text-white/85 text-xs md:text-sm">
-                  {p.duration}
-                </dd>
-              </div>
-            </dl>
+              {t("intro")}
+            </p>
           </div>
-          );
-        })}
-      </div>
+        </div>
 
-      {/* Punchline */}
-      <p
-        style={{ animationDelay: "2.8s" } as CSSProperties}
-        className={`manifeste-citation ${inView ? "is-visible" : ""} relative z-10 mt-16 text-center ${editorial.className} text-4xl tracking-tight text-white md:mt-20 md:text-6xl lg:text-7xl`}
-      >
-        {t("intro")}
-      </p>
+        {/* Drag cue */}
+        <div
+          className={`${mono.className} mt-10 flex items-center gap-3 px-6 text-[10px] uppercase tracking-[0.3em] text-white/35 md:px-16 lg:px-24`}
+        >
+          <span className="inline-block h-px w-10 bg-white/25" />
+          Scrolle — la voie défile
+        </div>
+      </div>
     </section>
   );
 }
