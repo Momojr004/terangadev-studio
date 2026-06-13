@@ -45,8 +45,6 @@ next-env.d.ts
 *.db-journal
 /media
 
-# payload import map (auto-generated)
-/app/(payload)/admin/importMap.js
 .claude/
 
 # Signature mail — images gérées manuellement sur le serveur, non versionnées
