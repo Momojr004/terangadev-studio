@@ -32,6 +32,8 @@ export default buildConfig({
   db: sqliteAdapter({
     client: {
       url: process.env.DATABASE_URI || "file:./terangadev.db",
+      // Turso (libsql remote) requiert un authToken — ignoré si DB locale
+      authToken: process.env.DATABASE_AUTH_TOKEN,
     },
   }),
   sharp,
