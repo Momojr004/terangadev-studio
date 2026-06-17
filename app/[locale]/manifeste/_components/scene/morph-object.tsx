@@ -20,7 +20,7 @@ import { useManifesteScroll } from "../scroll-source";
  * follows the same journey (cyan → amber → teal → brand blue).
  */
 
-const COUNT = 6000;
+const COUNT = 4000;
 
 // Deterministic targets (fixed seed) so every visit shows the same object.
 function buildTargets() {
@@ -125,13 +125,25 @@ export function MorphObject() {
   const { sphere, chaos, lattice, burst } = useMemo(() => buildTargets(), []);
   const positions = useMemo(() => sphere.slice(), [sphere]);
   const sprite = useMemo(() => makeSprite(), []);
+  // Last scroll value we rebuilt positions for — lets us skip the heavy
+  // per-frame loop + GPU upload when the scroll is paused (the camera still
+  // breathes, so the canvas keeps rendering, but a static object is free).
+  const lastT = useRef(-1);
 
-  useFrame((state) => {
+  useFrame(() => {
     const points = pointsRef.current;
     const material = materialRef.current;
     if (!points || !material) return;
 
     const t = THREE.MathUtils.clamp(scroll.offset, 0, 1);
+
+    // Rotation is purely scroll-driven now (no continuous time spin), so a
+    // paused scroll = a static object and everything below is skipped.
+    points.rotation.y = t * Math.PI * 0.8;
+
+    if (Math.abs(t - lastT.current) < 0.0002) return;
+    lastT.current = t;
+
     // Morph ramps (full-page scroll, 0..1). The canvas only becomes
     // visible at the bascule (~0.17), already in its chaos state — the
     // dissolved cahier. Order emerges through the expanding window,
@@ -149,7 +161,8 @@ export function MorphObject() {
       "position",
     ) as THREE.BufferAttribute;
     const arr = attr.array as Float32Array;
-    for (let i = 0; i < COUNT * 3; i++) {
+    const n = arr.length;
+    for (let i = 0; i < n; i++) {
       // sphere → chaos → lattice → burst (explode outward, then fade)
       let v = sphere[i] + (chaos[i] - sphere[i]) * toChaos;
       v += (lattice[i] - v) * toLattice;
@@ -171,13 +184,9 @@ export function MorphObject() {
     // low opacity keeps it from drowning the copy). At the burst it flares
     // brighter — the detonation — then the whole thing fades to nothing for
     // the cream finale. `toBurst * (1 - toBurst)` peaks mid-explosion.
-    material.size = 0.05 + toBurst * 0.1;
+    material.size = 0.045 + toBurst * 0.08;
     material.opacity =
       (0.4 - toChaos * 0.06) * (1 - toBurst) + toBurst * (1 - toBurst) * 1.8;
-
-    // Slow constant spin + a gentle scroll-driven turn.
-    points.rotation.y = state.clock.elapsedTime * 0.03 + t * Math.PI * 0.8;
-    points.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.08;
   });
 
   return (

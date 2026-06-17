@@ -26,6 +26,15 @@ function FrameloopKick() {
 }
 
 export function ManifesteCanvas() {
+  // Cap the device pixel ratio: the particle field is additive soft glow,
+  // so a sub-native render is invisible — but fill-rate scales with pixels²,
+  // so capping it (hard on small/retina phones) is the single biggest GPU
+  // saving. Phones get a tighter cap than desktop.
+  const dpr: [number, number] =
+    typeof window !== "undefined" && window.innerWidth < 768
+      ? [1, 1.2]
+      : [1, 1.5];
+
   // The 3D layer belongs to the dark acts: it starts invisible and the
   // ColorScript scrubs its opacity (in at the bascule, out at the cream
   // finale). Transparent clear color so the color-script background
@@ -39,7 +48,7 @@ export function ManifesteCanvas() {
     >
       <Canvas
         camera={{ position: [0, 0.5, 8], fov: 45, near: 0.1, far: 100 }}
-        dpr={[1, 1.6]}
+        dpr={dpr}
         frameloop="always"
         gl={{
           antialias: true,
