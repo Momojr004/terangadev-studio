@@ -20,7 +20,7 @@ import { useManifesteScroll } from "../scroll-source";
  * follows the same journey (cyan → amber → teal → brand blue).
  */
 
-const COUNT = 1800;
+const COUNT = 6000;
 
 // Deterministic targets (fixed seed) so every visit shows the same object.
 function buildTargets() {
@@ -48,16 +48,20 @@ function buildTargets() {
     chaos[i * 3 + 2] = (rand() - 0.5) * 10;
   }
 
-  // Lattice — points snapped to a cubic grid: legible order.
+  // Lattice — a big, PAGE-FILLING ordered grid. Spread wide in XY so the
+  // structure occupies the whole screen (an ambient field, not a small
+  // block in the centre); kept shallow in Z so every point stays in front
+  // of the camera.
   const side = Math.ceil(Math.cbrt(COUNT));
-  const step = 5.2 / side;
+  const stepXY = 8.5 / side;
+  const stepZ = 3.5 / side;
   for (let i = 0; i < COUNT; i++) {
     const gx = i % side;
     const gy = Math.floor(i / side) % side;
     const gz = Math.floor(i / (side * side));
-    lattice[i * 3] = (gx - side / 2) * step + (rand() - 0.5) * 0.05;
-    lattice[i * 3 + 1] = (gy - side / 2) * step + (rand() - 0.5) * 0.05;
-    lattice[i * 3 + 2] = (gz - side / 2) * step + (rand() - 0.5) * 0.05;
+    lattice[i * 3] = (gx - side / 2) * stepXY + (rand() - 0.5) * 0.25;
+    lattice[i * 3 + 1] = (gy - side / 2) * stepXY + (rand() - 0.5) * 0.25;
+    lattice[i * 3 + 2] = (gz - side / 2) * stepZ + (rand() - 0.5) * 0.15;
   }
 
   // Burst — the structure shatters: each point flung straight outward (its
@@ -70,7 +74,7 @@ function buildTargets() {
     const y = lattice[i * 3 + 1];
     const z = lattice[i * 3 + 2];
     const len = Math.hypot(x, y, z) || 0.001;
-    const radius = 12 + rand() * 9;
+    const radius = 9 + rand() * 7;
     burst[i * 3] = (x / len) * radius;
     burst[i * 3 + 1] = (y / len) * radius;
     burst[i * 3 + 2] = (z / len) * radius;
@@ -134,11 +138,12 @@ export function MorphObject() {
     // converges to the core before the cream finale covers the scene.
     const toChaos = THREE.MathUtils.smoothstep(t, 0.05, 0.15);
     const toLattice = THREE.MathUtils.smoothstep(t, 0.3, 0.44);
-    // Final beat: instead of condensing to a bright point (which read as a
-    // dense blob over the copy), the ordered cloud EXPLODES outward and
-    // fades. The burst spans the end of ch.6 into ch.7, so the structure is
-    // already flying apart where the block used to sit.
-    const toBurst = THREE.MathUtils.smoothstep(t, 0.72, 0.92);
+    // Final beat — timed so the burst PLAYS OUT while ch.6 condition 04 is
+    // on screen and the dark canvas is still up (the ColorScript fades the
+    // canvas as ch.7's cream arrives ~0.93, so the explosion must finish
+    // just before). The page-filling grid holds through conditions 1-3,
+    // then the whole screen of particles bursts off the edges and is gone.
+    const toBurst = THREE.MathUtils.smoothstep(t, 0.9, 0.935);
 
     const attr = points.geometry.getAttribute(
       "position",
@@ -162,12 +167,13 @@ export function MorphObject() {
       TMP_COLOR.lerpColors(COLOR_STOPS[2], COLOR_STOPS[3], (t - 0.7) / 0.3);
     }
     material.color.copy(TMP_COLOR);
-    // Particles streak a touch larger as they fly, and the whole cloud
-    // fades to nothing across the burst so it disappears before the cream
-    // finale — no dense point left glowing over the copy.
-    material.size = 0.055 + toBurst * 0.05;
+    // The page-filling field stays SUBTLE (it covers the whole screen, so
+    // low opacity keeps it from drowning the copy). At the burst it flares
+    // brighter — the detonation — then the whole thing fades to nothing for
+    // the cream finale. `toBurst * (1 - toBurst)` peaks mid-explosion.
+    material.size = 0.05 + toBurst * 0.1;
     material.opacity =
-      (0.55 - toChaos * 0.15 + toLattice * 0.2) * (1 - toBurst);
+      (0.4 - toChaos * 0.06) * (1 - toBurst) + toBurst * (1 - toBurst) * 1.8;
 
     // Slow constant spin + a gentle scroll-driven turn.
     points.rotation.y = state.clock.elapsedTime * 0.03 + t * Math.PI * 0.8;
