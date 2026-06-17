@@ -79,15 +79,21 @@ export function CahierLayer() {
         if (layerRef.current) layerRef.current.style.display = "none";
         return;
       }
+      const layer = layerRef.current;
       const scene = sceneRef.current;
       const cover = coverRef.current;
       const red = redRef.current;
       const acte = document.getElementById("acte-papier");
-      if (!scene || !cover || !red || !acte) return;
+      if (!layer || !scene || !cover || !red || !acte) return;
       const pages = pageRefs.current.filter(Boolean) as HTMLDivElement[];
 
-      // Entrance — the object lands with the hero copy.
-      gsap.from(scene, {
+      // Entrance — the object lands with the hero copy. Applied to the LAYER,
+      // not `scene`: the scrubbed timeline below owns `scene`'s opacity, and
+      // the two opacities multiply — so the dissolved end-state (scene
+      // opacity 0 past Acte I) always wins, even on a mid-scroll reload where
+      // this fade-in still runs. Without this the fade-in forced scene back
+      // to opacity 1 and flashed the blurred page over a later chapter.
+      gsap.from(layer, {
         opacity: 0,
         y: 60,
         scale: 0.85,
