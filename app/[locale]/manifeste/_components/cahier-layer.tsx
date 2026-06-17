@@ -45,9 +45,25 @@ const mono = JetBrains_Mono({
 // translated (the cahier is a real Senegalese object, it speaks its
 // own language).
 const PAGE_LINES = [
-  ["Riz — 12 sacs", "Huile — 7 bid.", "Sucre ???", "Awa doit 45 000", "lundi: Moussa 2 cartons"],
-  ["Tél. fournisseur !!", "reste caisse: 112 500", "Fatou — payé 1/2", "commande mardi ?"],
-  ["livraison Pikine", "3 clients passés", "appeler Ibrahima", "− 18 000 (perte?)"],
+  [
+    "Riz — 12 sacs",
+    "Huile — 7 bid.",
+    "Sucre ???",
+    "Awa doit 45 000",
+    "lundi: Moussa 2 cartons",
+  ],
+  [
+    "Tél. fournisseur !!",
+    "reste caisse: 112 500",
+    "Fatou — payé 1/2",
+    "commande mardi ?",
+  ],
+  [
+    "livraison Pikine",
+    "3 clients passés",
+    "appeler Ibrahima",
+    "− 18 000 (perte?)",
+  ],
 ];
 
 export function CahierLayer() {
@@ -63,15 +79,21 @@ export function CahierLayer() {
         if (layerRef.current) layerRef.current.style.display = "none";
         return;
       }
+      const layer = layerRef.current;
       const scene = sceneRef.current;
       const cover = coverRef.current;
       const red = redRef.current;
       const acte = document.getElementById("acte-papier");
-      if (!scene || !cover || !red || !acte) return;
+      if (!layer || !scene || !cover || !red || !acte) return;
       const pages = pageRefs.current.filter(Boolean) as HTMLDivElement[];
 
-      // Entrance — the object lands with the hero copy.
-      gsap.from(scene, {
+      // Entrance — the object lands with the hero copy. Applied to the LAYER,
+      // not `scene`: the scrubbed timeline below owns `scene`'s opacity, and
+      // the two opacities multiply — so the dissolved end-state (scene
+      // opacity 0 past Acte I) always wins, even on a mid-scroll reload where
+      // this fade-in still runs. Without this the fade-in forced scene back
+      // to opacity 1 and flashed the blurred page over a later chapter.
+      gsap.from(layer, {
         opacity: 0,
         y: 60,
         scale: 0.85,
@@ -102,8 +124,12 @@ export function CahierLayer() {
       tl.to(scene, { x: "38vw", opacity: 0.35, duration: 0.04 }, 0.13);
 
       // — ch.2 : left edge, red ink, pages tear off —
-      tl.to(scene, { x: "-34vw", y: "0vh", scale: 0.82, opacity: 0.6, duration: 0.05 }, 0.20);
-      tl.to(red, { opacity: 1, duration: 0.04 }, 0.20);
+      tl.to(
+        scene,
+        { x: "-34vw", y: "0vh", scale: 0.82, opacity: 0.6, duration: 0.05 },
+        0.2,
+      );
+      tl.to(red, { opacity: 1, duration: 0.04 }, 0.2);
       pages.forEach((page, i) => {
         tl.to(
           page,
@@ -119,7 +145,11 @@ export function CahierLayer() {
       });
 
       // — ch.3 : shrunk witness in the corner —
-      tl.to(scene, { x: "36vw", y: "-8vh", scale: 0.55, opacity: 0.4, duration: 0.06 }, 0.52);
+      tl.to(
+        scene,
+        { x: "36vw", y: "-8vh", scale: 0.55, opacity: 0.4, duration: 0.06 },
+        0.52,
+      );
 
       // — bascule : dissolve into the particle world —
       tl.to(
@@ -135,117 +165,131 @@ export function CahierLayer() {
     <div
       ref={layerRef}
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-[5] hidden md:block"
+      className="pointer-events-none fixed inset-0 z-[5]"
     >
       <div
         ref={sceneRef}
-        className="absolute left-1/2 top-1/2 -ml-[150px] -mt-[190px]"
+        className="absolute top-1/2 left-1/2 -mt-[190px] -ml-[150px]"
         style={{ perspective: "1600px", willChange: "transform" }}
       >
-        {/* Idle float — its own wrapper so the bob never fights GSAP */}
-        <div className="manifeste-cahier-float">
-          <div
-            className="relative"
-            style={{
-              width: 300,
-              height: 380,
-              transform: "rotateX(38deg) rotateZ(-9deg)",
-              transformStyle: "preserve-3d",
-            }}
-          >
-            {/* Desk shadow */}
+        {/* Mobile fit — the notebook is 300px wide; shrink it so it reads as
+            a centered hero object on a phone without crowding the type.
+            md:scale-100 keeps the desktop choreography untouched. The GSAP
+            timeline targets sceneRef (the parent), so this scale composes
+            cleanly with it and never fights it. */}
+        <div
+          className="scale-[0.6] opacity-70 md:scale-100 md:opacity-100"
+          style={{
+            transformOrigin: "center center",
+            transformStyle: "preserve-3d",
+          }}
+        >
+          {/* Idle float — its own wrapper so the bob never fights GSAP */}
+          <div className="manifeste-cahier-float">
             <div
-              className="absolute inset-0 rounded-md"
+              className="relative"
               style={{
-                transform: "translateZ(-30px) scale(1.06)",
-                background: "rgba(20,17,11,0.35)",
-                filter: "blur(26px)",
-              }}
-            />
-
-            {/* Page block — base stack */}
-            <div
-              className="absolute inset-0 rounded-md border border-black/10"
-              style={{
-                background: "#FBF6E8",
-                transform: "translateZ(0px)",
-                boxShadow: "0 1px 0 #E6DCC2, 0 3px 0 #EFE7D1, 0 5px 0 #E6DCC2",
+                width: 300,
+                height: 380,
+                transform: "rotateX(38deg) rotateZ(-9deg)",
+                transformStyle: "preserve-3d",
               }}
             >
-              <PageFace lines={PAGE_LINES[0]} />
-              {/* Red-ink wash, revealed at chapter 2 */}
+              {/* Desk shadow */}
               <div
-                ref={redRef}
-                className="absolute inset-0 rounded-md opacity-0"
+                className="absolute inset-0 rounded-md"
                 style={{
-                  background:
-                    "linear-gradient(165deg, rgba(190,18,60,0.0) 30%, rgba(190,18,60,0.22) 100%)",
+                  transform: "translateZ(-30px) scale(1.06)",
+                  background: "rgba(20,17,11,0.35)",
+                  filter: "blur(26px)",
                 }}
               />
-            </div>
 
-            {/* Flyable pages */}
-            {PAGE_LINES.map((lines, i) => (
+              {/* Page block — base stack */}
               <div
-                key={i}
-                ref={(el) => {
-                  pageRefs.current[i] = el;
-                }}
                 className="absolute inset-0 rounded-md border border-black/10"
                 style={{
-                  background: "#FDF9EE",
-                  transform: `translateZ(${4 + i * 3}px) rotate(${(i - 1) * 1.4}deg)`,
+                  background: "#FBF6E8",
+                  transform: "translateZ(0px)",
+                  boxShadow:
+                    "0 1px 0 #E6DCC2, 0 3px 0 #EFE7D1, 0 5px 0 #E6DCC2",
+                }}
+              >
+                <PageFace lines={PAGE_LINES[0]} />
+                {/* Red-ink wash, revealed at chapter 2 */}
+                <div
+                  ref={redRef}
+                  className="absolute inset-0 rounded-md opacity-0"
+                  style={{
+                    background:
+                      "linear-gradient(165deg, rgba(190,18,60,0.0) 30%, rgba(190,18,60,0.22) 100%)",
+                  }}
+                />
+              </div>
+
+              {/* Flyable pages */}
+              {PAGE_LINES.map((lines, i) => (
+                <div
+                  key={i}
+                  ref={(el) => {
+                    pageRefs.current[i] = el;
+                  }}
+                  className="absolute inset-0 rounded-md border border-black/10"
+                  style={{
+                    background: "#FDF9EE",
+                    transform: `translateZ(${4 + i * 3}px) rotate(${(i - 1) * 1.4}deg)`,
+                    willChange: "transform",
+                  }}
+                >
+                  <PageFace lines={lines} />
+                </div>
+              ))}
+
+              {/* Kraft cover — opens around its left edge (spine) */}
+              <div
+                ref={coverRef}
+                className="absolute inset-0 rounded-md"
+                style={{
+                  transform: "translateZ(14px)",
+                  transformOrigin: "left center",
+                  transformStyle: "preserve-3d",
+                  background:
+                    "linear-gradient(150deg, #C9A86B 0%, #B8924F 55%, #A37F40 100%)",
+                  boxShadow:
+                    "inset 0 0 0 1px rgba(0,0,0,0.18), inset 12px 0 18px -12px rgba(0,0,0,0.5), 0 10px 24px rgba(20,17,11,0.25)",
+                  backfaceVisibility: "hidden",
                   willChange: "transform",
                 }}
               >
-                <PageFace lines={lines} />
-              </div>
-            ))}
-
-            {/* Kraft cover — opens around its left edge (spine) */}
-            <div
-              ref={coverRef}
-              className="absolute inset-0 rounded-md"
-              style={{
-                transform: "translateZ(14px)",
-                transformOrigin: "left center",
-                transformStyle: "preserve-3d",
-                background:
-                  "linear-gradient(150deg, #C9A86B 0%, #B8924F 55%, #A37F40 100%)",
-                boxShadow:
-                  "inset 0 0 0 1px rgba(0,0,0,0.18), inset 12px 0 18px -12px rgba(0,0,0,0.5), 0 10px 24px rgba(20,17,11,0.25)",
-                backfaceVisibility: "hidden",
-                willChange: "transform",
-              }}
-            >
-              {/* Spine stitching */}
-              <div
-                className="absolute bottom-2 left-3 top-2 w-px"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(180deg, rgba(60,40,10,0.55) 0 7px, transparent 7px 14px)",
-                }}
-              />
-              {/* Label sticker */}
-              <div
-                className="absolute left-1/2 top-[26%] w-[62%] -translate-x-1/2 rounded-sm border border-black/15 bg-[#FBF6E8] px-4 py-5 text-center"
-                style={{ boxShadow: "0 2px 6px rgba(20,17,11,0.2)" }}
-              >
-                <p
-                  className={`${mono.className} text-[9px] uppercase tracking-[0.3em] text-black/45`}
+                {/* Spine stitching */}
+                <div
+                  className="absolute top-2 bottom-2 left-3 w-px"
+                  style={{
+                    backgroundImage:
+                      "repeating-linear-gradient(180deg, rgba(60,40,10,0.55) 0 7px, transparent 7px 14px)",
+                  }}
+                />
+                {/* Label sticker */}
+                <div
+                  className="absolute top-[26%] left-1/2 w-[62%] -translate-x-1/2 rounded-sm border border-black/15 bg-[#FBF6E8] px-4 py-5 text-center"
+                  style={{ boxShadow: "0 2px 6px rgba(20,17,11,0.2)" }}
                 >
-                  Boutique — Dakar
-                </p>
-                <p
-                  className={`${script.className} mt-2 text-4xl font-bold leading-none text-[#1F1812]`}
-                >
-                  Cahier
-                </p>
-                <p
-                  className={`${script.className} mt-1.5 text-lg leading-tight text-[#1F1812]/70`}
-                >
-                  stock · dettes · clients
-                </p>
+                  <p
+                    className={`${mono.className} text-[9px] tracking-[0.3em] text-black/45 uppercase`}
+                  >
+                    Boutique — Dakar
+                  </p>
+                  <p
+                    className={`${script.className} mt-2 text-4xl leading-none font-bold text-[#1F1812]`}
+                  >
+                    Cahier
+                  </p>
+                  <p
+                    className={`${script.className} mt-1.5 text-lg leading-tight text-[#1F1812]/70`}
+                  >
+                    stock · dettes · clients
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -267,7 +311,7 @@ function PageFace({ lines }: { lines: string[] }) {
       }}
     >
       {/* Margin line */}
-      <div className="absolute bottom-0 left-9 top-0 w-px bg-rose-400/35" />
+      <div className="absolute top-0 bottom-0 left-9 w-px bg-rose-400/35" />
       <div className={`${script.className} absolute inset-0 px-12 py-5`}>
         {lines.map((line, i) => (
           <p

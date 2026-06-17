@@ -20,7 +20,7 @@ import { useManifesteScroll } from "../scroll-source";
  * follows the same journey (cyan → amber → teal → brand blue).
  */
 
-const COUNT = 1800;
+const COUNT = 5000;
 
 // Deterministic targets (fixed seed) so every visit shows the same object.
 function buildTargets() {
@@ -48,19 +48,43 @@ function buildTargets() {
     chaos[i * 3 + 2] = (rand() - 0.5) * 10;
   }
 
-  // Lattice — points snapped to a cubic grid: legible order.
+  // Lattice — a big, PAGE-FILLING ordered grid. Spread wide in XY so the
+  // structure occupies the whole screen (an ambient field, not a small
+  // block in the centre); kept shallow in Z so every point stays in front
+  // of the camera.
   const side = Math.ceil(Math.cbrt(COUNT));
-  const step = 5.2 / side;
+  const stepXY = 11 / side;
+  // Real depth (a slab-cube, not a flat sheet): a volume keeps a
+  // substantial silhouette as it pivots — a flat grid would go edge-on and
+  // collapse to a line/corner. The depth is what makes the scroll-driven
+  // rotation legible.
+  const stepZ = 7 / side;
   for (let i = 0; i < COUNT; i++) {
     const gx = i % side;
     const gy = Math.floor(i / side) % side;
     const gz = Math.floor(i / (side * side));
-    lattice[i * 3] = (gx - side / 2) * step + (rand() - 0.5) * 0.05;
-    lattice[i * 3 + 1] = (gy - side / 2) * step + (rand() - 0.5) * 0.05;
-    lattice[i * 3 + 2] = (gz - side / 2) * step + (rand() - 0.5) * 0.05;
+    lattice[i * 3] = (gx - side / 2) * stepXY + (rand() - 0.5) * 0.25;
+    lattice[i * 3 + 1] = (gy - side / 2) * stepXY + (rand() - 0.5) * 0.25;
+    lattice[i * 3 + 2] = (gz - side / 2) * stepZ + (rand() - 0.5) * 0.15;
   }
 
-  return { sphere, chaos, lattice };
+  // Burst — the structure shatters: each point flung straight outward (its
+  // own direction from the centre) to a far, varied radius. Used for the
+  // final beat instead of condensing to a bright core; paired with a fade
+  // so the cloud explodes and then vanishes, never a dense blob.
+  const burst = new Float32Array(COUNT * 3);
+  for (let i = 0; i < COUNT; i++) {
+    const x = lattice[i * 3];
+    const y = lattice[i * 3 + 1];
+    const z = lattice[i * 3 + 2];
+    const len = Math.hypot(x, y, z) || 0.001;
+    const radius = 15 + rand() * 11;
+    burst[i * 3] = (x / len) * radius;
+    burst[i * 3 + 1] = (y / len) * radius;
+    burst[i * 3 + 2] = (z / len) * radius;
+  }
+
+  return { sphere, chaos, lattice, burst };
 }
 
 // Soft round sprite so points render as glow dots, not squares.
@@ -102,33 +126,54 @@ export function MorphObject() {
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.PointsMaterial>(null);
 
-  const { sphere, chaos, lattice } = useMemo(() => buildTargets(), []);
+  const { sphere, chaos, lattice, burst } = useMemo(() => buildTargets(), []);
   const positions = useMemo(() => sphere.slice(), [sphere]);
   const sprite = useMemo(() => makeSprite(), []);
+  // Last scroll value we rebuilt positions for — lets us skip the heavy
+  // per-frame loop + GPU upload when the scroll is paused (the camera still
+  // breathes, so the canvas keeps rendering, but a static object is free).
+  const lastT = useRef(-1);
 
-  useFrame((state) => {
+  useFrame(() => {
     const points = pointsRef.current;
     const material = materialRef.current;
     if (!points || !material) return;
 
     const t = THREE.MathUtils.clamp(scroll.offset, 0, 1);
+
+    // Rotation is purely scroll-driven (no continuous time spin), so a
+    // paused scroll = a static object and everything below is skipped. The
+    // block PIVOTS as you scroll, on both axes — the depth above keeps it
+    // from collapsing while it turns, so the motion reads clearly.
+    points.rotation.y = t * 1.1;
+    points.rotation.x = -0.1 + t * 0.8;
+
+    if (Math.abs(t - lastT.current) < 0.0002) return;
+    lastT.current = t;
+
     // Morph ramps (full-page scroll, 0..1). The canvas only becomes
     // visible at the bascule (~0.17), already in its chaos state — the
     // dissolved cahier. Order emerges through the expanding window,
     // converges to the core before the cream finale covers the scene.
     const toChaos = THREE.MathUtils.smoothstep(t, 0.05, 0.15);
     const toLattice = THREE.MathUtils.smoothstep(t, 0.3, 0.44);
-    const toCore = THREE.MathUtils.smoothstep(t, 0.82, 0.95);
+    // Final beat — timed so the burst PLAYS OUT while ch.6 condition 04 is
+    // on screen and the dark canvas is still up (the ColorScript fades the
+    // canvas as ch.7's cream arrives ~0.93, so the explosion must finish
+    // just before). The page-filling grid holds through conditions 1-3,
+    // then the whole screen of particles bursts off the edges and is gone.
+    const toBurst = THREE.MathUtils.smoothstep(t, 0.9, 0.935);
 
     const attr = points.geometry.getAttribute(
       "position",
     ) as THREE.BufferAttribute;
     const arr = attr.array as Float32Array;
-    for (let i = 0; i < COUNT * 3; i++) {
-      // sphere → chaos → lattice → core (lattice scaled to a point)
+    const n = arr.length;
+    for (let i = 0; i < n; i++) {
+      // sphere → chaos → lattice → burst (explode outward, then fade)
       let v = sphere[i] + (chaos[i] - sphere[i]) * toChaos;
       v += (lattice[i] - v) * toLattice;
-      v += (lattice[i] * 0.06 - v) * toCore;
+      v += (burst[i] - v) * toBurst;
       arr[i] = v;
     }
     attr.needsUpdate = true;
@@ -142,15 +187,13 @@ export function MorphObject() {
       TMP_COLOR.lerpColors(COLOR_STOPS[2], COLOR_STOPS[3], (t - 0.7) / 0.3);
     }
     material.color.copy(TMP_COLOR);
-    // The core moment glows brighter as everything converges. Opacity
-    // stays low overall — the object is a presence, never a competitor
-    // to the copy in front of it.
-    material.size = 0.05 + toCore * 0.1;
-    material.opacity = 0.55 - toChaos * 0.15 + toLattice * 0.2;
-
-    // Slow constant spin + a gentle scroll-driven turn.
-    points.rotation.y = state.clock.elapsedTime * 0.03 + t * Math.PI * 0.8;
-    points.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.08;
+    // The page-filling field stays SUBTLE (it covers the whole screen, so
+    // low opacity keeps it from drowning the copy). At the burst it flares
+    // brighter — the detonation — then the whole thing fades to nothing for
+    // the cream finale. `toBurst * (1 - toBurst)` peaks mid-explosion.
+    material.size = 0.06 + toBurst * 0.08;
+    material.opacity =
+      (0.7 - toChaos * 0.05) * (1 - toBurst) + toBurst * (1 - toBurst) * 1.8;
   });
 
   return (
