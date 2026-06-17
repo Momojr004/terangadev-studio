@@ -43,25 +43,29 @@ function ExcuseBeat({
       className={`flex min-h-[85vh] flex-col items-center justify-center px-6 text-center ${inView ? "is-visible" : ""}`}
     >
       <p
-        className={`${mono.className} text-[10px] uppercase tracking-[0.3em] text-white/35 transition-opacity duration-700 ${inView ? "opacity-100" : "opacity-0"}`}
+        className={`${mono.className} text-[10px] tracking-[0.3em] text-white/35 uppercase transition-opacity duration-700 ${inView ? "opacity-100" : "opacity-0"}`}
       >
         Excuse 0{index}
       </p>
 
       <p
-        className={`${display.className} relative mt-6 max-w-3xl text-3xl font-medium italic leading-tight tracking-[-0.01em] text-white/90 transition-all duration-1000 md:text-5xl ${inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`}
+        className={`${display.className} relative mt-6 max-w-3xl text-3xl leading-tight font-medium tracking-[-0.01em] text-white/90 italic transition-all duration-1000 md:text-5xl ${inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`}
       >
         « {excuse} »
-        {/* The strike — draws once the excuse has been read */}
+        {/* The strike — draws once the excuse has been read. On phones the
+            quote wraps to 3 lines, so a single centered bar would cut
+            through a word's middle (reads as a typo). Underline it at the
+            bottom on mobile; keep the centered strike on md+ where the
+            quote is one or two lines. */}
         <span
           aria-hidden
-          className="manifeste-strike-line absolute left-0 top-1/2 h-[3px] w-full rounded-full"
+          className="manifeste-strike-line absolute top-auto -bottom-1 left-0 h-[3px] w-full rounded-full md:top-1/2 md:bottom-auto"
           style={{ backgroundColor: RED }}
         />
       </p>
 
       <p
-        className={`${mono.className} mt-12 text-[10px] uppercase tracking-[0.3em] transition-opacity delay-700 duration-700 ${inView ? "opacity-100" : "opacity-0"}`}
+        className={`${mono.className} mt-12 text-[10px] tracking-[0.3em] uppercase transition-opacity delay-700 duration-700 ${inView ? "opacity-100" : "opacity-0"}`}
         style={{ color: ACCENT }}
       >
         {rebutTitle}
@@ -116,12 +120,12 @@ export function Chapter3Excuses() {
         className="flex min-h-[90vh] flex-col items-center justify-center px-6 text-center"
       >
         <p
-          className={`${display.className} max-w-3xl text-3xl font-bold leading-[1.05] tracking-[-0.02em] text-white transition-all duration-1000 md:text-5xl lg:text-6xl ${endIn ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}
+          className={`${display.className} max-w-3xl text-3xl leading-[1.05] font-bold tracking-[-0.02em] text-white transition-all duration-1000 md:text-5xl lg:text-6xl ${endIn ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}
         >
           {t("punchline")}
         </p>
         <p
-          className={`${display.className} mt-4 max-w-3xl text-3xl font-bold italic leading-[1.05] tracking-[-0.02em] transition-all delay-300 duration-1000 md:text-5xl lg:text-6xl ${endIn ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}
+          className={`${display.className} mt-4 max-w-3xl text-3xl leading-[1.05] font-bold tracking-[-0.02em] italic transition-all delay-300 duration-1000 md:text-5xl lg:text-6xl ${endIn ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}
           style={{ color: RED }}
         >
           {t("punchline2")}
