@@ -48,28 +48,35 @@ function buildTargets() {
     chaos[i * 3 + 2] = (rand() - 0.5) * 10;
   }
 
-  // Ordered ring — a torus of points (named `lattice` for the morph
-  // below). Replaces a filled cubic grid, which read head-on as a flat
-  // pixelated block. Built in the XY plane so it FACES the camera: a
-  // head-on ring with a hollow centre the copy reads through. (In the XZ
-  // plane the camera saw it edge-on and the front/back rims piled up into
-  // a solid bright ellipse under additive blending.)
-  const TORUS_R = 2.6; // major radius
-  const TORUS_r = 0.5; // tube radius
-  const NU = 120; // points around the main ring
-  const NV = Math.ceil(COUNT / NU); // rings around the tube
+  // Lattice — points snapped to a cubic grid: legible order.
+  const side = Math.ceil(Math.cbrt(COUNT));
+  const step = 5.2 / side;
   for (let i = 0; i < COUNT; i++) {
-    const iu = i % NU;
-    const iv = Math.floor(i / NU);
-    const u = (iu / NU) * Math.PI * 2;
-    const v = (iv / NV) * Math.PI * 2;
-    const rr = TORUS_R + TORUS_r * Math.cos(v);
-    lattice[i * 3] = rr * Math.cos(u) + (rand() - 0.5) * 0.04; // X — ring
-    lattice[i * 3 + 1] = rr * Math.sin(u) + (rand() - 0.5) * 0.04; // Y — ring
-    lattice[i * 3 + 2] = TORUS_r * Math.sin(v) + (rand() - 0.5) * 0.04; // Z — tube depth
+    const gx = i % side;
+    const gy = Math.floor(i / side) % side;
+    const gz = Math.floor(i / (side * side));
+    lattice[i * 3] = (gx - side / 2) * step + (rand() - 0.5) * 0.05;
+    lattice[i * 3 + 1] = (gy - side / 2) * step + (rand() - 0.5) * 0.05;
+    lattice[i * 3 + 2] = (gz - side / 2) * step + (rand() - 0.5) * 0.05;
   }
 
-  return { sphere, chaos, lattice };
+  // Burst — the structure shatters: each point flung straight outward (its
+  // own direction from the centre) to a far, varied radius. Used for the
+  // final beat instead of condensing to a bright core; paired with a fade
+  // so the cloud explodes and then vanishes, never a dense blob.
+  const burst = new Float32Array(COUNT * 3);
+  for (let i = 0; i < COUNT; i++) {
+    const x = lattice[i * 3];
+    const y = lattice[i * 3 + 1];
+    const z = lattice[i * 3 + 2];
+    const len = Math.hypot(x, y, z) || 0.001;
+    const radius = 12 + rand() * 9;
+    burst[i * 3] = (x / len) * radius;
+    burst[i * 3 + 1] = (y / len) * radius;
+    burst[i * 3 + 2] = (z / len) * radius;
+  }
+
+  return { sphere, chaos, lattice, burst };
 }
 
 // Soft round sprite so points render as glow dots, not squares.
@@ -111,7 +118,7 @@ export function MorphObject() {
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.PointsMaterial>(null);
 
-  const { sphere, chaos, lattice } = useMemo(() => buildTargets(), []);
+  const { sphere, chaos, lattice, burst } = useMemo(() => buildTargets(), []);
   const positions = useMemo(() => sphere.slice(), [sphere]);
   const sprite = useMemo(() => makeSprite(), []);
 
@@ -127,17 +134,21 @@ export function MorphObject() {
     // converges to the core before the cream finale covers the scene.
     const toChaos = THREE.MathUtils.smoothstep(t, 0.05, 0.15);
     const toLattice = THREE.MathUtils.smoothstep(t, 0.3, 0.44);
-    const toCore = THREE.MathUtils.smoothstep(t, 0.82, 0.95);
+    // Final beat: instead of condensing to a bright point (which read as a
+    // dense blob over the copy), the ordered cloud EXPLODES outward and
+    // fades. The burst spans the end of ch.6 into ch.7, so the structure is
+    // already flying apart where the block used to sit.
+    const toBurst = THREE.MathUtils.smoothstep(t, 0.72, 0.92);
 
     const attr = points.geometry.getAttribute(
       "position",
     ) as THREE.BufferAttribute;
     const arr = attr.array as Float32Array;
     for (let i = 0; i < COUNT * 3; i++) {
-      // sphere → chaos → lattice → core (lattice scaled to a point)
+      // sphere → chaos → lattice → burst (explode outward, then fade)
       let v = sphere[i] + (chaos[i] - sphere[i]) * toChaos;
       v += (lattice[i] - v) * toLattice;
-      v += (lattice[i] * 0.06 - v) * toCore;
+      v += (burst[i] - v) * toBurst;
       arr[i] = v;
     }
     attr.needsUpdate = true;
@@ -151,22 +162,16 @@ export function MorphObject() {
       TMP_COLOR.lerpColors(COLOR_STOPS[2], COLOR_STOPS[3], (t - 0.7) / 0.3);
     }
     material.color.copy(TMP_COLOR);
-    // The core moment glows brighter as everything converges. Opacity
-    // stays low overall — the object is a presence, never a competitor
-    // to the copy in front of it.
-    // Keep particles small + dim once they form the ring so the dense rim
-    // doesn't sum to a white blob under additive blending — it stays a
-    // faint coloured ring the copy reads over.
-    material.size = 0.045 + toCore * 0.07;
-    material.opacity = 0.5 - toChaos * 0.12 - toLattice * 0.18 + toCore * 0.12;
+    // Particles streak a touch larger as they fly, and the whole cloud
+    // fades to nothing across the burst so it disappears before the cream
+    // finale — no dense point left glowing over the copy.
+    material.size = 0.055 + toBurst * 0.05;
+    material.opacity =
+      (0.55 - toChaos * 0.15 + toLattice * 0.2) * (1 - toBurst);
 
-    // Spin in-plane (around the view axis Z) so the ordered ring keeps
-    // facing the camera — a spin around Y would turn it edge-on and it
-    // would pile up into a bright blob again. Sphere/chaos/core states are
-    // rotation-agnostic, so this reads well across the whole morph.
-    points.rotation.z = state.clock.elapsedTime * 0.04 + t * 0.5;
-    points.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.05;
-    points.rotation.y = 0;
+    // Slow constant spin + a gentle scroll-driven turn.
+    points.rotation.y = state.clock.elapsedTime * 0.03 + t * Math.PI * 0.8;
+    points.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.08;
   });
 
   return (
