@@ -20,7 +20,7 @@ import { useManifesteScroll } from "../scroll-source";
  * follows the same journey (cyan → amber → teal → brand blue).
  */
 
-const COUNT = 4000;
+const COUNT = 5000;
 
 // Deterministic targets (fixed seed) so every visit shows the same object.
 function buildTargets() {
@@ -53,7 +53,7 @@ function buildTargets() {
   // block in the centre); kept shallow in Z so every point stays in front
   // of the camera.
   const side = Math.ceil(Math.cbrt(COUNT));
-  const stepXY = 8.5 / side;
+  const stepXY = 11 / side;
   const stepZ = 3.5 / side;
   for (let i = 0; i < COUNT; i++) {
     const gx = i % side;
@@ -74,7 +74,7 @@ function buildTargets() {
     const y = lattice[i * 3 + 1];
     const z = lattice[i * 3 + 2];
     const len = Math.hypot(x, y, z) || 0.001;
-    const radius = 9 + rand() * 7;
+    const radius = 15 + rand() * 11;
     burst[i * 3] = (x / len) * radius;
     burst[i * 3 + 1] = (y / len) * radius;
     burst[i * 3 + 2] = (z / len) * radius;
@@ -139,7 +139,11 @@ export function MorphObject() {
 
     // Rotation is purely scroll-driven now (no continuous time spin), so a
     // paused scroll = a static object and everything below is skipped.
-    points.rotation.y = t * Math.PI * 0.8;
+    // Kept SMALL on purpose: a big turn rotates the wide grid edge-on and
+    // collapses it into a narrow slab in one corner — a gentle tilt keeps
+    // the field facing the camera so it fills the whole page.
+    points.rotation.y = t * 0.35;
+    points.rotation.x = -0.12;
 
     if (Math.abs(t - lastT.current) < 0.0002) return;
     lastT.current = t;
@@ -184,9 +188,9 @@ export function MorphObject() {
     // low opacity keeps it from drowning the copy). At the burst it flares
     // brighter — the detonation — then the whole thing fades to nothing for
     // the cream finale. `toBurst * (1 - toBurst)` peaks mid-explosion.
-    material.size = 0.045 + toBurst * 0.08;
+    material.size = 0.05 + toBurst * 0.08;
     material.opacity =
-      (0.4 - toChaos * 0.06) * (1 - toBurst) + toBurst * (1 - toBurst) * 1.8;
+      (0.5 - toChaos * 0.05) * (1 - toBurst) + toBurst * (1 - toBurst) * 1.8;
   });
 
   return (
