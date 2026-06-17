@@ -48,14 +48,15 @@ function buildTargets() {
     chaos[i * 3 + 2] = (rand() - 0.5) * 10;
   }
 
-  // Ordered ring — an elegant torus of points (named `lattice` for the
-  // morph below). Replaces a filled cubic grid, which read head-on as a
-  // flat pixelated block and, with additive blending, washed out to a
-  // bright square over the copy. A torus is unambiguous "structure",
-  // spins legibly in 3D, and its hollow centre lets the text breathe.
-  const TORUS_R = 2.35; // major radius
-  const TORUS_r = 0.64; // tube radius
-  const NU = 90; // points around the main ring
+  // Ordered ring — a torus of points (named `lattice` for the morph
+  // below). Replaces a filled cubic grid, which read head-on as a flat
+  // pixelated block. Built in the XY plane so it FACES the camera: a
+  // head-on ring with a hollow centre the copy reads through. (In the XZ
+  // plane the camera saw it edge-on and the front/back rims piled up into
+  // a solid bright ellipse under additive blending.)
+  const TORUS_R = 2.6; // major radius
+  const TORUS_r = 0.5; // tube radius
+  const NU = 120; // points around the main ring
   const NV = Math.ceil(COUNT / NU); // rings around the tube
   for (let i = 0; i < COUNT; i++) {
     const iu = i % NU;
@@ -63,9 +64,9 @@ function buildTargets() {
     const u = (iu / NU) * Math.PI * 2;
     const v = (iv / NV) * Math.PI * 2;
     const rr = TORUS_R + TORUS_r * Math.cos(v);
-    lattice[i * 3] = rr * Math.cos(u) + (rand() - 0.5) * 0.04;
-    lattice[i * 3 + 1] = TORUS_r * Math.sin(v) + (rand() - 0.5) * 0.04;
-    lattice[i * 3 + 2] = rr * Math.sin(u) + (rand() - 0.5) * 0.04;
+    lattice[i * 3] = rr * Math.cos(u) + (rand() - 0.5) * 0.04; // X — ring
+    lattice[i * 3 + 1] = rr * Math.sin(u) + (rand() - 0.5) * 0.04; // Y — ring
+    lattice[i * 3 + 2] = TORUS_r * Math.sin(v) + (rand() - 0.5) * 0.04; // Z — tube depth
   }
 
   return { sphere, chaos, lattice };
@@ -153,12 +154,19 @@ export function MorphObject() {
     // The core moment glows brighter as everything converges. Opacity
     // stays low overall — the object is a presence, never a competitor
     // to the copy in front of it.
-    material.size = 0.05 + toCore * 0.1;
-    material.opacity = 0.55 - toChaos * 0.15 + toLattice * 0.2;
+    // Keep particles small + dim once they form the ring so the dense rim
+    // doesn't sum to a white blob under additive blending — it stays a
+    // faint coloured ring the copy reads over.
+    material.size = 0.045 + toCore * 0.07;
+    material.opacity = 0.5 - toChaos * 0.12 - toLattice * 0.18 + toCore * 0.12;
 
-    // Slow constant spin + a gentle scroll-driven turn.
-    points.rotation.y = state.clock.elapsedTime * 0.03 + t * Math.PI * 0.8;
-    points.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.08;
+    // Spin in-plane (around the view axis Z) so the ordered ring keeps
+    // facing the camera — a spin around Y would turn it edge-on and it
+    // would pile up into a bright blob again. Sphere/chaos/core states are
+    // rotation-agnostic, so this reads well across the whole morph.
+    points.rotation.z = state.clock.elapsedTime * 0.04 + t * 0.5;
+    points.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.05;
+    points.rotation.y = 0;
   });
 
   return (
