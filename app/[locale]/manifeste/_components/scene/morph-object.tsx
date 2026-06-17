@@ -48,16 +48,24 @@ function buildTargets() {
     chaos[i * 3 + 2] = (rand() - 0.5) * 10;
   }
 
-  // Lattice — points snapped to a cubic grid: legible order.
-  const side = Math.ceil(Math.cbrt(COUNT));
-  const step = 5.2 / side;
+  // Ordered ring — an elegant torus of points (named `lattice` for the
+  // morph below). Replaces a filled cubic grid, which read head-on as a
+  // flat pixelated block and, with additive blending, washed out to a
+  // bright square over the copy. A torus is unambiguous "structure",
+  // spins legibly in 3D, and its hollow centre lets the text breathe.
+  const TORUS_R = 2.35; // major radius
+  const TORUS_r = 0.64; // tube radius
+  const NU = 90; // points around the main ring
+  const NV = Math.ceil(COUNT / NU); // rings around the tube
   for (let i = 0; i < COUNT; i++) {
-    const gx = i % side;
-    const gy = Math.floor(i / side) % side;
-    const gz = Math.floor(i / (side * side));
-    lattice[i * 3] = (gx - side / 2) * step + (rand() - 0.5) * 0.05;
-    lattice[i * 3 + 1] = (gy - side / 2) * step + (rand() - 0.5) * 0.05;
-    lattice[i * 3 + 2] = (gz - side / 2) * step + (rand() - 0.5) * 0.05;
+    const iu = i % NU;
+    const iv = Math.floor(i / NU);
+    const u = (iu / NU) * Math.PI * 2;
+    const v = (iv / NV) * Math.PI * 2;
+    const rr = TORUS_R + TORUS_r * Math.cos(v);
+    lattice[i * 3] = rr * Math.cos(u) + (rand() - 0.5) * 0.04;
+    lattice[i * 3 + 1] = TORUS_r * Math.sin(v) + (rand() - 0.5) * 0.04;
+    lattice[i * 3 + 2] = rr * Math.sin(u) + (rand() - 0.5) * 0.04;
   }
 
   return { sphere, chaos, lattice };
